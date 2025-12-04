@@ -306,11 +306,35 @@ html.arabic-enhancer-active ::selection {
    إصلاحات خاصة بالمواقع الشائعة
    =================================================== */
 
-/* YouTube */
+/* YouTube - النص فقط */
 html.arabic-enhancer-active ytd-comment-renderer,
-html.arabic-enhancer-active #content-text {
+html.arabic-enhancer-active #content-text,
+html.arabic-enhancer-active ytd-video-primary-info-renderer #title,
+html.arabic-enhancer-active ytd-video-secondary-info-renderer #description {
   direction: rtl !important;
   text-align: right !important;
+}
+
+/* YouTube - استثناء عناصر واجهة المستخدم من RTL */
+html.arabic-enhancer-active yt-searchbox,
+html.arabic-enhancer-active ytd-searchbox,
+html.arabic-enhancer-active .ytSearchboxComponentHost,
+html.arabic-enhancer-active #search-form,
+html.arabic-enhancer-active #search-input,
+html.arabic-enhancer-active #masthead,
+html.arabic-enhancer-active #guide,
+html.arabic-enhancer-active #guide-content,
+html.arabic-enhancer-active ytd-mini-guide-renderer,
+html.arabic-enhancer-active ytd-guide-renderer,
+html.arabic-enhancer-active #start,
+html.arabic-enhancer-active #end,
+html.arabic-enhancer-active #center,
+html.arabic-enhancer-active ytd-masthead,
+html.arabic-enhancer-active #container.ytd-masthead,
+html.arabic-enhancer-active #buttons,
+html.arabic-enhancer-active ytd-topbar-menu-button-renderer {
+  direction: ltr !important;
+  text-align: left !important;
 }
 
 /* Twitter/X */
@@ -322,6 +346,103 @@ html.arabic-enhancer-active [data-testid="tweetText"] {
 /* Facebook */
 html.arabic-enhancer-active [dir="auto"] {
   direction: rtl !important;
+}
+
+/* ===================================================
+   استثناءات Claude AI
+   =================================================== */
+
+/* Claude - الشريط الجانبي والتخطيط الرئيسي */
+html.arabic-enhancer-active [class*="fixed"][class*="left-0"],
+html.arabic-enhancer-active [class*="sidebar"],
+html.arabic-enhancer-active [class*="navigation"],
+html.arabic-enhancer-active nav[class*="flex"],
+html.arabic-enhancer-active aside,
+html.arabic-enhancer-active [role="navigation"],
+html.arabic-enhancer-active [class*="lg:bg-gradient"],
+html.arabic-enhancer-active [class*="from-bg-"],
+html.arabic-enhancer-active [class*="to-bg-"] {
+  direction: ltr !important;
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+}
+
+/* Claude - منطقة المحادثة فقط تكون RTL */
+html.arabic-enhancer-active [class*="prose"],
+html.arabic-enhancer-active [class*="message-content"],
+html.arabic-enhancer-active [class*="markdown"],
+html.arabic-enhancer-active .font-claude-message {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Claude - استثناء الأزرار والتحكم */
+html.arabic-enhancer-active [class*="absolute"][class*="bottom-"],
+html.arabic-enhancer-active [class*="sticky"],
+html.arabic-enhancer-active [class*="composer"],
+html.arabic-enhancer-active [class*="input-area"],
+html.arabic-enhancer-active [class*="toolbar"] {
+  direction: ltr !important;
+}
+
+/* ===================================================
+   استثناءات ChatGPT
+   =================================================== */
+
+html.arabic-enhancer-active [class*="nav-"],
+html.arabic-enhancer-active [class*="sidebar"],
+html.arabic-enhancer-active nav[class*="dark"],
+html.arabic-enhancer-active [data-testid*="nav"],
+html.arabic-enhancer-active [class*="conversation-list"] {
+  direction: ltr !important;
+}
+
+/* ChatGPT - المحتوى فقط RTL */
+html.arabic-enhancer-active [class*="markdown"],
+html.arabic-enhancer-active [class*="prose"] {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* ===================================================
+   استثناءات عامة لعناصر واجهة المستخدم
+   =================================================== */
+
+/* القوائم المنسدلة والنوافذ المنبثقة */
+html.arabic-enhancer-active [role="menu"],
+html.arabic-enhancer-active [role="listbox"],
+html.arabic-enhancer-active [role="dialog"],
+html.arabic-enhancer-active [role="tooltip"],
+html.arabic-enhancer-active [class*="dropdown"],
+html.arabic-enhancer-active [class*="popover"],
+html.arabic-enhancer-active [class*="modal"],
+html.arabic-enhancer-active [class*="overlay"] {
+  direction: ltr !important;
+}
+
+/* أشرطة الأدوات والرؤوس */
+html.arabic-enhancer-active header,
+html.arabic-enhancer-active [role="banner"],
+html.arabic-enhancer-active [class*="header"],
+html.arabic-enhancer-active [class*="topbar"],
+html.arabic-enhancer-active [class*="menubar"] {
+  direction: ltr !important;
+}
+
+/* العناصر الثابتة والمطلقة */
+html.arabic-enhancer-active [class*="fixed"][class*="top-"],
+html.arabic-enhancer-active [class*="fixed"][class*="bottom-"],
+html.arabic-enhancer-active [class*="absolute"][class*="top-"],
+html.arabic-enhancer-active [class*="sticky"] {
+  direction: ltr !important;
+}
+
+/* Flexbox containers التي قد تتأثر */
+html.arabic-enhancer-active [class*="flex"][class*="justify-between"],
+html.arabic-enhancer-active
+  [class*="flex"][class*="items-center"][class*="gap-"] {
+  direction: ltr !important;
 }
 
 /* ===================================================
