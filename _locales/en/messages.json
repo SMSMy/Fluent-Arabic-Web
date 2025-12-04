@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Fluent Arabic Web",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Enhance Arabic web browsing experience with full RTL support and advanced visual improvements",
+    "description": "Extension description"
+  }
+}

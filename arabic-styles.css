@@ -1,0 +1,336 @@
+/* ===================================================
+   Fluent Arabic Web v3.0 - Enhanced Arabic Styles
+   =================================================== */
+
+/* --- تعريف الخطوط المحلية --- */
+@font-face {
+  font-family: "Noto Naskh Arabic Local";
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/NotoNaskhArabic-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Naskh Arabic Local";
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/NotoNaskhArabic-Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===================================================
+   الأنماط الأساسية - تُطبق فقط مع الفئة .arabic-enhancer-active
+   =================================================== */
+
+/* الاتجاه العام */
+html.arabic-enhancer-active {
+  direction: rtl;
+}
+
+/* العناصر النصية الرئيسية */
+html.arabic-enhancer-active body,
+html.arabic-enhancer-active .message,
+html.arabic-enhancer-active [class*="message"],
+html.arabic-enhancer-active [role="log"] > *,
+html.arabic-enhancer-active [role="textbox"],
+html.arabic-enhancer-active [role="button"],
+html.arabic-enhancer-active summary {
+  direction: rtl !important;
+  text-align: right !important;
+  font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic",
+    sans-serif !important;
+}
+
+/* حقول الإدخال */
+html.arabic-enhancer-active textarea,
+html.arabic-enhancer-active
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
+    [type="checkbox"]
+  ):not([type="radio"]):not([type="file"]):not([type="image"]):not(
+    [type="range"]
+  ):not([type="color"]) {
+  direction: rtl !important;
+  text-align: right !important;
+  font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic",
+    sans-serif !important;
+}
+
+/* الأزرار والقوائم */
+html.arabic-enhancer-active button,
+html.arabic-enhancer-active select {
+  direction: rtl !important;
+  font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic",
+    sans-serif !important;
+}
+
+/* ===================================================
+   العناصر النصية العامة
+   =================================================== */
+
+html.arabic-enhancer-active p,
+html.arabic-enhancer-active
+  div:not([class*="code"]):not([class*="pre"]):not([class*="syntax"]),
+html.arabic-enhancer-active span:not([class*="code"]):not([class*="token"]),
+html.arabic-enhancer-active li,
+html.arabic-enhancer-active td,
+html.arabic-enhancer-active th,
+html.arabic-enhancer-active label,
+html.arabic-enhancer-active h1,
+html.arabic-enhancer-active h2,
+html.arabic-enhancer-active h3,
+html.arabic-enhancer-active h4,
+html.arabic-enhancer-active h5,
+html.arabic-enhancer-active h6,
+html.arabic-enhancer-active blockquote,
+html.arabic-enhancer-active figcaption,
+html.arabic-enhancer-active legend,
+html.arabic-enhancer-active caption {
+  font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic",
+    sans-serif;
+}
+
+/* ===================================================
+   تحسينات التباعد والقراءة
+   =================================================== */
+
+html.arabic-enhancer-active
+  *:not(code):not(pre):not(kbd):not(samp):not(input):not(textarea):not(
+    button
+  ):not(select):not(option):not(svg):not(svg *):not([class*="icon"]):not(i):not(
+    [class*="code"]
+  ):not([class*="token"]) {
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+/* تحسين الفقرات */
+html.arabic-enhancer-active p {
+  line-height: 1.8 !important;
+  margin-bottom: 1em;
+}
+
+/* تحسين عناصر القائمة */
+html.arabic-enhancer-active li {
+  line-height: 1.7;
+}
+
+/* تحسين العناوين */
+html.arabic-enhancer-active h1,
+html.arabic-enhancer-active h2,
+html.arabic-enhancer-active h3,
+html.arabic-enhancer-active h4,
+html.arabic-enhancer-active h5,
+html.arabic-enhancer-active h6 {
+  line-height: 1.4;
+}
+
+/* ===================================================
+   الحفاظ على LTR لعناصر الكود
+   =================================================== */
+
+html.arabic-enhancer-active pre,
+html.arabic-enhancer-active code,
+html.arabic-enhancer-active kbd,
+html.arabic-enhancer-active samp,
+html.arabic-enhancer-active var,
+html.arabic-enhancer-active tt,
+html.arabic-enhancer-active [class*="code"],
+html.arabic-enhancer-active [class*="syntax"],
+html.arabic-enhancer-active [class*="highlight"],
+html.arabic-enhancer-active [class*="prism"],
+html.arabic-enhancer-active [class*="hljs"],
+html.arabic-enhancer-active .token {
+  direction: ltr !important;
+  text-align: left !important;
+  font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace !important;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+  line-height: 1.5 !important;
+  unicode-bidi: embed !important;
+}
+
+/* ===================================================
+   إصلاحات التخطيط
+   =================================================== */
+
+/* قلب عناصر Flexbox */
+html.arabic-enhancer-active [style*="flex-direction: row"] {
+  flex-direction: row-reverse !important;
+}
+
+/* إصلاح الهوامش والحشوات */
+html.arabic-enhancer-active [style*="margin-left"]:not(pre):not(code) {
+  margin-right: var(--original-margin-left, inherit);
+}
+
+html.arabic-enhancer-active [style*="padding-left"]:not(pre):not(code) {
+  padding-right: var(--original-padding-left, inherit);
+}
+
+/* إصلاح عناصر Float */
+html.arabic-enhancer-active img[style*="float: left"],
+html.arabic-enhancer-active figure[style*="float: left"] {
+  float: right !important;
+  margin-left: 1em !important;
+  margin-right: 0 !important;
+}
+
+html.arabic-enhancer-active img[style*="float: right"],
+html.arabic-enhancer-active figure[style*="float: right"] {
+  float: left !important;
+  margin-right: 1em !important;
+  margin-left: 0 !important;
+}
+
+/* ===================================================
+   إصلاحات الجداول
+   =================================================== */
+
+html.arabic-enhancer-active table {
+  direction: rtl;
+}
+
+html.arabic-enhancer-active th,
+html.arabic-enhancer-active td {
+  text-align: right !important;
+}
+
+/* ===================================================
+   إصلاحات القوائم
+   =================================================== */
+
+html.arabic-enhancer-active ul,
+html.arabic-enhancer-active ol {
+  padding-right: 2em;
+  padding-left: 0;
+}
+
+html.arabic-enhancer-active ul ul,
+html.arabic-enhancer-active ol ol,
+html.arabic-enhancer-active ul ol,
+html.arabic-enhancer-active ol ul {
+  padding-right: 1.5em;
+  padding-left: 0;
+}
+
+/* ===================================================
+   إصلاحات النماذج
+   =================================================== */
+
+html.arabic-enhancer-active form {
+  direction: rtl;
+}
+
+html.arabic-enhancer-active label {
+  display: inline-block;
+  text-align: right;
+}
+
+html.arabic-enhancer-active input[type="checkbox"],
+html.arabic-enhancer-active input[type="radio"] {
+  margin-left: 0.5em;
+  margin-right: 0;
+}
+
+/* ===================================================
+   إصلاحات الصفحات المترجمة
+   =================================================== */
+
+html.arabic-enhancer-active.arabic-enhancer-translated .skiptranslate,
+html.arabic-enhancer-active.arabic-enhancer-translated .goog-te-banner-frame,
+html.arabic-enhancer-active.arabic-enhancer-translated .goog-te-menu-frame {
+  direction: ltr !important;
+}
+
+html.arabic-enhancer-active.arabic-enhancer-translated font[style] {
+  direction: inherit;
+}
+
+/* ===================================================
+   استثناءات - عناصر يجب تركها كما هي
+   =================================================== */
+
+/* أيقونات */
+html.arabic-enhancer-active [class*="icon"],
+html.arabic-enhancer-active [class*="fa-"],
+html.arabic-enhancer-active [class*="material-icons"],
+html.arabic-enhancer-active i[class*="icon"],
+html.arabic-enhancer-active svg {
+  direction: ltr !important;
+}
+
+/* عناصر الوسائط */
+html.arabic-enhancer-active video,
+html.arabic-enhancer-active audio,
+html.arabic-enhancer-active canvas,
+html.arabic-enhancer-active iframe {
+  direction: ltr !important;
+}
+
+/* أرقام */
+html.arabic-enhancer-active [class*="number"],
+html.arabic-enhancer-active [class*="price"],
+html.arabic-enhancer-active [class*="amount"],
+html.arabic-enhancer-active time {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* ===================================================
+   تحسينات الروابط
+   =================================================== */
+
+html.arabic-enhancer-active a {
+  unicode-bidi: embed;
+}
+
+/* ===================================================
+   تحسينات الإمكانية
+   =================================================== */
+
+/* تحسين التركيز */
+html.arabic-enhancer-active :focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* تحسين التحديد */
+html.arabic-enhancer-active ::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+/* ===================================================
+   إصلاحات خاصة بالمواقع الشائعة
+   =================================================== */
+
+/* YouTube */
+html.arabic-enhancer-active ytd-comment-renderer,
+html.arabic-enhancer-active #content-text {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Twitter/X */
+html.arabic-enhancer-active [data-testid="tweetText"] {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Facebook */
+html.arabic-enhancer-active [dir="auto"] {
+  direction: rtl !important;
+}
+
+/* ===================================================
+   التوافق مع الطباعة
+   =================================================== */
+
+@media print {
+  html.arabic-enhancer-active body {
+    direction: rtl;
+    font-family: "Noto Naskh Arabic", serif;
+  }
+}

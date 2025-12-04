@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Fluent Arabic Web",
+    "description": "اسم الإضافة"
+  },
+  "extDescription": {
+    "message": "تحسين تجربة تصفح المواقع باللغة العربية مع دعم كامل للكتابة من اليمين لليسار (RTL) وتحسينات مرئية متقدمة",
+    "description": "وصف الإضافة"
+  }
+}

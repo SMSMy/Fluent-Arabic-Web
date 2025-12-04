@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fluent Arabic Web</title>
+    <style>
+      @font-face {
+        font-family: "Noto Naskh Arabic Local";
+        src: url("fonts/NotoNaskhArabic-Regular.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Noto Naskh Arabic Local";
+        src: url("fonts/NotoNaskhArabic-Bold.woff2") format("woff2");
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      :root {
+        /* Light Theme */
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e8f4fd;
+        --text-primary: #1a1a2e;
+        --text-secondary: #64748b;
+        --accent-primary: #3b82f6;
+        --accent-secondary: #8b5cf6;
+        --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        --border-color: #e2e8f0;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+      }
+
+      [data-theme="dark"] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #334155;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --accent-primary: #60a5fa;
+        --accent-secondary: #a78bfa;
+        --border-color: #334155;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic",
+          sans-serif;
+        direction: rtl;
+        text-align: right;
+        width: 360px;
+        min-height: 500px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+      }
+
+      /* Header */
+      .header {
+        background: var(--accent-gradient);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 60%
+        );
+        animation: shimmer 3s infinite;
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(180deg);
+        }
+      }
+
+      .header-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .logo-icon svg {
+        width: 24px;
+        height: 24px;
+        fill: white;
+      }
+
+      h1 {
+        font-size: 18px;
+        color: white;
+        font-weight: 700;
+      }
+
+      .version-badge {
+        font-size: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-right: 8px;
+      }
+
+      .theme-toggle {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+      }
+
+      .theme-toggle svg {
+        width: 20px;
+        height: 20px;
+        fill: white;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      /* Page Info Card */
+      .page-info-card {
+        background: var(--bg-tertiary);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 16px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+      }
+
+      .page-info-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .page-info-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent-gradient);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .page-info-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: white;
+      }
+
+      .page-domain {
+        font-size: 14px;
+        color: var(--text-primary);
+        font-weight: 600;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .arabic-percentage-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .percentage-ring {
+        position: relative;
+        width: 50px;
+        height: 50px;
+      }
+
+      .percentage-ring svg {
+        transform: rotate(-90deg);
+      }
+
+      .percentage-ring circle {
+        fill: none;
+        stroke-width: 5;
+      }
+
+      .percentage-ring .bg {
+        stroke: var(--border-color);
+      }
+
+      .percentage-ring .progress {
+        stroke: var(--success);
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.5s ease;
+      }
+
+      .percentage-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .percentage-info {
+        flex: 1;
+      }
+
+      .percentage-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+      }
+
+      .status-badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .badge svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .badge-success {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+      }
+
+      .badge-success svg {
+        fill: var(--success);
+      }
+
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+      }
+
+      .badge-warning svg {
+        fill: var(--warning);
+      }
+
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+      }
+
+      .badge-danger svg {
+        fill: var(--danger);
+      }
+
+      .badge-info {
+        background: rgba(6, 182, 212, 0.15);
+        color: var(--info);
+      }
+
+      .badge-info svg {
+        fill: var(--info);
+      }
+
+      /* Quick Actions */
+      .quick-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      .action-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .action-btn-primary {
+        background: var(--accent-gradient);
+        color: white;
+      }
+
+      .action-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .action-btn-primary svg {
+        fill: white;
+      }
+
+      .action-btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+      }
+
+      .action-btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .action-btn-danger svg {
+        fill: white;
+      }
+
+      .action-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      /* Settings Section */
+      .section {
+        background: var(--bg-secondary);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+      }
+
+      .section:hover {
+        border-color: var(--accent-primary);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .section-icon {
+        width: 28px;
+        height: 28px;
+        background: var(--accent-gradient);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .section-icon svg {
+        width: 16px;
+        height: 16px;
+        fill: white;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      /* Toggle Switch */
+      .setting-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+      }
+
+      .setting-info {
+        flex: 1;
+      }
+
+      .setting-label {
+        font-size: 13px;
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+
+      .setting-description {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+
+      .switch {
+        position: relative;
+        width: 48px;
+        height: 26px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: var(--border-color);
+        border-radius: 26px;
+        transition: all 0.3s ease;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        right: 3px;
+        bottom: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+      }
+
+      input:checked + .slider {
+        background: var(--accent-gradient);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(-22px);
+      }
+
+      /* Range Slider */
+      .range-container {
+        margin-top: 12px;
+      }
+
+      .range-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .range-value {
+        background: var(--accent-gradient);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .range-slider {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border-color);
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent-gradient);
+        cursor: pointer;
+        box-shadow: var(--shadow-md);
+        transition: transform 0.2s ease;
+      }
+
+      .range-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+      }
+
+      /* Domain Lists */
+      .domain-section {
+        margin-top: 12px;
+      }
+
+      .domain-list {
+        max-height: 100px;
+        overflow-y: auto;
+        background: var(--bg-primary);
+        border-radius: 10px;
+        padding: 8px;
+        margin-top: 8px;
+      }
+
+      .domain-list::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .domain-list::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 2px;
+      }
+
+      .domain-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        margin-bottom: 6px;
+        font-size: 12px;
+      }
+
+      .domain-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .domain-item-empty {
+        color: var(--text-secondary);
+        text-align: center;
+        padding: 12px;
+      }
+
+      .domain-remove-btn {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+
+      .domain-remove-btn:hover {
+        background: var(--danger);
+        color: white;
+      }
+
+      .add-domain {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .add-domain input {
+        flex: 1;
+        padding: 10px 12px;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 12px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        direction: rtl;
+        transition: all 0.3s ease;
+      }
+
+      .add-domain input:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+      }
+
+      .add-domain input::placeholder {
+        color: var(--text-secondary);
+      }
+
+      .add-domain button {
+        background: var(--accent-gradient);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .add-domain button:hover {
+        transform: scale(1.02);
+      }
+
+      /* Error Message */
+      .error-message {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        margin-top: 8px;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      /* Font Selection */
+      .font-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .font-select:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+      }
+
+      /* Export/Import Buttons */
+      .settings-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .settings-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 2px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      .settings-action-btn:hover {
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+      }
+
+      .settings-action-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 16px;
+        color: var(--text-secondary);
+        font-size: 11px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 8px;
+      }
+
+      .footer-link {
+        color: var(--accent-primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.2s;
+      }
+
+      .footer-link:hover {
+        opacity: 0.8;
+      }
+
+      /* Keyboard Shortcut Badge */
+      .shortcut-badge {
+        background: var(--bg-tertiary);
+        color: var(--text-secondary);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+
+      /* Toast Notification */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--text-primary);
+        color: var(--bg-primary);
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      /* Hidden file input */
+      #importFile {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1>Fluent Arabic Web</h1>
+            <span class="version-badge">v3.0</span>
+          </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <path
+              d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"
+            />
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" style="display: none">
+            <path
+              d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Page Info Card -->
+      <div class="page-info-card">
+        <div class="page-info-header">
+          <div class="page-info-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+              />
+            </svg>
+          </div>
+          <span class="page-domain" id="pageDomain">جاري التحميل...</span>
+        </div>
+        <div class="arabic-percentage-container">
+          <div class="percentage-ring">
+            <svg width="50" height="50">
+              <circle class="bg" cx="25" cy="25" r="20" />
+              <circle
+                class="progress"
+                id="percentageProgress"
+                cx="25"
+                cy="25"
+                r="20"
+                stroke-dasharray="125.6"
+                stroke-dashoffset="125.6"
+              />
+            </svg>
+            <span class="percentage-value" id="percentageValue">0%</span>
+          </div>
+          <div class="percentage-info">
+            <div class="percentage-label">نسبة المحتوى العربي</div>
+            <div class="status-badges" id="statusBadges">
+              <span class="badge badge-warning">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                  />
+                </svg>
+                جاري التحليل
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button id="blacklistCurrentSite" class="action-btn action-btn-danger">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+            />
+          </svg>
+          إيقاف على الموقع
+        </button>
+        <button id="whitelistCurrentSite" class="action-btn action-btn-primary">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+          تفعيل على الموقع
+        </button>
+      </div>
+
+      <!-- Main Settings Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+              />
+            </svg>
+          </div>
+          <span class="section-title">الإعدادات العامة</span>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">تفعيل التحسينات</div>
+            <div class="setting-description">
+              تفعيل أو تعطيل الإضافة بشكل كامل
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="isEnabled" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">
+              الكشف التلقائي
+              <span class="shortcut-badge">Alt+A</span>
+            </div>
+            <div class="setting-description">
+              تطبيق التحسينات عند اكتشاف محتوى عربي
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="autoDetectArabic" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="range-container">
+          <div class="range-header">
+            <span class="setting-label">الحد الأدنى للنص العربي</span>
+            <span class="range-value" id="percentageDisplay">15%</span>
+          </div>
+          <input
+            type="range"
+            min="5"
+            max="50"
+            value="15"
+            class="range-slider"
+            id="minArabicTextPercentage"
+          />
+        </div>
+      </div>
+
+      <!-- Font Selection Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M9.93 13.5h4.14L12 7.98 9.93 13.5zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"
+              />
+            </svg>
+          </div>
+          <span class="section-title">الخط العربي</span>
+        </div>
+
+        <select id="fontSelect" class="font-select">
+          <option value="Noto Naskh Arabic">Noto Naskh Arabic (افتراضي)</option>
+          <option value="Amiri">Amiri (أميري)</option>
+          <option value="Cairo">Cairo (القاهرة)</option>
+          <option value="Tajawal">Tajawal (تجوال)</option>
+          <option value="Almarai">Almarai (المراعي)</option>
+          <option value="IBM Plex Sans Arabic">IBM Plex Sans Arabic</option>
+        </select>
+      </div>
+
+      <!-- Whitelist Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+              />
+            </svg>
+          </div>
+          <span class="section-title">المواقع المسموح بها دائماً</span>
+        </div>
+
+        <div class="domain-list" id="whitelistedDomains">
+          <div class="domain-item domain-item-empty">
+            لا توجد مواقع في القائمة
+          </div>
+        </div>
+
+        <div class="add-domain">
+          <input
+            type="text"
+            id="whitelistDomain"
+            placeholder="أدخل اسم النطاق (مثال: example.com)"
+          />
+          <button id="addToWhitelist">إضافة</button>
+        </div>
+        <div class="error-message" id="whitelistError"></div>
+      </div>
+
+      <!-- Blacklist Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
+              />
+            </svg>
+          </div>
+          <span class="section-title">المواقع المحظورة دائماً</span>
+        </div>
+
+        <div class="domain-list" id="blacklistedDomains">
+          <div class="domain-item domain-item-empty">
+            لا توجد مواقع في القائمة
+          </div>
+        </div>
+
+        <div class="add-domain">
+          <input
+            type="text"
+            id="blacklistDomain"
+            placeholder="أدخل اسم النطاق (مثال: example.com)"
+          />
+          <button id="addToBlacklist">إضافة</button>
+        </div>
+        <div class="error-message" id="blacklistError"></div>
+      </div>
+
+      <!-- Export/Import Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+            </svg>
+          </div>
+          <span class="section-title">تصدير واستيراد الإعدادات</span>
+        </div>
+
+        <div class="settings-actions">
+          <button class="settings-action-btn" id="exportSettings">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+            </svg>
+            تصدير
+          </button>
+          <button class="settings-action-btn" id="importSettings">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
+            </svg>
+            استيراد
+          </button>
+        </div>
+        <input type="file" id="importFile" accept=".json" />
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div>Fluent Arabic Web - الإصدار 3.0</div>
+      <div class="footer-links">
+        <a
+          href="https://github.com/SMSMy/Fluent-Arabic-Web"
+          target="_blank"
+          class="footer-link"
+          >GitHub</a
+        >
+        <a href="#" class="footer-link" id="reportIssue">الإبلاغ عن مشكلة</a>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
