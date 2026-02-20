@@ -12,9 +12,10 @@
   font-display: swap;
 }
 
+/* استخدام نفس الخط للوزن العريض */
 @font-face {
   font-family: "Noto Naskh Arabic Local";
-  src: url("chrome-extension://__MSG_@@extension_id__/fonts/NotoNaskhArabic-Bold.woff2")
+  src: url("chrome-extension://__MSG_@@extension_id__/fonts/NotoNaskhArabic-Regular.woff2")
     format("woff2");
   font-weight: 700;
   font-style: normal;
@@ -90,6 +91,7 @@ html.arabic-enhancer-active legend,
 html.arabic-enhancer-active caption {
   font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic",
     sans-serif;
+  unicode-bidi: plaintext;
 }
 
 /* ===================================================
@@ -142,7 +144,11 @@ html.arabic-enhancer-active [class*="syntax"],
 html.arabic-enhancer-active [class*="highlight"],
 html.arabic-enhancer-active [class*="prism"],
 html.arabic-enhancer-active [class*="hljs"],
-html.arabic-enhancer-active .token {
+html.arabic-enhancer-active .token,
+html.arabic-enhancer-active .editor,
+html.arabic-enhancer-active .monaco-editor,
+html.arabic-enhancer-active .kix-appview-editor,
+html.arabic-enhancer-active [contenteditable="true"][role="textbox"] {
   direction: ltr !important;
   text-align: left !important;
   font-family: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace !important;
@@ -156,10 +162,7 @@ html.arabic-enhancer-active .token {
    إصلاحات التخطيط
    =================================================== */
 
-/* قلب عناصر Flexbox */
-html.arabic-enhancer-active [style*="flex-direction: row"] {
-  flex-direction: row-reverse !important;
-}
+/* تم حذف قاعدة flex-direction: row-reverse الخطيرة */
 
 /* إصلاح الهوامش والحشوات */
 html.arabic-enhancer-active [style*="margin-left"]:not(pre):not(code) {
@@ -253,12 +256,41 @@ html.arabic-enhancer-active.arabic-enhancer-translated font[style] {
    استثناءات - عناصر يجب تركها كما هي
    =================================================== */
 
-/* أيقونات */
-html.arabic-enhancer-active [class*="icon"],
-html.arabic-enhancer-active [class*="fa-"],
-html.arabic-enhancer-active [class*="material-icons"],
+/* أيقونات - حماية كاملة للخطوط مع أولوية عالية جداً */
+html.arabic-enhancer-active .material-symbols-outlined,
+html.arabic-enhancer-active .material-symbols-rounded,
+html.arabic-enhancer-active .material-symbols-sharp,
+html.arabic-enhancer-active [class*="material-symbols"],
+html.arabic-enhancer-active .mat-icon,
+html.arabic-enhancer-active .ms-Icon,
+html.arabic-enhancer-active [class*="mat-icon"],
+html.arabic-enhancer-active [class*="ms-Icon"],
+html.arabic-enhancer-active .google-material-icons,
+html.arabic-enhancer-active .google-symbols,
 html.arabic-enhancer-active i[class*="icon"],
-html.arabic-enhancer-active svg {
+html.arabic-enhancer-active [class*="Icon"] {
+  font-family: "Material Symbols Outlined", "Material Icons", "Segoe MDL2 Assets",
+    inherit !important;
+  direction: ltr !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  text-transform: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  -webkit-font-smoothing: antialiased !important;
+  font-feature-settings: "liga" !important;
+}
+
+/* Font Awesome - أولوية عالية */
+html.arabic-enhancer-active .fa,
+html.arabic-enhancer-active .fas,
+html.arabic-enhancer-active .far,
+html.arabic-enhancer-active .fal,
+html.arabic-enhancer-active .fab,
+html.arabic-enhancer-active .fad,
+html.arabic-enhancer-active [class*="fa-"] {
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "FontAwesome" !important;
   direction: ltr !important;
 }
 
@@ -349,6 +381,19 @@ html.arabic-enhancer-active [dir="auto"] {
 }
 
 /* ===================================================
+   استثناءات المقاطع البرمجية والمحررات
+   =================================================== */
+
+html.arabic-enhancer-active .monaco-editor,
+html.arabic-enhancer-active .kix-appview-editor,
+html.arabic-enhancer-active .cm-editor,
+html.arabic-enhancer-active .CodeMirror,
+html.arabic-enhancer-active [role="textbox"][aria-multiline="true"] {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* ===================================================
    استثناءات Claude AI
    =================================================== */
 
@@ -396,6 +441,7 @@ html.arabic-enhancer-active nav[class*="dark"],
 html.arabic-enhancer-active [data-testid*="nav"],
 html.arabic-enhancer-active [class*="conversation-list"] {
   direction: ltr !important;
+  text-align: left !important;
 }
 
 /* ChatGPT - المحتوى فقط RTL */

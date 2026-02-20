@@ -43,6 +43,9 @@
         });
       });
     }
+
+    // إنشاء منبه للتنظيف
+    chrome.alarms.create("cleanupData", { periodInMinutes: 30 });
   });
 
   // ===============================================
@@ -261,8 +264,12 @@
     }
   }
 
-  // تنظيف كل 30 دقيقة
-  setInterval(cleanupOldData, 30 * 60 * 1000);
+  // الاستماع للمنبه
+  chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === "cleanupData") {
+      cleanupOldData();
+    }
+  });
 
   // تنظيف عند بدء التشغيل
   cleanupOldData();

@@ -37,6 +37,9 @@
     isTranslatedPage: false,
   };
 
+  // متغير لتخزين مؤقت التوست
+  let toastTimeout = null;
+
   // ===============================================
   // دوال الأمان
   // ===============================================
@@ -119,6 +122,7 @@
     elements.whitelistError = document.getElementById("whitelistError");
     elements.blacklistError = document.getElementById("blacklistError");
     elements.toast = document.getElementById("toast");
+    elements.statusDot = document.getElementById("statusDot");
   }
 
   /**
@@ -127,9 +131,12 @@
    * @param {number} duration - المدة بالمللي ثانية
    */
   function showToast(message, duration = 2000) {
+    if (toastTimeout) {
+      clearTimeout(toastTimeout);
+    }
     elements.toast.textContent = message;
     elements.toast.classList.add("show");
-    setTimeout(() => {
+    toastTimeout = setTimeout(() => {
       elements.toast.classList.remove("show");
     }, duration);
   }
@@ -152,7 +159,7 @@
    * @param {number} percentage - النسبة المئوية
    */
   function updatePercentageRing(percentage) {
-    const circumference = 2 * Math.PI * 20; // r = 20
+    const circumference = 2 * Math.PI * 22; // r = 22
     const offset = circumference - (percentage / 100) * circumference;
     elements.percentageProgress.style.strokeDashoffset = offset;
     elements.percentageValue.textContent = `${Math.round(percentage)}%`;
@@ -272,6 +279,15 @@
 
     elements.pageDomain.textContent = sanitizeText(domain) || "غير متاح";
     updatePercentageRing(arabicPercentage);
+
+    // تحديث مؤشر الحالة
+    if (elements.statusDot) {
+      if (hasArabicContent && settings.isEnabled) {
+        elements.statusDot.classList.add("active");
+      } else {
+        elements.statusDot.classList.remove("active");
+      }
+    }
 
     const isWhitelisted = settings.whitelistedDomains.some((d) =>
       domain.includes(d)
@@ -401,6 +417,12 @@
       return;
     }
 
+    // التحقق من الحد الأقصى (100)
+    if (settings[listKey].length >= 100) {
+      showError(errorElement, "تم الوصول للحد الأقصى (100 موقع). يرجى حذف بعض المواقع.");
+      return;
+    }
+
     // إزالة من القائمة المعاكسة إذا كان موجوداً
     const oppositeIndex = settings[oppositeListKey].indexOf(cleanDomain);
     if (oppositeIndex !== -1) {
@@ -437,8 +459,12 @@
    */
   function blacklistCurrentSite() {
     if (currentPageInfo.domain) {
-      addDomain("blacklist", currentPageInfo.domain);
-      notifyContentScript({ action: "settingsUpdated", settings });
+      try {
+        addDomain("blacklist", currentPageInfo.domain);
+        notifyContentScript({ action: "settingsUpdated", settings });
+      } catch (e) {
+        // Handle error specifically if addDomain fails (though it shows toast)
+      }
     }
   }
 
@@ -447,8 +473,12 @@
    */
   function whitelistCurrentSite() {
     if (currentPageInfo.domain) {
-      addDomain("whitelist", currentPageInfo.domain);
-      notifyContentScript({ action: "settingsUpdated", settings });
+      try {
+        addDomain("whitelist", currentPageInfo.domain);
+        notifyContentScript({ action: "settingsUpdated", settings });
+      } catch (e) {
+        // Handle error
+      }
     }
   }
 

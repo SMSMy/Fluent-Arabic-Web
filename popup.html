@@ -21,37 +21,56 @@
       }
 
       :root {
-        /* Light Theme */
-        --bg-primary: #ffffff;
-        --bg-secondary: #f8f9fa;
-        --bg-tertiary: #e8f4fd;
-        --text-primary: #1a1a2e;
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --bg-tertiary: #f1f5f9;
+        --bg-card: rgba(255, 255, 255, 0.85);
+        --text-primary: #0f172a;
         --text-secondary: #64748b;
-        --accent-primary: #3b82f6;
-        --accent-secondary: #8b5cf6;
-        --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-        --border-color: #e2e8f0;
-        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --text-muted: #94a3b8;
+        --accent-1: #6366f1;
+        --accent-2: #8b5cf6;
+        --accent-3: #a855f7;
+        --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        --accent-gradient-hover: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+        --border-color: rgba(148, 163, 184, 0.2);
+        --border-hover: rgba(99, 102, 241, 0.4);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+        --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
         --success: #10b981;
+        --success-bg: rgba(16, 185, 129, 0.1);
         --warning: #f59e0b;
+        --warning-bg: rgba(245, 158, 11, 0.1);
         --danger: #ef4444;
+        --danger-bg: rgba(239, 68, 68, 0.1);
         --info: #06b6d4;
+        --info-bg: rgba(6, 182, 212, 0.1);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       [data-theme="dark"] {
-        --bg-primary: #0f172a;
-        --bg-secondary: #1e293b;
-        --bg-tertiary: #334155;
-        --text-primary: #f1f5f9;
+        --bg-primary: #0c0f1a;
+        --bg-secondary: #151929;
+        --bg-tertiary: #1e2338;
+        --bg-card: rgba(21, 25, 41, 0.9);
+        --text-primary: #e2e8f0;
         --text-secondary: #94a3b8;
-        --accent-primary: #60a5fa;
-        --accent-secondary: #a78bfa;
-        --border-color: #334155;
-        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        --text-muted: #64748b;
+        --accent-1: #818cf8;
+        --accent-2: #a78bfa;
+        --accent-3: #c084fc;
+        --border-color: rgba(148, 163, 184, 0.1);
+        --border-hover: rgba(129, 140, 248, 0.3);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+        --shadow-glow: 0 0 20px rgba(129, 140, 248, 0.1);
       }
 
       * {
@@ -61,48 +80,52 @@
       }
 
       body {
-        font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic",
-          sans-serif;
+        font-family: "Noto Naskh Arabic Local", "Segoe UI", "Noto Sans Arabic", sans-serif;
         direction: rtl;
         text-align: right;
-        width: 360px;
-        min-height: 500px;
+        width: 380px;
+        min-height: 520px;
         background: var(--bg-primary);
         color: var(--text-primary);
-        transition: all 0.3s ease;
+        transition: background var(--transition), color var(--transition);
+        overflow-x: hidden;
       }
 
-      /* Header */
+      /* ==========================================
+         HEADER
+         ========================================== */
       .header {
-        background: var(--accent-gradient);
-        padding: 20px;
         position: relative;
+        padding: 24px 20px 20px;
+        background: var(--accent-gradient);
         overflow: hidden;
       }
 
       .header::before {
         content: "";
         position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
+        top: -60%;
+        left: -30%;
+        width: 160%;
         height: 200%;
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.1) 0%,
-          transparent 60%
-        );
-        animation: shimmer 3s infinite;
+        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 50%);
+        animation: float 8s ease-in-out infinite;
       }
 
-      @keyframes shimmer {
-        0%,
-        100% {
-          transform: rotate(0deg);
-        }
-        50% {
-          transform: rotate(180deg);
-        }
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: -60%;
+        right: -30%;
+        width: 120%;
+        height: 160%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 50%);
+        animation: float 6s ease-in-out infinite reverse;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(10px, -15px) scale(1.05); }
       }
 
       .header-content {
@@ -116,18 +139,19 @@
       .logo-section {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
       }
 
       .logo-icon {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
         backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.15);
       }
 
       .logo-icon svg {
@@ -136,84 +160,118 @@
         fill: white;
       }
 
-      h1 {
-        font-size: 18px;
+      .logo-text h1 {
+        font-size: 17px;
         color: white;
         font-weight: 700;
+        letter-spacing: -0.2px;
       }
 
       .version-badge {
+        display: inline-block;
         font-size: 10px;
         background: rgba(255, 255, 255, 0.2);
-        color: white;
+        color: rgba(255,255,255,0.9);
         padding: 2px 8px;
-        border-radius: 12px;
-        margin-right: 8px;
+        border-radius: 10px;
+        margin-top: 2px;
+        backdrop-filter: blur(4px);
       }
 
-      .theme-toggle {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
+      .header-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .header-btn {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255,255,255,0.12);
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-sm);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
+        transition: all var(--transition);
         backdrop-filter: blur(10px);
       }
 
-      .theme-toggle:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.05);
+      .header-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
       }
 
-      .theme-toggle svg {
-        width: 20px;
-        height: 20px;
-        fill: white;
-      }
-
-      .container {
-        padding: 16px;
-      }
-
-      /* Page Info Card */
-      .page-info-card {
-        background: var(--bg-tertiary);
-        border-radius: 16px;
-        padding: 16px;
-        margin-bottom: 16px;
-        border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
-      }
-
-      .page-info-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 12px;
-      }
-
-      .page-info-icon {
-        width: 32px;
-        height: 32px;
-        background: var(--accent-gradient);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .page-info-icon svg {
+      .header-btn svg {
         width: 18px;
         height: 18px;
         fill: white;
       }
 
-      .page-domain {
+      /* ==========================================
+         MAIN CONTAINER
+         ========================================== */
+      .container {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* ==========================================
+         PAGE STATUS CARD
+         ========================================== */
+      .status-card {
+        background: var(--bg-card);
+        border-radius: var(--radius-lg);
+        padding: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-sm);
+        backdrop-filter: blur(12px);
+        transition: all var(--transition);
+      }
+
+      .status-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .status-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .status-dot.active {
+        background: var(--success);
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      }
+
+      .status-dot.active::after {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        border: 2px solid var(--success);
+        opacity: 0.3;
+        animation: pulse-ring 2s ease-out infinite;
+      }
+
+      @keyframes pulse-ring {
+        0% { transform: scale(1); opacity: 0.3; }
+        100% { transform: scale(1.6); opacity: 0; }
+      }
+
+      .status-domain {
         font-size: 14px;
         color: var(--text-primary);
         font-weight: 600;
@@ -223,55 +281,59 @@
         white-space: nowrap;
       }
 
-      .arabic-percentage-container {
+      .status-body {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
       }
 
-      .percentage-ring {
+      /* Percentage Ring */
+      .ring-container {
         position: relative;
-        width: 50px;
-        height: 50px;
+        width: 56px;
+        height: 56px;
+        flex-shrink: 0;
       }
 
-      .percentage-ring svg {
+      .ring-container svg {
         transform: rotate(-90deg);
       }
 
-      .percentage-ring circle {
+      .ring-container circle {
         fill: none;
-        stroke-width: 5;
+        stroke-width: 4.5;
       }
 
-      .percentage-ring .bg {
-        stroke: var(--border-color);
+      .ring-bg {
+        stroke: var(--bg-tertiary);
       }
 
-      .percentage-ring .progress {
+      .ring-progress {
         stroke: var(--success);
         stroke-linecap: round;
-        transition: stroke-dashoffset 0.5s ease;
+        transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .percentage-value {
+      .ring-value {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
         color: var(--text-primary);
       }
 
-      .percentage-info {
+      .status-info {
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
       }
 
-      .percentage-label {
+      .status-label {
         font-size: 12px;
         color: var(--text-secondary);
-        margin-bottom: 4px;
       }
 
       .status-badges {
@@ -288,55 +350,29 @@
         border-radius: 20px;
         font-size: 11px;
         font-weight: 600;
+        transition: transform var(--transition);
       }
 
-      .badge svg {
-        width: 12px;
-        height: 12px;
-      }
+      .badge:hover { transform: scale(1.03); }
 
-      .badge-success {
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--success);
-      }
+      .badge svg { width: 12px; height: 12px; }
 
-      .badge-success svg {
-        fill: var(--success);
-      }
+      .badge-success { background: var(--success-bg); color: var(--success); }
+      .badge-success svg { fill: var(--success); }
+      .badge-warning { background: var(--warning-bg); color: var(--warning); }
+      .badge-warning svg { fill: var(--warning); }
+      .badge-danger { background: var(--danger-bg); color: var(--danger); }
+      .badge-danger svg { fill: var(--danger); }
+      .badge-info { background: var(--info-bg); color: var(--info); }
+      .badge-info svg { fill: var(--info); }
 
-      .badge-warning {
-        background: rgba(245, 158, 11, 0.15);
-        color: var(--warning);
-      }
-
-      .badge-warning svg {
-        fill: var(--warning);
-      }
-
-      .badge-danger {
-        background: rgba(239, 68, 68, 0.15);
-        color: var(--danger);
-      }
-
-      .badge-danger svg {
-        fill: var(--danger);
-      }
-
-      .badge-info {
-        background: rgba(6, 182, 212, 0.15);
-        color: var(--info);
-      }
-
-      .badge-info svg {
-        fill: var(--info);
-      }
-
-      /* Quick Actions */
+      /* ==========================================
+         QUICK ACTIONS
+         ========================================== */
       .quick-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-        margin-bottom: 16px;
       }
 
       .action-btn {
@@ -344,84 +380,109 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        padding: 12px;
-        border-radius: 12px;
-        font-size: 13px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
+        font-size: 12.5px;
         font-weight: 600;
         cursor: pointer;
         border: none;
         font-family: inherit;
-        transition: all 0.3s ease;
+        transition: all var(--transition);
+        position: relative;
+        overflow: hidden;
       }
 
-      .action-btn svg {
-        width: 18px;
-        height: 18px;
+      .action-btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.08), transparent);
+        opacity: 0;
+        transition: opacity var(--transition);
       }
+
+      .action-btn:hover::after { opacity: 1; }
+
+      .action-btn svg { width: 16px; height: 16px; }
 
       .action-btn-primary {
         background: var(--accent-gradient);
         color: white;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
       }
 
       .action-btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
       }
 
-      .action-btn-primary svg {
-        fill: white;
-      }
+      .action-btn-primary svg { fill: white; }
 
       .action-btn-danger {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
       }
 
       .action-btn-danger:hover {
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
       }
 
-      .action-btn-danger svg {
-        fill: white;
-      }
+      .action-btn-danger svg { fill: white; }
 
       .action-btn:disabled {
-        opacity: 0.5;
+        opacity: 0.45;
         cursor: not-allowed;
         transform: none !important;
+        box-shadow: none !important;
       }
 
-      /* Settings Section */
+      /* ==========================================
+         COLLAPSIBLE SECTIONS
+         ========================================== */
       .section {
-        background: var(--bg-secondary);
-        border-radius: 16px;
-        padding: 16px;
-        margin-bottom: 12px;
+        background: var(--bg-card);
+        border-radius: var(--radius-lg);
         border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+        backdrop-filter: blur(12px);
+        overflow: hidden;
+        transition: all var(--transition);
       }
 
       .section:hover {
-        border-color: var(--accent-primary);
+        border-color: var(--border-hover);
+        box-shadow: var(--shadow-md);
       }
 
-      .section-header {
+      .section-toggle {
+        width: 100%;
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-bottom: 12px;
+        padding: 14px 16px;
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
+        transition: background var(--transition);
       }
 
+      .section-toggle:hover {
+        background: var(--bg-tertiary);
+      }
+
+      .section-toggle::-webkit-details-marker { display: none; }
+
       .section-icon {
-        width: 28px;
-        height: 28px;
+        width: 30px;
+        height: 30px;
         background: var(--accent-gradient);
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
       }
 
       .section-icon svg {
@@ -431,142 +492,194 @@
       }
 
       .section-title {
-        font-size: 14px;
+        font-size: 13.5px;
         font-weight: 700;
         color: var(--text-primary);
+        flex: 1;
       }
 
-      /* Toggle Switch */
+      .chevron-icon {
+        width: 18px;
+        height: 18px;
+        fill: var(--text-muted);
+        transition: transform var(--transition);
+        flex-shrink: 0;
+      }
+
+      details[open] > .section-toggle .chevron-icon {
+        transform: rotate(90deg);
+      }
+
+      .section-body {
+        padding: 0 16px 16px;
+      }
+
+      /* ==========================================
+         SETTINGS ROWS
+         ========================================== */
       .setting-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-color);
       }
 
-      .setting-info {
-        flex: 1;
+      .setting-row:last-of-type {
+        border-bottom: none;
       }
+
+      .setting-info { flex: 1; padding-left: 12px; }
 
       .setting-label {
         font-size: 13px;
         color: var(--text-primary);
         font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
 
       .setting-description {
         font-size: 11px;
         color: var(--text-secondary);
         margin-top: 2px;
+        line-height: 1.4;
       }
 
+      /* TOGGLE SWITCH */
       .switch {
         position: relative;
-        width: 48px;
+        width: 46px;
         height: 26px;
+        flex-shrink: 0;
       }
 
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
+      .switch input { opacity: 0; width: 0; height: 0; }
 
       .slider {
         position: absolute;
         cursor: pointer;
         inset: 0;
-        background: var(--border-color);
+        background: var(--bg-tertiary);
         border-radius: 26px;
-        transition: all 0.3s ease;
+        transition: all var(--transition);
+        border: 2px solid var(--border-color);
       }
 
       .slider:before {
         position: absolute;
         content: "";
-        height: 20px;
-        width: 20px;
-        right: 3px;
-        bottom: 3px;
+        height: 18px;
+        width: 18px;
+        right: 2px;
+        bottom: 2px;
         background: white;
         border-radius: 50%;
-        transition: all 0.3s ease;
-        box-shadow: var(--shadow-sm);
+        transition: all var(--transition);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
       }
 
       input:checked + .slider {
         background: var(--accent-gradient);
+        border-color: transparent;
       }
 
       input:checked + .slider:before {
-        transform: translateX(-22px);
+        transform: translateX(-20px);
       }
 
-      /* Range Slider */
+      /* RANGE SLIDER */
       .range-container {
-        margin-top: 12px;
+        padding: 10px 0;
       }
 
       .range-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
 
       .range-value {
         background: var(--accent-gradient);
         color: white;
-        padding: 4px 12px;
+        padding: 3px 12px;
         border-radius: 20px;
         font-size: 12px;
         font-weight: 700;
+        min-width: 48px;
+        text-align: center;
       }
 
       .range-slider {
         width: 100%;
         height: 6px;
         border-radius: 3px;
-        background: var(--border-color);
+        background: var(--bg-tertiary);
         outline: none;
         -webkit-appearance: none;
+        transition: background var(--transition);
       }
 
       .range-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         background: var(--accent-gradient);
         cursor: pointer;
-        box-shadow: var(--shadow-md);
-        transition: transform 0.2s ease;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+        transition: transform var(--transition), box-shadow var(--transition);
       }
 
       .range-slider::-webkit-slider-thumb:hover {
-        transform: scale(1.1);
+        transform: scale(1.15);
+        box-shadow: 0 2px 12px rgba(99, 102, 241, 0.5);
       }
 
-      /* Domain Lists */
-      .domain-section {
-        margin-top: 12px;
+      /* FONT SELECT */
+      .font-select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all var(--transition);
+        -webkit-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2394a3b8' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: left 12px center;
       }
 
+      .font-select:focus {
+        outline: none;
+        border-color: var(--accent-1);
+        box-shadow: var(--shadow-glow);
+      }
+
+      /* ==========================================
+         DOMAIN LIST
+         ========================================== */
       .domain-list {
-        max-height: 100px;
+        max-height: 110px;
         overflow-y: auto;
         background: var(--bg-primary);
-        border-radius: 10px;
-        padding: 8px;
-        margin-top: 8px;
+        border-radius: var(--radius-md);
+        padding: 6px;
+        margin-bottom: 10px;
+        border: 1px solid var(--border-color);
       }
 
-      .domain-list::-webkit-scrollbar {
-        width: 4px;
-      }
-
+      .domain-list::-webkit-scrollbar { width: 4px; }
+      .domain-list::-webkit-scrollbar-track { background: transparent; }
       .domain-list::-webkit-scrollbar-thumb {
-        background: var(--border-color);
+        background: var(--text-muted);
         border-radius: 2px;
       }
 
@@ -574,33 +687,35 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px;
+        padding: 8px 10px;
         background: var(--bg-secondary);
-        border-radius: 8px;
-        margin-bottom: 6px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 4px;
+        font-size: 12px;
+        transition: background var(--transition);
+      }
+
+      .domain-item:last-child { margin-bottom: 0; }
+      .domain-item:hover { background: var(--bg-tertiary); }
+
+      .domain-item-empty {
+        color: var(--text-muted);
+        text-align: center;
+        padding: 14px;
         font-size: 12px;
       }
 
-      .domain-item:last-child {
-        margin-bottom: 0;
-      }
-
-      .domain-item-empty {
-        color: var(--text-secondary);
-        text-align: center;
-        padding: 12px;
-      }
-
       .domain-remove-btn {
-        background: rgba(239, 68, 68, 0.1);
+        background: var(--danger-bg);
         color: var(--danger);
         border: none;
         border-radius: 6px;
-        padding: 4px 8px;
+        padding: 4px 10px;
         cursor: pointer;
         font-size: 10px;
         font-weight: 600;
-        transition: all 0.2s ease;
+        font-family: inherit;
+        transition: all var(--transition);
       }
 
       .domain-remove-btn:hover {
@@ -611,89 +726,68 @@
       .add-domain {
         display: flex;
         gap: 8px;
-        margin-top: 10px;
       }
 
       .add-domain input {
         flex: 1;
-        padding: 10px 12px;
+        padding: 10px 14px;
         border: 2px solid var(--border-color);
-        border-radius: 10px;
+        border-radius: var(--radius-md);
         font-family: inherit;
         font-size: 12px;
         background: var(--bg-primary);
         color: var(--text-primary);
         direction: rtl;
-        transition: all 0.3s ease;
+        transition: all var(--transition);
       }
 
       .add-domain input:focus {
         outline: none;
-        border-color: var(--accent-primary);
+        border-color: var(--accent-1);
+        box-shadow: var(--shadow-glow);
       }
 
-      .add-domain input::placeholder {
-        color: var(--text-secondary);
-      }
+      .add-domain input::placeholder { color: var(--text-muted); }
 
       .add-domain button {
         background: var(--accent-gradient);
         color: white;
         border: none;
-        border-radius: 10px;
-        padding: 10px 16px;
+        border-radius: var(--radius-md);
+        padding: 10px 18px;
         cursor: pointer;
         font-family: inherit;
         font-size: 12px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all var(--transition);
+        white-space: nowrap;
       }
 
       .add-domain button:hover {
-        transform: scale(1.02);
+        transform: scale(1.03);
+        box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
       }
 
-      /* Error Message */
       .error-message {
-        background: rgba(239, 68, 68, 0.1);
+        background: var(--danger-bg);
         color: var(--danger);
         padding: 8px 12px;
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         font-size: 11px;
         margin-top: 8px;
         display: none;
+        border: 1px solid rgba(239, 68, 68, 0.15);
       }
 
-      .error-message.show {
-        display: block;
-      }
+      .error-message.show { display: block; }
 
-      /* Font Selection */
-      .font-select {
-        width: 100%;
-        padding: 10px 12px;
-        border: 2px solid var(--border-color);
-        border-radius: 10px;
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        font-family: inherit;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 10px;
-      }
-
-      .font-select:focus {
-        outline: none;
-        border-color: var(--accent-primary);
-      }
-
-      /* Export/Import Buttons */
+      /* ==========================================
+         EXPORT/IMPORT ACTIONS
+         ========================================== */
       .settings-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 12px;
+        gap: 8px;
       }
 
       .settings-action-btn {
@@ -702,7 +796,7 @@
         justify-content: center;
         gap: 6px;
         padding: 10px;
-        border-radius: 10px;
+        border-radius: var(--radius-md);
         font-size: 12px;
         font-weight: 600;
         cursor: pointer;
@@ -710,25 +804,43 @@
         background: var(--bg-primary);
         color: var(--text-primary);
         font-family: inherit;
-        transition: all 0.3s ease;
+        transition: all var(--transition);
       }
 
       .settings-action-btn:hover {
-        border-color: var(--accent-primary);
-        color: var(--accent-primary);
+        border-color: var(--accent-1);
+        color: var(--accent-1);
+        background: rgba(99, 102, 241, 0.05);
       }
 
       .settings-action-btn svg {
-        width: 16px;
-        height: 16px;
+        width: 15px;
+        height: 15px;
         fill: currentColor;
       }
 
-      /* Footer */
+      /* ==========================================
+         SHORTCUT BADGE
+         ========================================== */
+      .shortcut-badge {
+        background: var(--bg-tertiary);
+        color: var(--text-muted);
+        padding: 2px 7px;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        border: 1px solid var(--border-color);
+        font-family: 'Segoe UI', monospace;
+        letter-spacing: 0.3px;
+      }
+
+      /* ==========================================
+         FOOTER
+         ========================================== */
       .footer {
         text-align: center;
-        padding: 16px;
-        color: var(--text-secondary);
+        padding: 14px 16px;
+        color: var(--text-muted);
         font-size: 11px;
         border-top: 1px solid var(--border-color);
       }
@@ -737,32 +849,22 @@
         display: flex;
         justify-content: center;
         gap: 16px;
-        margin-top: 8px;
+        margin-top: 6px;
       }
 
       .footer-link {
-        color: var(--accent-primary);
+        color: var(--accent-1);
         text-decoration: none;
         font-weight: 600;
-        transition: opacity 0.2s;
+        font-size: 11px;
+        transition: opacity var(--transition);
       }
 
-      .footer-link:hover {
-        opacity: 0.8;
-      }
+      .footer-link:hover { opacity: 0.7; }
 
-      /* Keyboard Shortcut Badge */
-      .shortcut-badge {
-        background: var(--bg-tertiary);
-        color: var(--text-secondary);
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 10px;
-        font-weight: 600;
-        margin-right: 8px;
-      }
-
-      /* Toast Notification */
+      /* ==========================================
+         TOAST
+         ========================================== */
       .toast {
         position: fixed;
         bottom: 20px;
@@ -770,14 +872,15 @@
         transform: translateX(-50%) translateY(100px);
         background: var(--text-primary);
         color: var(--bg-primary);
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-size: 13px;
+        padding: 10px 20px;
+        border-radius: var(--radius-md);
+        font-size: 12.5px;
         font-weight: 600;
         box-shadow: var(--shadow-lg);
         opacity: 0;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1000;
+        max-width: 90%;
       }
 
       .toast.show {
@@ -785,82 +888,75 @@
         opacity: 1;
       }
 
-      /* Hidden file input */
-      #importFile {
-        display: none;
+      #importFile { display: none; }
+
+      /* Smooth reveal for details content */
+      details .section-body {
+        animation: reveal 0.2s ease-out;
+      }
+
+      @keyframes reveal {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
       }
     </style>
   </head>
   <body>
-    <!-- Header -->
+    <!-- ============ HEADER ============ -->
     <div class="header">
       <div class="header-content">
         <div class="logo-section">
           <div class="logo-icon">
             <svg viewBox="0 0 24 24">
-              <path
-                d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
-              />
+              <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" />
             </svg>
           </div>
-          <div>
+          <div class="logo-text">
             <h1>Fluent Arabic Web</h1>
             <span class="version-badge">v3.0</span>
           </div>
         </div>
-        <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
-          <svg class="sun-icon" viewBox="0 0 24 24">
-            <path
-              d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"
-            />
-          </svg>
-          <svg class="moon-icon" viewBox="0 0 24 24" style="display: none">
-            <path
-              d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"
-            />
-          </svg>
-        </button>
+        <div class="header-actions">
+          <button class="header-btn" id="themeToggle" title="تبديل الوضع">
+            <svg class="sun-icon" viewBox="0 0 24 24">
+              <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
+            </svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" style="display: none">
+              <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="container">
-      <!-- Page Info Card -->
-      <div class="page-info-card">
-        <div class="page-info-header">
-          <div class="page-info-icon">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
-              />
-            </svg>
-          </div>
-          <span class="page-domain" id="pageDomain">جاري التحميل...</span>
+      <!-- ============ PAGE STATUS CARD ============ -->
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-dot" id="statusDot"></div>
+          <span class="status-domain" id="pageDomain">جاري التحميل...</span>
         </div>
-        <div class="arabic-percentage-container">
-          <div class="percentage-ring">
-            <svg width="50" height="50">
-              <circle class="bg" cx="25" cy="25" r="20" />
+        <div class="status-body">
+          <div class="ring-container">
+            <svg width="56" height="56">
+              <circle class="ring-bg" cx="28" cy="28" r="22" />
               <circle
-                class="progress"
+                class="ring-progress"
                 id="percentageProgress"
-                cx="25"
-                cy="25"
-                r="20"
-                stroke-dasharray="125.6"
-                stroke-dashoffset="125.6"
+                cx="28"
+                cy="28"
+                r="22"
+                stroke-dasharray="138.2"
+                stroke-dashoffset="138.2"
               />
             </svg>
-            <span class="percentage-value" id="percentageValue">0%</span>
+            <span class="ring-value" id="percentageValue">0%</span>
           </div>
-          <div class="percentage-info">
-            <div class="percentage-label">نسبة المحتوى العربي</div>
+          <div class="status-info">
+            <div class="status-label">نسبة المحتوى العربي</div>
             <div class="status-badges" id="statusBadges">
               <span class="badge badge-warning">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-                  />
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
                 جاري التحليل
               </span>
             </div>
@@ -868,211 +964,161 @@
         </div>
       </div>
 
-      <!-- Quick Actions -->
+      <!-- ============ QUICK ACTIONS ============ -->
       <div class="quick-actions">
         <button id="blacklistCurrentSite" class="action-btn action-btn-danger">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
-            />
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z" /></svg>
           إيقاف على الموقع
         </button>
         <button id="whitelistCurrentSite" class="action-btn action-btn-primary">
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-            />
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
           تفعيل على الموقع
         </button>
       </div>
 
-      <!-- Main Settings Section -->
-      <div class="section">
-        <div class="section-header">
+      <!-- ============ GENERAL SETTINGS ============ -->
+      <details class="section" open>
+        <summary class="section-toggle">
           <div class="section-icon">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" /></svg>
           </div>
           <span class="section-title">الإعدادات العامة</span>
-        </div>
-
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">تفعيل التحسينات</div>
-            <div class="setting-description">
-              تفعيل أو تعطيل الإضافة بشكل كامل
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+        </summary>
+        <div class="section-body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">تفعيل التحسينات</div>
+              <div class="setting-description">تفعيل أو تعطيل الإضافة بشكل كامل</div>
             </div>
+            <label class="switch">
+              <input type="checkbox" id="isEnabled" checked />
+              <span class="slider"></span>
+            </label>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="isEnabled" checked />
-            <span class="slider"></span>
-          </label>
-        </div>
 
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-label">
-              الكشف التلقائي
-              <span class="shortcut-badge">Alt+A</span>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">
+                الكشف التلقائي
+                <span class="shortcut-badge">Alt+A</span>
+              </div>
+              <div class="setting-description">تطبيق التحسينات عند اكتشاف محتوى عربي</div>
             </div>
-            <div class="setting-description">
-              تطبيق التحسينات عند اكتشاف محتوى عربي
+            <label class="switch">
+              <input type="checkbox" id="autoDetectArabic" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="range-container">
+            <div class="range-header">
+              <span class="setting-label">الحد الأدنى للنص العربي</span>
+              <span class="range-value" id="percentageDisplay">15%</span>
             </div>
+            <input type="range" min="5" max="50" value="15" class="range-slider" id="minArabicTextPercentage" />
           </div>
-          <label class="switch">
-            <input type="checkbox" id="autoDetectArabic" checked />
-            <span class="slider"></span>
-          </label>
         </div>
+      </details>
 
-        <div class="range-container">
-          <div class="range-header">
-            <span class="setting-label">الحد الأدنى للنص العربي</span>
-            <span class="range-value" id="percentageDisplay">15%</span>
-          </div>
-          <input
-            type="range"
-            min="5"
-            max="50"
-            value="15"
-            class="range-slider"
-            id="minArabicTextPercentage"
-          />
-        </div>
-      </div>
-
-      <!-- Font Selection Section -->
-      <div class="section">
-        <div class="section-header">
+      <!-- ============ FONT SELECTION ============ -->
+      <details class="section">
+        <summary class="section-toggle">
           <div class="section-icon">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M9.93 13.5h4.14L12 7.98 9.93 13.5zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M9.93 13.5h4.14L12 7.98 9.93 13.5zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z" /></svg>
           </div>
           <span class="section-title">الخط العربي</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+        </summary>
+        <div class="section-body">
+          <select id="fontSelect" class="font-select">
+            <option value="Noto Naskh Arabic">Noto Naskh Arabic (افتراضي)</option>
+            <option value="Amiri">Amiri (أميري)</option>
+            <option value="Cairo">Cairo (القاهرة)</option>
+            <option value="Tajawal">Tajawal (تجوال)</option>
+            <option value="Almarai">Almarai (المراعي)</option>
+            <option value="IBM Plex Sans Arabic">IBM Plex Sans Arabic</option>
+          </select>
         </div>
+      </details>
 
-        <select id="fontSelect" class="font-select">
-          <option value="Noto Naskh Arabic">Noto Naskh Arabic (افتراضي)</option>
-          <option value="Amiri">Amiri (أميري)</option>
-          <option value="Cairo">Cairo (القاهرة)</option>
-          <option value="Tajawal">Tajawal (تجوال)</option>
-          <option value="Almarai">Almarai (المراعي)</option>
-          <option value="IBM Plex Sans Arabic">IBM Plex Sans Arabic</option>
-        </select>
-      </div>
-
-      <!-- Whitelist Section -->
-      <div class="section">
-        <div class="section-header">
+      <!-- ============ WHITELIST ============ -->
+      <details class="section">
+        <summary class="section-toggle">
           <div class="section-icon">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
           </div>
           <span class="section-title">المواقع المسموح بها دائماً</span>
-        </div>
-
-        <div class="domain-list" id="whitelistedDomains">
-          <div class="domain-item domain-item-empty">
-            لا توجد مواقع في القائمة
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+        </summary>
+        <div class="section-body">
+          <div class="domain-list" id="whitelistedDomains">
+            <div class="domain-item domain-item-empty">لا توجد مواقع في القائمة</div>
           </div>
+          <div class="add-domain">
+            <input type="text" id="whitelistDomain" placeholder="أدخل اسم النطاق (مثال: example.com)" />
+            <button id="addToWhitelist">إضافة</button>
+          </div>
+          <div class="error-message" id="whitelistError"></div>
         </div>
+      </details>
 
-        <div class="add-domain">
-          <input
-            type="text"
-            id="whitelistDomain"
-            placeholder="أدخل اسم النطاق (مثال: example.com)"
-          />
-          <button id="addToWhitelist">إضافة</button>
-        </div>
-        <div class="error-message" id="whitelistError"></div>
-      </div>
-
-      <!-- Blacklist Section -->
-      <div class="section">
-        <div class="section-header">
+      <!-- ============ BLACKLIST ============ -->
+      <details class="section">
+        <summary class="section-toggle">
           <div class="section-icon">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z" /></svg>
           </div>
           <span class="section-title">المواقع المحظورة دائماً</span>
-        </div>
-
-        <div class="domain-list" id="blacklistedDomains">
-          <div class="domain-item domain-item-empty">
-            لا توجد مواقع في القائمة
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+        </summary>
+        <div class="section-body">
+          <div class="domain-list" id="blacklistedDomains">
+            <div class="domain-item domain-item-empty">لا توجد مواقع في القائمة</div>
           </div>
+          <div class="add-domain">
+            <input type="text" id="blacklistDomain" placeholder="أدخل اسم النطاق (مثال: example.com)" />
+            <button id="addToBlacklist">إضافة</button>
+          </div>
+          <div class="error-message" id="blacklistError"></div>
         </div>
+      </details>
 
-        <div class="add-domain">
-          <input
-            type="text"
-            id="blacklistDomain"
-            placeholder="أدخل اسم النطاق (مثال: example.com)"
-          />
-          <button id="addToBlacklist">إضافة</button>
-        </div>
-        <div class="error-message" id="blacklistError"></div>
-      </div>
-
-      <!-- Export/Import Section -->
-      <div class="section">
-        <div class="section-header">
+      <!-- ============ EXPORT/IMPORT ============ -->
+      <details class="section">
+        <summary class="section-toggle">
           <div class="section-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" /></svg>
           </div>
           <span class="section-title">تصدير واستيراد الإعدادات</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+        </summary>
+        <div class="section-body">
+          <div class="settings-actions">
+            <button class="settings-action-btn" id="exportSettings">
+              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" /></svg>
+              تصدير
+            </button>
+            <button class="settings-action-btn" id="importSettings">
+              <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" /></svg>
+              استيراد
+            </button>
+          </div>
+          <input type="file" id="importFile" accept=".json" />
         </div>
-
-        <div class="settings-actions">
-          <button class="settings-action-btn" id="exportSettings">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-            </svg>
-            تصدير
-          </button>
-          <button class="settings-action-btn" id="importSettings">
-            <svg viewBox="0 0 24 24">
-              <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
-            </svg>
-            استيراد
-          </button>
-        </div>
-        <input type="file" id="importFile" accept=".json" />
-      </div>
+      </details>
     </div>
 
-    <!-- Footer -->
+    <!-- ============ FOOTER ============ -->
     <div class="footer">
-      <div>Fluent Arabic Web - الإصدار 3.0</div>
+      <div>Fluent Arabic Web — الإصدار 3.0</div>
       <div class="footer-links">
-        <a
-          href="https://github.com/SMSMy/Fluent-Arabic-Web"
-          target="_blank"
-          class="footer-link"
-          >GitHub</a
-        >
+        <a href="https://github.com/SMSMy/Fluent-Arabic-Web" target="_blank" class="footer-link">GitHub</a>
         <a href="#" class="footer-link" id="reportIssue">الإبلاغ عن مشكلة</a>
       </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script src="popup.js"></script>

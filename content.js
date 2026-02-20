@@ -18,6 +18,9 @@
   // الحد الأدنى لطول النص للفحص
   const MIN_TEXT_LENGTH = 100;
 
+  // الحد الأقصى لطول النص للفحص (للأداء)
+  const MAX_TEXT_LENGTH_CHECK = 5000;
+
   // التخزين المؤقت لنتائج الفحص
   const cache = {
     lastTextLength: 0,
@@ -54,9 +57,11 @@
    * @returns {Function} الدالة المُؤجلة
    */
   function debounce(func, wait) {
+    let timer;
     return function executedFunction(...args) {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => func.apply(this, args), wait);
+      const context = this;
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(context, args), wait);
     };
   }
 
@@ -94,7 +99,10 @@
    * @returns {Object} نتيجة الكشف
    */
   function detectArabicText() {
-    const bodyText = document.body?.innerText || "";
+    const bodyText = (document.body?.innerText || "").substring(
+      0,
+      MAX_TEXT_LENGTH_CHECK
+    );
     const textLength = bodyText.length;
 
     // إذا كان النص قصيراً جداً
@@ -133,8 +141,7 @@
       document.documentElement.classList.contains("translated-rtl") ||
       document.documentElement.classList.contains("translated-ltr") ||
       document.querySelector(".goog-te-banner-frame") !== null ||
-      document.querySelector(".skiptranslate") !== null ||
-      document.documentElement.lang?.includes("ar");
+      document.querySelector(".skiptranslate") !== null;
 
     // علامات أخرى
     const hasTranslationMeta =
@@ -144,6 +151,58 @@
       ) !== null;
 
     return isGoogleTranslated || hasTranslationMeta;
+  }
+
+  // ===============================================
+  // إصلاح اتجاه النصوص المختلطة (BiDi Fix)
+  // ===============================================
+
+  /**
+   * إصلاح اتجاه النصوص المختلطة (عربي/إنجليزي) لكل عنصر على حدة
+   * يضبط dir="auto" على العناصر النصية ليكتشف المتصفح الاتجاه تلقائياً
+   * من أول حرف قوي الاتجاه (strong directional character)
+   */
+  function fixBidiDirectionPerElement() {
+    const TEXT_SELECTORS = 'p, h1, h2, h3, h4, h5, h6, li, td, th, blockquote, figcaption, label, summary, caption, legend, dt, dd, a, span';
+
+    // عناصر يجب تجاهلها
+    const SKIP_SELECTORS = [
+      '[class*="code"]', '[class*="pre"]', '[class*="syntax"]',
+      '[class*="token"]', '[class*="highlight"]',
+      '.material-symbols-outlined', '.material-icons', '.mat-icon',
+      '[class*="icon"]', '[class*="Icon"]',
+      '.monaco-editor *', '.kix-appview-editor *',
+      'code', 'pre', 'kbd', 'samp', 'var',
+      'script', 'style', 'svg', 'math',
+      '[contenteditable="true"]'
+    ];
+
+    const skipSelector = SKIP_SELECTORS.join(', ');
+
+    try {
+      const elements = document.querySelectorAll(TEXT_SELECTORS);
+      let count = 0;
+      const MAX_ELEMENTS = 2000; // حد أقصى للأداء
+
+      for (const el of elements) {
+        if (count >= MAX_ELEMENTS) break;
+
+        // تخطي العناصر المحمية
+        if (el.matches(skipSelector) || el.closest(skipSelector)) continue;
+
+        // تخطي العناصر الفارغة أو المخفية
+        const text = el.textContent?.trim();
+        if (!text || text.length < 2) continue;
+
+        // ضبط dir="auto" فقط إذا لم يكن مضبوطاً بالفعل
+        if (el.dir !== 'auto') {
+          el.dir = 'auto';
+          count++;
+        }
+      }
+    } catch (e) {
+      // تجاهل الأخطاء بهدوء
+    }
   }
 
   // ===============================================
@@ -175,54 +234,77 @@
    * @param {boolean} force - تطبيق قسري
    */
   function applyArabicEnhancements(force = false) {
-    const currentDomain = window.location.hostname;
+    // حماية المواقع العربية الأصلية
+    const isNativeRtl =
+      document.documentElement.dir === "rtl" ||
+      document.body?.dir === "rtl" ||
+      (document.body &&
+        window.getComputedStyle(document.body).direction === "rtl");
 
-    // التحقق من القوائم
-    const isWhitelisted = whitelistedDomains.some((domain) =>
-      currentDomain.includes(domain)
-    );
-    const isBlacklisted = blacklistedDomains.some((domain) =>
-      currentDomain.includes(domain)
-    );
-
-    // الكشف عن الترجمة
-    isTranslatedPage = detectTranslatedPage();
-
-    // تحديد ما إذا كان يجب تطبيق التحسينات
-    let shouldApply = isEnabled && !isBlacklisted;
-
-    if (isWhitelisted) {
-      shouldApply = isEnabled;
-    } else if (autoDetectArabic && !force) {
-      const { hasArabicContent, arabicPercentage } = detectArabicText();
-      shouldApply = shouldApply && hasArabicContent;
-
-      // إبلاغ الخلفية بنتيجة الكشف
-      reportDetection(hasArabicContent, arabicPercentage);
-    }
-
-    // تجنب إعادة التطبيق غير الضرورية
-    if (lastAppliedState === shouldApply && !force) {
+    if (isNativeRtl) {
+      document.documentElement.classList.remove("arabic-enhancer-active");
       return;
     }
 
-    lastAppliedState = shouldApply;
+    // إيقاف المراقب مؤقتاً لتجنب الحلقات اللانهائية
+    if (observer) observer.disconnect();
 
-    // تطبيق أو إزالة التحسينات
-    if (shouldApply) {
-      document.documentElement.classList.add("arabic-enhancer-active");
+    try {
+      const currentDomain = window.location.hostname;
 
-      // تطبيق الخط المحدد
-      applyCustomFont();
+      // التحقق من القوائم
+      const isWhitelisted = whitelistedDomains.some((domain) =>
+        currentDomain.includes(domain)
+      );
+      const isBlacklisted = blacklistedDomains.some((domain) =>
+        currentDomain.includes(domain)
+      );
 
-      // إصلاحات الترجمة
-      if (isTranslatedPage) {
-        applyTranslationFixes();
+      // الكشف عن الترجمة
+      isTranslatedPage = detectTranslatedPage();
+
+      // تحديد ما إذا كان يجب تطبيق التحسينات
+      let shouldApply = isEnabled && !isBlacklisted;
+
+      if (isWhitelisted) {
+        shouldApply = isEnabled;
+      } else if (autoDetectArabic && !force) {
+        const { hasArabicContent, arabicPercentage } = detectArabicText();
+        shouldApply = shouldApply && hasArabicContent;
+
+        // إبلاغ الخلفية بنتيجة الكشف
+        reportDetection(hasArabicContent, arabicPercentage);
       }
-    } else {
-      document.documentElement.classList.remove("arabic-enhancer-active");
-      document.documentElement.classList.remove("arabic-enhancer-translated");
-      removeCustomStyles();
+
+      // تجنب إعادة التطبيق غير الضرورية
+      if (lastAppliedState === shouldApply && !force) {
+        return;
+      }
+
+      lastAppliedState = shouldApply;
+
+      // تطبيق أو إزالة التحسينات
+      if (shouldApply) {
+        document.documentElement.classList.add("arabic-enhancer-active");
+
+        // تطبيق الخط المحدد
+        applyCustomFont();
+
+        // إصلاح اتجاه النصوص المختلطة
+        fixBidiDirectionPerElement();
+
+        // إصلاحات الترجمة
+        if (isTranslatedPage) {
+          applyTranslationFixes();
+        }
+      } else {
+        document.documentElement.classList.remove("arabic-enhancer-active");
+        document.documentElement.classList.remove("arabic-enhancer-translated");
+        removeCustomStyles();
+      }
+    } finally {
+      // إعادة تشغيل المراقب
+      setupMutationObserver();
     }
   }
 
@@ -241,6 +323,14 @@
     const fontFamily = getFontCSS(selectedFont);
 
     styleElement.textContent = `
+            /* تعريف خط Material Symbols Outlined لضمان وجوده */
+            @font-face {
+              font-family: 'Material Symbols Outlined';
+              font-style: normal;
+              font-weight: 100 700;
+              src: url(https://fonts.gstatic.com/s/materialsymbolsoutlined/v175/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1n-q_4MrImHCIJIZrDCvHOej.woff2) format('woff2');
+            }
+
             html.arabic-enhancer-active body,
             html.arabic-enhancer-active p,
             html.arabic-enhancer-active div,
@@ -254,6 +344,82 @@
             html.arabic-enhancer-active button,
             html.arabic-enhancer-active select {
                 font-family: ${fontFamily} !important;
+            }
+
+            /* ==========================================================================
+               حماية الأيقونات (Icon Protection) - أولوية قصوى (!important)
+               ========================================================================== */
+
+            /* 1. Material Symbols (Google AI Studio uses this heavily) */
+            html.arabic-enhancer-active .material-symbols-outlined,
+            html.arabic-enhancer-active .material-symbols-rounded,
+            html.arabic-enhancer-active .material-symbols-sharp,
+            html.arabic-enhancer-active [class*="material-symbols"],
+            html.arabic-enhancer-active span[class*="material-symbols"] {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
+                font-style: normal !important;
+                font-size: 24px !important;
+                line-height: 1 !important;
+                letter-spacing: normal !important;
+                text-transform: none !important;
+                display: inline-block !important;
+                white-space: nowrap !important;
+                word-wrap: normal !important;
+                direction: ltr !important;
+                -webkit-font-smoothing: antialiased !important;
+                font-feature-settings: 'liga' !important;
+            }
+
+            /* 2. Material Icons (Standard) */
+            html.arabic-enhancer-active .material-icons,
+            html.arabic-enhancer-active .material-icons-outlined,
+            html.arabic-enhancer-active .material-icons-round,
+            html.arabic-enhancer-active .material-icons-sharp,
+            html.arabic-enhancer-active .material-icons-two-tone,
+            html.arabic-enhancer-active [class*="material-icons"] {
+                font-family: 'Material Icons' !important;
+                direction: ltr !important;
+            }
+
+            /* 3. Font Awesome & Generic Icons */
+            html.arabic-enhancer-active .fa,
+            html.arabic-enhancer-active .fas,
+            html.arabic-enhancer-active .far,
+            html.arabic-enhancer-active .fal,
+            html.arabic-enhancer-active .fab,
+            html.arabic-enhancer-active .fad,
+            html.arabic-enhancer-active [class*="fa-"],
+            html.arabic-enhancer-active [class*="icon"],
+            html.arabic-enhancer-active [class*="Icon"],
+            html.arabic-enhancer-active i[class],
+            html.arabic-enhancer-active svg,
+            html.arabic-enhancer-active [role="img"] {
+                font-family: revert !important; /* استعادة الخط الأصلي للأيقونة */
+                direction: ltr !important;
+            }
+
+            /* ==========================================================================
+               إصلاحات خاصة بـ Google AI Studio
+               ========================================================================== */
+
+            /* حماية الأزرار والأيقونات في AI Studio */
+            html.arabic-enhancer-active body [class*="ms-button-icon"],
+            html.arabic-enhancer-active body [class*="ms-Icon"],
+            html.arabic-enhancer-active body [class*="gmat-icon"],
+            html.arabic-enhancer-active body mat-icon,
+            html.arabic-enhancer-active body [class*="mat-icon"] {
+                font-family: 'Material Symbols Outlined', 'Material Icons' !important;
+                direction: ltr !important;
+            }
+
+            /* استثناء عناصر الكود */
+            html.arabic-enhancer-active .code-block,
+            html.arabic-enhancer-active pre,
+            html.arabic-enhancer-active code {
+                font-family: 'JetBrains Mono', monospace !important;
+                direction: ltr !important;
+                text-align: left !important;
             }
         `;
   }
@@ -367,11 +533,26 @@
           break;
 
         case "getPageInfo":
-          const { hasArabicContent, arabicPercentage } = detectArabicText();
+          // إجبار إعادة حساب النسبة (تجاهل الـ cache) مع تحديد الحد الأقصى
+          const bodyText = (document.body?.innerText || "").substring(
+            0,
+            MAX_TEXT_LENGTH_CHECK
+          );
+          const textLength = bodyText.length;
+          let hasArabic = false;
+          let percentage = 0;
+
+          if (textLength >= 50) {
+            const matches = bodyText.match(ARABIC_REGEX);
+            const arabicCharsCount = matches ? matches.length : 0;
+            percentage = (arabicCharsCount / textLength) * 100;
+            hasArabic = percentage >= minArabicTextPercentage;
+          }
+
           sendResponse({
             domain: window.location.hostname,
-            hasArabicContent,
-            arabicPercentage,
+            hasArabicContent: hasArabic,
+            arabicPercentage: percentage,
             isTranslatedPage,
           });
           break;

@@ -4,7 +4,7 @@
   "version": "3.0",
   "description": "تحسين تجربة تصفح المواقع باللغة العربية مع دعم كامل للكتابة من اليمين لليسار (RTL) وتحسينات مرئية متقدمة",
   "default_locale": "ar",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "tabs", "alarms"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
