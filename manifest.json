@@ -3,7 +3,7 @@
   "name": "Fluent Arabic Web",
   "version": "4.0.0",
   "description": "تجربة تصفح عربية مثالية - بدون تحريك أو كسر التخطيط",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup/popup.html",
