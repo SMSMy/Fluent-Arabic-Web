@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluent Arabic Web</title>
+  <!-- الخطوط محلية من fonts/thmanyah typeface — لا حاجة لاتصال إنترنت -->
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-bg"></div>
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon-wrap">
+            <img src="../da ico.png" alt="Fluent Arabic" class="logo-img">
+          </div>
+          <div class="logo-text">
+            <h1 class="logo-title">Fluent Arabic Web</h1>
+            <span class="logo-version">الإصدار 4.0</span>
+          </div>
+        </div>
+        <button id="themeToggle" class="icon-btn" title="تبديل المظهر" aria-label="تبديل المظهر">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Status Pill -->
+    <div class="status-pill-wrap">
+      <div class="status-pill" id="statusBar">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">جاري التحميل...</span>
+        <span class="status-divider">|</span>
+        <span class="arabic-ratio" id="arabicRatio"></span>
+      </div>
+    </div>
+
+    <!-- Main Power Toggle -->
+    <div class="power-section">
+      <button id="mainToggle" class="power-btn" aria-label="تفعيل/تعطيل RTL">
+        <div class="power-ring">
+          <svg class="power-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+            <line x1="12" y1="2" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <div class="power-label">
+          <span id="toggleText">تفعيل RTL</span>
+          <span class="power-hint" id="powerHint">اضغط للتفعيل</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Current Site Card -->
+    <div class="site-card" id="siteCard">
+      <div class="site-card-info">
+        <span class="site-card-icon">🌐</span>
+        <div class="site-card-details">
+          <span class="site-card-label">الموقع الحالي</span>
+          <span class="site-hostname" id="siteHostname">—</span>
+        </div>
+      </div>
+      <div class="site-card-actions">
+        <button id="addToWhitelist" class="pill-btn pill-btn--allow" title="إضافة للقائمة البيضاء">
+          <span>✓</span> دائماً
+        </button>
+        <button id="addToBlacklist" class="pill-btn pill-btn--block" title="إضافة للقائمة السوداء">
+          <span>✕</span> تجاهل
+        </button>
+        <button id="removeFromLists" class="pill-btn pill-btn--remove" style="display:none" title="إزالة من القوائم">
+          🗑
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Settings -->
+    <div class="section" id="quickSettings">
+      <h2 class="section-title">
+        <span class="section-title-icon">⚙️</span>
+        إعدادات سريعة
+      </h2>
+
+      <!-- Auto Detect -->
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-label">الكشف التلقائي</span>
+          <span class="setting-desc">اكتشاف المحتوى العربي تلقائياً</span>
+        </div>
+        <label class="switch" for="autoDetect">
+          <input type="checkbox" id="autoDetect" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Threshold -->
+      <div class="setting-row vertical" id="thresholdRow">
+        <div class="setting-header">
+          <div class="setting-info">
+            <span class="setting-label">حساسية الكشف</span>
+            <span class="setting-desc">الحد الأدنى لنسبة المحتوى العربي</span>
+          </div>
+          <span class="setting-badge" id="thresholdValue">15%</span>
+        </div>
+        <input type="range" id="threshold" min="5" max="50" value="15" step="5" aria-label="حساسية الكشف">
+        <div class="range-labels">
+          <span>حساس</span>
+          <span>متحفظ</span>
+        </div>
+      </div>
+
+      <!-- Font -->
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-label">الخط العربي</span>
+          <span class="setting-desc">خط مخصص للنصوص العربية</span>
+        </div>
+        <select id="fontSelect" aria-label="اختر الخط العربي">
+          <option value="thmanyah" selected>ثمانية تايبفيس ✦</option>
+          <option value="default">افتراضي النظام</option>
+          <option value="al-masmak">المصمك</option>
+          <option value="al-naseeb">النسيب</option>
+          <option value="al-watad">الوتد</option>
+          <option value="al-awwal">الأول</option>
+          <option value="saudi">السعودي</option>
+          <option value="year-of-poetry">عام الشعر</option>
+          <option value="year-of-camel">عام الجمل</option>
+          <option value="year-of-handicrafts">الحرف اليدوية</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Advanced (Collapsible) -->
+    <details class="section advanced-section">
+      <summary class="section-title clickable" id="advancedSummary">
+        <div class="summary-content">
+          <span class="section-title-icon">🔧</span>
+          <span>إعدادات متقدمة</span>
+        </div>
+        <span class="arrow-icon">‹</span>
+      </summary>
+
+      <!-- Whitelist -->
+      <div class="list-block">
+        <div class="list-block-header">
+          <span class="list-badge list-badge--allow">✓</span>
+          <span class="setting-label">القائمة البيضاء</span>
+        </div>
+        <div class="list-container" id="whitelistContainer">
+          <p class="empty-msg">لا توجد مواقع مضافة</p>
+        </div>
+        <div class="add-item">
+          <input type="text" id="whitelistInput" placeholder="example.com" class="input-sm" aria-label="إضافة موقع للقائمة البيضاء">
+          <button id="addWhitelistBtn" class="add-btn add-btn--allow" aria-label="إضافة">+</button>
+        </div>
+      </div>
+
+      <!-- Blacklist -->
+      <div class="list-block">
+        <div class="list-block-header">
+          <span class="list-badge list-badge--block">✕</span>
+          <span class="setting-label">القائمة السوداء</span>
+        </div>
+        <div class="list-container" id="blacklistContainer">
+          <p class="empty-msg">لا توجد مواقع مضافة</p>
+        </div>
+        <div class="add-item">
+          <input type="text" id="blacklistInput" placeholder="example.com" class="input-sm" aria-label="إضافة موقع للقائمة السوداء">
+          <button id="addBlacklistBtn" class="add-btn add-btn--block" aria-label="إضافة">+</button>
+        </div>
+      </div>
+
+      <!-- Export/Import -->
+      <div class="export-row">
+        <button id="exportBtn" class="btn btn-secondary">
+          <span>📤</span> تصدير الإعدادات
+        </button>
+        <button id="importBtn" class="btn btn-secondary">
+          <span>📥</span> استيراد
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+      </div>
+    </details>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span class="shortcut-badge" title="اختصار لوحة المفاتيح">⌨ Alt+Shift+A</span>
+      <a href="#" id="resetBtn" class="link-btn" title="إعادة تعيين جميع الإعدادات">إعادة تعيين</a>
+    </footer>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

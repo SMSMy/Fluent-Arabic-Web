@@ -1,0 +1,152 @@
+/**
+ * styles/protection.css — حماية الأيقونات والعناصر الخاصة
+ *
+ * يحمي:
+ * - Material Icons
+ * - Font Awesome
+ * - SVG Icons
+ * - Emojis
+ * - Ligature-based icons
+ * - Pseudo-elements (::before, ::after) المستخدمة للأيقونات
+ *
+ * ⚠️ المحددات هنا دقيقة — لا تستخدم [class*="icon"] بشكل عام
+ * لأنه يطابق عناصر كثيرة ليست أيقونات
+ */
+
+/* === Material Icons === */
+html.fluent-rtl-active .material-icons,
+html.fluent-rtl-active .material-icons-outlined,
+html.fluent-rtl-active .material-icons-round,
+html.fluent-rtl-active .material-icons-sharp,
+html.fluent-rtl-active .material-symbols-outlined,
+html.fluent-rtl-active .material-symbols-rounded,
+html.fluent-rtl-active .material-symbols-sharp {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+  text-align: center !important;
+  font-family: 'Material Icons', 'Material Icons Outlined', 'Material Icons Round', 'Material Symbols Outlined', monospace !important;
+}
+
+/* === Font Awesome === */
+html.fluent-rtl-active .fa,
+html.fluent-rtl-active .fas,
+html.fluent-rtl-active .far,
+html.fluent-rtl-active .fab,
+html.fluent-rtl-active .fal,
+html.fluent-rtl-active .fad,
+html.fluent-rtl-active .fa-solid,
+html.fluent-rtl-active .fa-regular,
+html.fluent-rtl-active .fa-brands,
+html.fluent-rtl-active .fa-light,
+html.fluent-rtl-active .fa-duotone {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+/* === أيقونات SVG معروفة فقط — ليس كل SVG === */
+/* ❌ لا نحمي كل SVG — يكسر الخرائط والرسوم البيانية */
+html.fluent-rtl-active svg[class*="icon"],
+html.fluent-rtl-active svg[class*="Icon"],
+html.fluent-rtl-active svg.iconify,
+html.fluent-rtl-active svg.v-icon,
+html.fluent-rtl-active svg[data-icon],
+html.fluent-rtl-active svg[data-testid*="icon"],
+html.fluent-rtl-active svg[aria-label*="icon" i] {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+/* === أيقونات عامة — مكتبات محددة فقط === */
+html.fluent-rtl-active .icon,
+html.fluent-rtl-active .ico,
+html.fluent-rtl-active .glyph,
+html.fluent-rtl-active .glyph-icon,
+html.fluent-rtl-active .lnr,         /* Linearicons */
+html.fluent-rtl-active .ti,          /* Themify Icons */
+html.fluent-rtl-active .fe,          /* Feather Icons */
+html.fluent-rtl-active .bi,          /* Bootstrap Icons */
+html.fluent-rtl-active .oi,          /* Open Iconic */
+html.fluent-rtl-active .v-icon,      /* Vuetify */
+html.fluent-rtl-active .iconify,     /* Iconify */
+html.fluent-rtl-active .ic,          /* custom icon pattern */
+html.fluent-rtl-active [class^="icon-"],
+html.fluent-rtl-active [class^="Icon-"] {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+/* === Pseudo-elements للأيقونات === */
+html.fluent-rtl-active .fa::before,
+html.fluent-rtl-active .fas::before,
+html.fluent-rtl-active .far::before,
+html.fluent-rtl-active .fab::before,
+html.fluent-rtl-active .material-icons::before,
+html.fluent-rtl-active .material-icons::after {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+  text-align: center !important;
+}
+
+/* === Emojis === */
+html.fluent-rtl-active .emoji,
+html.fluent-rtl-active [class*="emoji-"],
+html.fluent-rtl-active [data-emoji] {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+/* === محررات الأكواد === */
+html.fluent-rtl-active .monaco-editor,
+html.fluent-rtl-active .CodeMirror,
+html.fluent-rtl-active .ace_editor,
+html.fluent-rtl-active [class*="CodeMirror"],
+html.fluent-rtl-active [class*="code-editor"],
+html.fluent-rtl-active [class*="code-editor"] * {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+  text-align: left !important;
+}
+
+/* === عناصر Canvas و Media === */
+html.fluent-rtl-active canvas,
+html.fluent-rtl-active video,
+html.fluent-rtl-active audio,
+html.fluent-rtl-active iframe {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+/* === عناصر النماذج ذات الاتجاه المحدد === */
+html.fluent-rtl-active input[type="password"],
+html.fluent-rtl-active input[type="email"],
+html.fluent-rtl-active input[type="url"],
+html.fluent-rtl-active input[type="tel"],
+html.fluent-rtl-active input[type="number"],
+html.fluent-rtl-active input[type="search"] {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* === عناصر contentEditable === */
+html.fluent-rtl-active [contenteditable="true"],
+html.fluent-rtl-active [contenteditable=""] {
+  unicode-bidi: plaintext !important;
+}
+
+/* === Google Translate === */
+html.fluent-rtl-active .goog-te-banner-frame,
+html.fluent-rtl-active .skiptranslate {
+  direction: ltr !important;
+}
+
+/* === حماية الأزرار من التأثر بـ RTL === */
+html.fluent-rtl-active button:not([data-fluent-rtl-dir]),
+html.fluent-rtl-active [role="button"]:not([data-fluent-rtl-dir]) {
+  unicode-bidi: isolate;
+}
+
+/* === حماية عناصر الـ Layout الرئيسية ===
+ * #11: القواعد الفارغة السابقة أُزيلت — لا تفعل شيئاً عملياً
+ * الحماية تتم عبر عدم تطبيق bidi-fix على هذه العناصر ابتداءً (في bidi-fix.js)
+ * وليس عبر CSS فارغ هنا
+ */

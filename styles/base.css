@@ -1,0 +1,103 @@
+/**
+ * styles/base.css — أنماط أساسية
+ * 
+ * يُحقن فقط عندما تكون الإضافة مفعّلة
+ * يحتوي على:
+ * - تحسينات الخطوط العربية
+ * - تباعد النصوص
+ * - اتجاه النص (text-align: start)
+ * 
+ * ⚠️ لا نستخدم !important إلا عند الضرورة القصوى
+ * ⚠️ لا نستخدم line-height أو font-family عامة — قد تكسر layout المواقع
+ */
+
+/* === اتجاه النص للعناصر المعالجة === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] {
+  direction: rtl;
+  text-align: start;
+  unicode-bidi: isolate;
+}
+
+html.fluent-rtl-active [data-fluent-rtl-dir="auto"] {
+  text-align: start;
+}
+
+/* === تحسينات الخطوط العربية === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active [data-fluent-rtl-dir="auto"] {
+  font-feature-settings: "liga" 1, "calt" 1;
+  -webkit-font-feature-settings: "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === تحسين الكشافة (kerning) === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] {
+  font-kerning: normal;
+}
+
+/* === منع overflow للنصوص الطويلة === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+}
+
+/* === عناوين h1-h6 — تباعد أخف من الفقرات === */
+html.fluent-rtl-active h1[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active h2[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active h3[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active h4[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active h5[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active h6[data-fluent-rtl-dir="rtl"] {
+  unicode-bidi: isolate;
+}
+
+/* === فقرات === */
+html.fluent-rtl-active p[data-fluent-rtl-dir="rtl"] {
+  unicode-bidi: isolate;
+}
+
+/* === عناصر القوائم === */
+html.fluent-rtl-active li[data-fluent-rtl-dir="rtl"] {
+  unicode-bidi: isolate;
+}
+
+/* === خلايا الجداول === */
+html.fluent-rtl-active td[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active th[data-fluent-rtl-dir="rtl"] {
+  text-align: start;
+  unicode-bidi: isolate;
+}
+
+/* === الروابط === */
+html.fluent-rtl-active a[data-fluent-rtl-dir="rtl"] {
+  unicode-bidi: isolate;
+}
+
+/* === منع تأثير على العناصر داخل النص (كود، رياضيات) === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] code,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] pre,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] kbd,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] samp {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: embed;
+}
+
+/* === الأرقام والرياضيات === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] .math,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] .MathJax,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] .katex {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* === النصوص المختلطة (عربي + إنجليزي) === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [lang="en"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [lang="en-US"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [lang="en-GB"] {
+  direction: ltr;
+  unicode-bidi: embed;
+}

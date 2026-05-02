@@ -1,0 +1,138 @@
+/**
+ * styles/fixes.css — إصلاحات عامة
+ *
+ * إصلاحات CSS شاملة للمشاكل الشائعة
+ * يُحقن فقط عندما تكون الإضافة مفعّلة
+ *
+ * ⚠️ المحددات هنا دقيقة ومستهدفة
+ * ⚠️ #11/#12: أُزيلت القواعد الفارغة والمتكررة مع protection.css
+ */
+
+/* === إصلاح النصوص المختلطة داخل RTL === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [dir="ltr"] {
+  unicode-bidi: isolate;
+}
+
+/* === إصلاح الأرقام في النصوص العربية === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] .number,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="num-"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="-count"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="counter"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="stat"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="metric"] {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* === إصلاح التواريخ === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] time,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="date-"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="time-"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="timestamp"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="datetime"] {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* === إصلاح عناوين URL (فقط داخل الروابط) === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] a[href^="http"] {
+  unicode-bidi: isolate;
+}
+
+/* === إصلاح أسماء المستخدمين (@username) === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="username"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="user-handle"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="screen-name"] {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* === إصلاح Hashtags === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="hashtag"] {
+  unicode-bidi: isolate;
+}
+
+/* === إصلاح أزرار التفاعل === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="reaction-btn"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="action-btn"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="interact-btn"] {
+  unicode-bidi: isolate;
+}
+
+/* === Breadcrumbs — isolate فقط === */
+html.fluent-rtl-active [class*="breadcrumb"],
+html.fluent-rtl-active [class*="Breadcrumb"],
+html.fluent-rtl-active [class*="nav-path"],
+html.fluent-rtl-active [aria-label*="breadcrumb" i] {
+  unicode-bidi: isolate;
+}
+
+/* === Pagination — isolate فقط === */
+html.fluent-rtl-active [class*="pagination"],
+html.fluent-rtl-active [class*="Pagination"],
+html.fluent-rtl-active [class*="pager"],
+html.fluent-rtl-active [class*="page-nav"] {
+  unicode-bidi: isolate;
+}
+
+/* === Tabs — isolate فقط === */
+html.fluent-rtl-active [role="tablist"] {
+  unicode-bidi: isolate;
+}
+
+/* === Tooltips — isolate === */
+html.fluent-rtl-active [class*="tooltip"],
+html.fluent-rtl-active [class*="Tooltip"],
+html.fluent-rtl-active [role="tooltip"] {
+  unicode-bidi: isolate;
+}
+
+/* === منع تأثير RTL على الـ scrollbar === */
+html.fluent-rtl-active {
+  scrollbar-gutter: stable;
+}
+
+/* === Badges/Labels === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="badge"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="Badge"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="tag-label"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [class*="Tag"] {
+  unicode-bidi: isolate;
+}
+
+/* === Notifications/Toasts — isolate === */
+html.fluent-rtl-active [class*="notification"],
+html.fluent-rtl-active [class*="Notification"],
+html.fluent-rtl-active [class*="toast"],
+html.fluent-rtl-active [class*="Toast"] {
+  unicode-bidi: isolate;
+}
+
+/* === Popovers/Dropdowns — isolate === */
+html.fluent-rtl-active [class*="dropdown-menu"],
+html.fluent-rtl-active [class*="popover-content"],
+html.fluent-rtl-active [role="menu"],
+html.fluent-rtl-active [role="listbox"] {
+  unicode-bidi: isolate;
+}
+
+/* === Search Bars — isolate === */
+html.fluent-rtl-active [class*="search"]:not([data-fluent-rtl-dir]),
+html.fluent-rtl-active [class*="Search"]:not([data-fluent-rtl-dir]),
+html.fluent-rtl-active [role="search"]:not([data-fluent-rtl-dir]) {
+  unicode-bidi: isolate;
+}
+
+/* === Nav Menus — isolate === */
+html.fluent-rtl-active [class*="nav-menu"]:not([data-fluent-rtl-dir]),
+html.fluent-rtl-active [class*="Nav-menu"]:not([data-fluent-rtl-dir]) {
+  unicode-bidi: isolate;
+}
+
+/*
+ * ملاحظة (#11/#12):
+ * القواعد التي كانت تحمي header/nav/footer/aside/sidebar/toolbar/navbar
+ * أُزيلت من هنا لأنها كانت فارغة (بدون خصائص) وتكررت في protection.css.
+ * الحماية الفعلية تتم في bidi-fix.js عبر isSafeToApplyRTL() الذي يتفحص
+ * الـ display:flex/grid ويمنع تطبيق RTL على العناصر الهيكلية ابتداءً.
+ */

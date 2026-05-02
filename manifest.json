@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "Fluent Arabic Web",
+  "version": "4.0.0",
+  "description": "تجربة تصفح عربية مثالية - بدون تحريك أو كسر التخطيط",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["shadow-patch.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "lib/detector.js",
+        "lib/bidi-fix.js",
+        "lib/transition-guard.js",
+        "lib/transform-fixer.js",
+        "lib/shadow-dom-traverser.js",
+        "lib/site-profiles.js",
+        "content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false,
+      "_comment": "ترتيب الملفات مهم: detector أولاً (يُعرّف FluentRTL.detector) ثم bidi-fix (يعتمد على detector) ثم content.js أخيراً"
+    }
+  ],
+  "commands": {
+    "toggle": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "تبديل RTL"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "fonts/*.woff2",
+        "fonts/*.woff",
+        "fonts/*.otf",
+        "fonts/*.ttf",
+        "fonts/**/*.woff2",
+        "fonts/**/*.woff",
+        "fonts/**/*.otf",
+        "fonts/**/*.ttf"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
