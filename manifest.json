@@ -36,8 +36,7 @@
         "content.js"
       ],
       "run_at": "document_idle",
-      "all_frames": false,
-      "_comment": "ترتيب الملفات مهم: detector أولاً (يُعرّف FluentRTL.detector) ثم bidi-fix (يعتمد على detector) ثم content.js أخيراً"
+      "all_frames": false
     }
   ],
   "commands": {
