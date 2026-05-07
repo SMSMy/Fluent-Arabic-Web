@@ -1,19 +1,10 @@
 <div align="center">
 
-<!-- Chrome Web Store Widget -->
-<a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" target="_blank">
-  <img src="https://img.shields.io/chrome-web-store/v/gofhnecgeianjadhjmlkpmfjmflmolag?label=Chrome%20Web%20Store&logo=googlechrome&logoColor=white&color=4285F4&style=for-the-badge" alt="Chrome Web Store Version">
-  <img src="https://img.shields.io/chrome-web-store/users/gofhnecgeianjadhjmlkpmfjmflmolag?label=المستخدمون&logo=googlechrome&logoColor=white&color=34A853&style=for-the-badge" alt="Chrome Web Store Users">
-  <img src="https://img.shields.io/chrome-web-store/rating/gofhnecgeianjadhjmlkpmfjmflmolag?label=التقييم&logo=googlechrome&logoColor=white&color=FBBC04&style=for-the-badge" alt="Chrome Web Store Rating">
-</a>
-
-<br><br>
-
 <!-- Install Button -->
 <a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" target="_blank">
   <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_128x128.png" width="48" alt="Chrome">
   <br>
-  <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F%20%D8%AB%D8%A8%D9%91%D8%AA%20%D9%85%D9%86%20Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Install from Chrome Web Store">
+  <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F%20Install%20from%20Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Install from Chrome Web Store">
 </a>
 
 <br><br>
@@ -27,8 +18,8 @@
 <p><b>تجربة تصفح عربية مثالية — بدون تحريك أو كسر التخطيط</b></p>
 
 <img src="https://img.shields.io/badge/Manifest-v3-blueviolet?style=flat-square" alt="Manifest v3">
-<img src="https://img.shields.io/badge/الإصدار-4.0.1-success?style=flat-square" alt="v4.0.1">
-<img src="https://img.shields.io/badge/الرخصة-MIT-blue?style=flat-square" alt="MIT">
+<img src="https://img.shields.io/badge/Version-4.0.1-success?style=flat-square" alt="v4.0.1">
+<img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT">
 
 </div>
 
@@ -73,7 +64,7 @@
 ### من Chrome Web Store (موصى به)
 
 <a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag">
-  <img src="https://img.shields.io/badge/تثبيت%20من%20Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Install">
+  <img src="https://img.shields.io/badge/Install%20from%20Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Install from Chrome Web Store">
 </a>
 
 ### من المصدر (للمطورين)
