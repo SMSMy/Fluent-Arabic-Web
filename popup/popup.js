@@ -16,6 +16,17 @@
   var currentSettings = null;
   var currentTabStatus = null;
 
+  var DEFAULT_SETTINGS = {
+    enabled: true,
+    autoDetect: true,
+    detectionThreshold: 0.15,
+    font: 'thmanyah',
+    customFonts: [],
+    whitelist: [],
+    blacklist: [],
+    perSite: {}
+  };
+
   // === عناصر DOM ===
   var elements = {
     statusBar: document.getElementById('statusBar'),
@@ -80,14 +91,7 @@
 
   async function getSettings() {
     const response = await sendMessage({ type: 'fluent-rtl-get-settings' });
-    return response || {
-      enabled: true,
-      autoDetect: true,
-      detectionThreshold: 0.15,
-      font: 'thmanyah',
-      whitelist: [],
-      blacklist: []
-    };
+    return normalizeSettings(response || DEFAULT_SETTINGS, DEFAULT_SETTINGS);
   }
 
   async function getTabStatus() {
@@ -200,6 +204,59 @@
     if (trimmed.length === 0 || trimmed.length > 253) return false;
     // يسمح بـ hostname عادي أو بدء بـ * للـ wildcard
     return /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/.test(trimmed);
+  }
+
+  function normalizeHostnameList(value) {
+    if (!Array.isArray(value)) return [];
+    var normalized = [];
+    value.forEach(function (item) {
+      if (typeof item !== 'string') return;
+      var hostname = item.trim().toLowerCase();
+      if (isValidHostname(hostname) && !normalized.includes(hostname)) {
+        normalized.push(hostname);
+      }
+    });
+    return normalized;
+  }
+
+  function normalizeSettings(input, fallback) {
+    var source = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
+    var base = Object.assign({}, DEFAULT_SETTINGS, fallback || {});
+    var normalized = Object.assign({}, base);
+
+    if (typeof source.enabled === 'boolean') normalized.enabled = source.enabled;
+    if (typeof source.autoDetect === 'boolean') normalized.autoDetect = source.autoDetect;
+
+    if (typeof source.detectionThreshold === 'number' && isFinite(source.detectionThreshold)) {
+      normalized.detectionThreshold = Math.min(0.5, Math.max(0.05, source.detectionThreshold));
+    }
+
+    if (typeof source.font === 'string' && source.font.trim()) {
+      normalized.font = source.font.trim();
+    }
+
+    normalized.whitelist = normalizeHostnameList(source.whitelist || base.whitelist);
+    normalized.blacklist = normalizeHostnameList(source.blacklist || base.blacklist);
+    normalized.customFonts = Array.isArray(source.customFonts) ? source.customFonts.filter(function (font) {
+      return font && typeof font === 'object';
+    }) : (Array.isArray(base.customFonts) ? base.customFonts : []);
+
+    normalized.perSite = {};
+    var perSite = source.perSite && typeof source.perSite === 'object' && !Array.isArray(source.perSite)
+      ? source.perSite
+      : (base.perSite || {});
+
+    Object.keys(perSite).forEach(function (hostname) {
+      var cleanHostname = hostname.trim().toLowerCase();
+      var config = perSite[hostname];
+      if (!isValidHostname(cleanHostname) || !config || typeof config !== 'object') return;
+      normalized.perSite[cleanHostname] = {};
+      if (typeof config.enabled === 'boolean') {
+        normalized.perSite[cleanHostname].enabled = config.enabled;
+      }
+    });
+
+    return normalized;
   }
 
   // =========================================================================
@@ -347,7 +404,7 @@
         if (typeof imported !== 'object' || Array.isArray(imported)) {
           throw new Error('Invalid format');
         }
-        currentSettings = Object.assign(currentSettings, imported);
+        currentSettings = normalizeSettings(imported, currentSettings);
         await saveSettings(currentSettings);
         updateUI();
       } catch (err) {
@@ -363,16 +420,7 @@
     e.preventDefault();
     if (!confirm('هل تريد إعادة تعيين كل الإعدادات؟')) return;
 
-    const defaultSettings = {
-      enabled: true,
-      autoDetect: true,
-      detectionThreshold: 0.15,
-      font: 'thmanyah',
-      customFonts: [],
-      whitelist: [],
-      blacklist: [],
-      perSite: {}
-    };
+    const defaultSettings = Object.assign({}, DEFAULT_SETTINGS);
 
     await saveSettings(defaultSettings);
     currentSettings = defaultSettings;

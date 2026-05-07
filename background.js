@@ -169,6 +169,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
               sendResponse({ active: false });
             }
           });
+        } else {
+          sendResponse({ active: false });
         }
       });
       return true; // async

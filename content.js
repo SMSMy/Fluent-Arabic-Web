@@ -77,6 +77,36 @@
     settings = Object.assign({}, DEFAULT_SETTINGS, newSettings);
   }
 
+  function matchesHostnamePattern(hostname, pattern) {
+    if (!hostname || !pattern || typeof pattern !== 'string') return false;
+    hostname = hostname.toLowerCase();
+    pattern = pattern.trim().toLowerCase();
+
+    if (pattern.indexOf('://') !== -1) {
+      try {
+        pattern = new URL(pattern).hostname.toLowerCase();
+      } catch (e) {
+        return false;
+      }
+    }
+
+    if (pattern.indexOf('/') !== -1) return false;
+    if (pattern.indexOf('*.') === 0) {
+      var base = pattern.substring(2);
+      return hostname === base || hostname.endsWith('.' + base);
+    }
+
+    return hostname === pattern;
+  }
+
+  function isHostnameInList(hostname, list) {
+    if (!hostname || !Array.isArray(list)) return false;
+    for (var i = 0; i < list.length; i++) {
+      if (matchesHostnamePattern(hostname, list[i])) return true;
+    }
+    return false;
+  }
+
   // =========================================================================
   // 2. حقن CSS
   // =========================================================================
@@ -287,7 +317,7 @@
       var hostname = window.location.hostname;
 
       // فحص القائمة السوداء
-      if (settings.blacklist && settings.blacklist.indexOf(hostname) !== -1) return;
+      if (isHostnameInList(hostname, settings.blacklist)) return;
 
       // فحص هل يوجد site profile لهذا الموقع
       var hasProfile = !!siteProfiles.getProfile(hostname);
@@ -362,11 +392,13 @@
   // 4. التعطيل
   // =========================================================================
 
-  function deactivate() {
+  function deactivate(preserveManualOverride) {
     if (!isActive) return;
 
     isActive = false;
-    isManualOverride = false;
+    if (!preserveManualOverride) {
+      isManualOverride = false;
+    }
 
     // 1. تجميد transitions
     transitionGuard.freeze();
@@ -617,6 +649,8 @@
         return false;
 
       case 'fluent-rtl-settings-updated':
+        var wasManualOverride = isManualOverride;
+
         // #21: استخدم الإعدادات الواردة في الرسالة مباشرة بدل قراءتها من storage
         if (message.settings) {
           applySettingsFromMessage(message.settings);
@@ -624,20 +658,20 @@
           // fallback إلى القراءة من storage إذا لم تُرسل الإعدادات
           loadSettings().then(function () {
             if (isActive) {
-              deactivate();
-              if (settings.enabled) activate(isManualOverride);
+              deactivate(true);
+              if (settings.enabled) activate(wasManualOverride);
             } else if (settings.enabled) {
-              activate(isManualOverride);
+              activate(wasManualOverride);
             }
           });
           sendResponse({ received: true });
           return true; // async
         }
         if (isActive) {
-          deactivate();
-          if (settings.enabled) activate(isManualOverride);
+          deactivate(true);
+          if (settings.enabled) activate(wasManualOverride);
         } else if (settings.enabled) {
-          activate(isManualOverride);
+          activate(wasManualOverride);
         }
         sendResponse({ received: true });
         return false;
@@ -667,12 +701,12 @@
       var hostname = window.location.hostname;
 
       // فحص القائمة السوداء — دائماً أولاً
-      if (settings.blacklist && settings.blacklist.indexOf(hostname) !== -1) {
+      if (isHostnameInList(hostname, settings.blacklist)) {
         return;
       }
 
       // فحص القائمة البيضاء — تفعيل مباشر
-      if (settings.whitelist && settings.whitelist.indexOf(hostname) !== -1) {
+      if (isHostnameInList(hostname, settings.whitelist)) {
         activate(true);
         return;
       }
