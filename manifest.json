@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Fluent Arabic Web",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "تجربة تصفح عربية مثالية - بدون تحريك أو كسر التخطيط",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fluent Arabic Web — Manual Test Fixture (Grok-like)</title>
+<style>
+  body { font-family: sans-serif; background: #f5f5f4; margin: 0; padding: 24px; }
+  .message-bubble { background: #fff; border-radius: 12px; padding: 16px; margin: 12px 0; max-width: 640px; }
+  .response-content-markdown { background: #fff; border-radius: 12px; padding: 16px; margin: 12px 0; max-width: 640px; }
+  pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 8px; }
+  .query-bar { display: flex; }
+  .query-bar textarea { flex: 1; padding: 12px; font-size: 15px; }
+  #results { margin-top: 24px; font-family: monospace; font-size: 13px; white-space: pre-wrap; background: #111; color: #9f9; padding: 16px; border-radius: 8px; }
+</style>
+</head>
+<body>
+  <h2>Fixture: صفحة شبيهة بقروك</h2>
+
+  <div class="query-bar">
+    <textarea aria-label="Ask Grok" placeholder="Message Grok">أكتب سؤالك هنا بالعربية</textarea>
+  </div>
+
+  <div class="message-bubble">
+    <p id="m-user">مرحبا، أريد شرح الفرق بين RTL و LTR في صفحات الويب الحديثة.</p>
+  </div>
+
+  <div class="response-content-markdown">
+    <p id="m-ar">الفرق بسيط: النصوص العربية تُقرأ من اليمين إلى اليسار، بينما الإنجليزية من اليسار إلى اليمين.</p>
+    <pre id="m-code"><code>if (isArabic) { applyRTL(); }</code></pre>
+    <p id="m-en">This paragraph is fully in English and should stay left-to-right.</p>
+    <blockquote id="m-quote">اقتباس عربي يجب أن يظهر حده على جهة اليمين</blockquote>
+    <ul><li id="m-li">عنصر قائمة بالعربية يجب محاذاته لليمين</li></ul>
+  </div>
+
+  <div id="results">جاري التشغيل...</div>
+
+  <!-- Stub بيئة كروم + تحميل ملفات الإضافة -->
+  <script>
+    window.FluentRTL = {};
+    window.chrome = {
+      storage: {
+        sync: {
+          get: function (key, cb) { cb({ fluentRTLSettings: { enabled: true, autoDetect: true, detectionThreshold: 0.15, font: 'default', customFonts: [], whitelist: [], blacklist: [], perSite: {} } }); },
+          set: function (obj, cb) { if (cb) cb(); }
+        },
+        local: { get: function (k, cb) { cb({}); }, set: function (o, cb) { if (cb) cb(); } }
+      },
+      runtime: {
+        getURL: function (p) { return p; },
+        onMessage: { addListener: function () {} },
+        sendMessage: function (m, cb) { if (cb) cb({}); }
+      }
+    };
+  </script>
+  <script src="../lib/detector.js"></script>
+  <script src="../lib/bidi-fix.js"></script>
+  <script src="../lib/transition-guard.js"></script>
+  <script src="../lib/transform-fixer.js"></script>
+  <script src="../lib/shadow-dom-traverser.js"></script>
+  <script src="../lib/site-profiles.js"></script>
+  <script src="../content.js"></script>
+
+  <!-- فحوصات تلقائية تُطبع في console وفي الصفحة -->
+  <script>
+    var results = [];
+    function check(name, cond) {
+      results.push((cond ? 'PASS' : 'FAIL') + ' | ' + name);
+      console.log((cond ? 'PASS' : 'FAIL') + ' | ' + name);
+    }
+
+    setTimeout(function () {
+      var doc = document;
+      check('الفقرة العربية للمستخدم dir=rtl', doc.getElementById('m-user').getAttribute('dir') === 'rtl');
+      check('الفقرة العربية للرد dir=rtl', doc.getElementById('m-ar').getAttribute('dir') === 'rtl');
+      check('الفقرة الإنجليزية بلا dir', !doc.getElementById('m-en').hasAttribute('dir'));
+      check('كتلة الكود بلا dir (LTR)', !doc.getElementById('m-code').closest('pre').hasAttribute('dir'));
+      check('صندوق الإدخال بلا dir (CSS plaintext)', !doc.querySelector('.query-bar textarea').hasAttribute('data-fluent-rtl-dir'));
+      check('الاقتباس معالج', doc.getElementById('m-quote').getAttribute('data-fluent-rtl-dir') === 'rtl');
+      check('عنصر القائمة معالج', doc.getElementById('m-li').getAttribute('data-fluent-rtl-dir') === 'rtl');
+      check('html يحمل كلاس التفعيل', doc.documentElement.classList.contains('fluent-rtl-active'));
+      check('profile قروك مطابق عبر siteProfiles', window.FluentRTL.siteProfiles.getProfile('grok.com') && window.FluentRTL.siteProfiles.getProfile('grok.com').id === 'grok');
+      check('profile DSH مطابق لـ 127.0.0.1', window.FluentRTL.siteProfiles.getProfile('127.0.0.1') && window.FluentRTL.siteProfiles.getProfile('127.0.0.1').id === 'dsh');
+
+      doc.getElementById('results').textContent = results.join('\n');
+    }, 1200);
+  </script>
+</body>
+</html>

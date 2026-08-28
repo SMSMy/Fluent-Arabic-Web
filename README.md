@@ -18,7 +18,7 @@
 <p><b>تجربة تصفح عربية مثالية — بدون تحريك أو كسر التخطيط</b></p>
 
 <img src="https://img.shields.io/badge/Manifest-v3-blueviolet?style=flat-square" alt="Manifest v3">
-<img src="https://img.shields.io/badge/Version-4.0.1-success?style=flat-square" alt="v4.0.1">
+<img src="https://img.shields.io/badge/Version-4.1.0-success?style=flat-square" alt="v4.1.0">
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT">
 
 </div>
@@ -104,27 +104,20 @@ git clone https://github.com/SMSMy/Fluent-Arabic-Web.git
 | البث الحي للتوكنات | وميض بين LTR و RTL |
 | Shadow DOM / CSP | العناصر الداخلية لا تُلمَس |
 
-### الحل الجاري
+### الإنجازات المكتملة
 
-1. **Profiles جاهزة داخل الكود** — نفس أسلوب ChatGPT وClaude: selectors ثابتة + CSS بـ `!important` (يصمد أمام re-render)، مع استثناء `pre` و`code` والجداول حتى لا ينعكس الكود.
-2. **محرر عناصر لكل موقع** — زر «التقط عنصراً» (element picker) في الـ popup يحفظ selectors مستقرة في `chrome.storage`، مع زر مشاركة الإعداد كـ JSON.
-3. **تحديث الـ profiles عن بُعد** — بدل انتظار تحديث المتجر عند كل تغيير في كلاسات المواقع.
+1. ✅ **Profiles جاهزة داخل الكود** — أُضيفت profiles لـ **Grok** (`grok.com` / `grok.x.ai`) و**Google AI Studio** (`aistudio.google.com`) و**Microsoft Copilot** و**Discord** و**Notion** و**DeepSeek Harness** (`127.0.0.1:3080`)، بنفس أسلوب ChatGPT وClaude: CSS بـ `!important` و`unicode-bidi: plaintext` (يصمد أمام re-render)، مع استثناء `pre` و`code` و`katex` حتى لا ينعكس الكود.
+2. ✅ **محرر عناصر لكل موقع** — زر «🎯 التقاط عنصر» (element picker) في الـ popup يحفظ selectors مستقرة (تفضيل `data-testid` ثم `id` ثم `aria-label` ثم مراسٍ قريبة) في `chrome.storage` تحت `perSite[hostname].selectors`، مع إضافة يدوية وثلاثة أوضاع: تلقائي / فرض RTL / استثناء LTR.
+3. ✅ **وضع «طبيب الموقع»** — زر «🔍 طبيب الموقع» يشخّص سبب نجاح/فشل الإضافة: نسبة العربية مقابل العتبة، وجود profile، عدد العناصر المعالجة، وفحص نبض الـ MAIN world patch (يكشف حجب CSP).
+4. ✅ **debounce ديناميكي** — 100ms لمواقع البث الحي (`streaming: true`)، 300ms للصفحات الثابتة.
+5. ✅ **إصلاحات تقرير الفحص** — تجميع دفعات الـ `MutationObserver`، إزالة تسريب `return true`، نسخ آمن في `loadSettings`، كاش لنتائج `getComputedStyle`، تنظيف CSS المكرر، وتوليد أيقونات PNG معتمة جديدة.
+6. ✅ **الخطوط WOFF2** — حُوّلت كل خطوط OTF الست عشرة (المصمك، النسيب، الوتد، عام الشعر، الحرف اليدوية، عام الجمل) إلى WOFF2 (توفير 27–71% من الحجم).
+7. ✅ **اختبارات آلية** — `npm test` يشغّل 30 اختباراً على صفحات ثابتة (fixtures شبيهة بقروك) تغطي الكاشف والـ profiles ومعالجة Bidi ومحددات perSite.
 
-### إصلاحات ذات أولوية (من تقرير الفحص)
+### قيد التطوير
 
-1. تجميع دفعات الـ `MutationObserver` — حتى لا تُفقد العناصر العربية أثناء الـ debounce
-2. إزالة `return true` غير المشروط في message listener (تسريب في كروم)
-3. `loadSettings` يعدّل الكائن الأصلي — خلط إعدادات بين الجلسات
-4. تقليل استدعاءات `getComputedStyle` في الصفحات الكبيرة
-5. ضغط حجم الأيقونة وتوحيد CSS المكرر بين `fixes.css` و`protection.css`
-
-### ميزات مخططة
-
-- Profiles لـ Copilot وDiscord وNotion (نفس فئة SPAs)
-- وضع «طبيب الموقع»: يشرح سبب فشل الإصلاح (CSP / Shadow مغلق / React overwrite / نسبة عربي تحت العتبة)
-- debounce ديناميكي: منخفض للبث الحي، أعلى للصفحات الثابتة
-- استثناء ذكي لكتل الكود حتى لا ينعكس `if (x)` داخل رد عربي
-- تحويل الخطوط إلى WOFF2 واختبارات آلية على صفحات ثابتة (ChatGPT / Claude / Grok)
+1. **تحديث الـ profiles عن بُعد** — ملف JSON على GitHub تتحمّله الإضافة تلقائياً، بدل انتظار تحديث المتجر عند كل تغيير في كلاسات المواقع.
+2. **التحقق الحي من المحددات** — كلاسات Grok/Copilot/Discord/Notion مبنية على مصادر مؤكدة من إضافات حقيقية، لكنها تحتاج تأكيداً عملياً على المواقع الحية بعد كل تحديث واجهة (استخدم «طبيب الموقع» و«التقاط عنصر» عند الكسر).
 
 ### ما لا ننصح به
 

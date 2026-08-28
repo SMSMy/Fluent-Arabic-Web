@@ -212,6 +212,25 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       });
       return true; // async
 
+    // #31/#32: إعادة توجيه رسائل منتقي العناصر وطبيب الموقع إلى التبويب النشط
+    case 'fluent-rtl-start-picker':
+    case 'fluent-rtl-stop-picker':
+    case 'fluent-rtl-doctor':
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs.length > 0) {
+          chrome.tabs.sendMessage(tabs[0].id, { type: message.type }, function (response) {
+            if (chrome.runtime.lastError) {
+              sendResponse({ error: 'tab-unavailable' });
+              return;
+            }
+            sendResponse(response || {});
+          });
+        } else {
+          sendResponse({ error: 'no-tab' });
+        }
+      });
+      return true; // async
+
     default:
       return false;
   }

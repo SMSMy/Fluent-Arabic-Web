@@ -1,0 +1,22 @@
+{
+  "name": "fluent-arabic-web",
+  "version": "4.0.1",
+  "description": "Fluent Arabic Web — إضافة متصفح لتصحيح اتجاه النصوص العربية (RTL). اختبارات آلية على صفحات ثابتة.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SMSMy/Fluent-Arabic-Web.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SMSMy/Fluent-Arabic-Web/issues"
+  },
+  "homepage": "https://github.com/SMSMy/Fluent-Arabic-Web#readme",
+  "devDependencies": {
+    "jsdom": "^30.0.1"
+  }
+}

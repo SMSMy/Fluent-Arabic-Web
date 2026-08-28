@@ -20,7 +20,7 @@
           </div>
           <div class="logo-text">
             <h1 class="logo-title">Fluent Arabic Web</h1>
-            <span class="logo-version">الإصدار 4.0.1</span>
+            <span class="logo-version">الإصدار 4.1.0</span>
           </div>
         </div>
         <button id="themeToggle" class="icon-btn" title="تبديل المظهر" aria-label="تبديل المظهر">
@@ -74,6 +74,38 @@
         <button id="removeFromLists" class="pill-btn pill-btn--remove" style="display:none" title="إزالة من القوائم">
           🗑
         </button>
+      </div>
+    </div>
+
+    <!-- Site Tools -->
+    <div class="section" id="siteTools">
+      <h2 class="section-title">
+        <span class="section-title-icon">🎯</span>
+        أدوات الموقع
+      </h2>
+
+      <div class="tool-row">
+        <button id="pickElementBtn" class="btn btn-primary" title="يفتح نافذة التقاط في الصفحة — اضغط على العنصر المعوج">
+          <span>🎯</span> التقاط عنصر
+        </button>
+        <button id="doctorBtn" class="btn btn-secondary" title="يشخّص لماذا تعمل أو لا تعمل الإضافة في هذه الصفحة">
+          <span>🔍</span> طبيب الموقع
+        </button>
+      </div>
+
+      <!-- Doctor Output -->
+      <div class="doctor-output" id="doctorOutput" style="display:none"></div>
+
+      <!-- Per-site selectors -->
+      <div class="selectors-block" id="selectorsBlock" style="display:none">
+        <div class="list-block-header">
+          <span class="setting-label">محددات هذا الموقع</span>
+        </div>
+        <div class="list-container" id="selectorsContainer"></div>
+        <div class="add-item">
+          <input type="text" id="selectorInput" placeholder="مثال: .message-bubble p" class="input-sm" aria-label="إضافة محدد يدوي">
+          <button id="addSelectorBtn" class="add-btn add-btn--allow" aria-label="إضافة محدد">+</button>
+        </div>
       </div>
     </div>
 

@@ -62,7 +62,16 @@
     themeToggle: document.getElementById('themeToggle'),
     themeIcon: document.getElementById('themeIcon'),
 
-    resetBtn: document.getElementById('resetBtn')
+    resetBtn: document.getElementById('resetBtn'),
+
+    // أدوات الموقع (محددات + طبيب)
+    pickElementBtn: document.getElementById('pickElementBtn'),
+    doctorBtn: document.getElementById('doctorBtn'),
+    doctorOutput: document.getElementById('doctorOutput'),
+    selectorsBlock: document.getElementById('selectorsBlock'),
+    selectorsContainer: document.getElementById('selectorsContainer'),
+    selectorInput: document.getElementById('selectorInput'),
+    addSelectorBtn: document.getElementById('addSelectorBtn')
   };
 
   // =========================================================================
@@ -113,6 +122,7 @@
     updateSettingsUI();
     updateSiteUI();
     updateListsUI();
+    updateSelectorsUI();
   }
 
   function updateStatusUI() {
@@ -187,6 +197,141 @@
     }).join('');
   }
 
+  // =========================================================================
+  // 3ب. أدوات الموقع — محددات يدوية + منتقي عناصر + طبيب الموقع
+  // =========================================================================
+
+  function getCurrentHostname() {
+    return currentTabStatus ? currentTabStatus.hostname : '';
+  }
+
+  function getPerSiteConfig() {
+    var hostname = getCurrentHostname();
+    if (!hostname || !currentSettings || !currentSettings.perSite) return null;
+    return currentSettings.perSite[hostname] || null;
+  }
+
+  function updateSelectorsUI() {
+    var hostname = getCurrentHostname();
+    var config = getPerSiteConfig();
+    var selectors = (config && config.selectors) || [];
+
+    if (!hostname) {
+      elements.selectorsBlock.style.display = 'none';
+      return;
+    }
+
+    elements.selectorsBlock.style.display = '';
+
+    if (selectors.length === 0) {
+      elements.selectorsContainer.innerHTML = '<p class="empty-msg">لا توجد محددات لهذا الموقع — استخدم «التقاط عنصر» أو أضف يدوياً</p>';
+      return;
+    }
+
+    elements.selectorsContainer.innerHTML = selectors.map(function (sel, index) {
+      var mode = sel.mode || 'auto';
+      var modeLabel = mode === 'rtl' ? 'فرض RTL' : (mode === 'ltr' ? 'استثناء LTR' : 'تلقائي');
+      return '<div class="list-item selector-item" data-index="' + index + '">' +
+        '<span class="list-item-text selector-text" title="' + escapeHtml(sel.selector) + '">' + escapeHtml(sel.selector) + '</span>' +
+        '<select class="selector-mode" data-index="' + index + '" aria-label="وضع المحدد">' +
+        '<option value="auto"' + (mode === 'auto' ? ' selected' : '') + '>تلقائي</option>' +
+        '<option value="rtl"' + (mode === 'rtl' ? ' selected' : '') + '>فرض RTL</option>' +
+        '<option value="ltr"' + (mode === 'ltr' ? ' selected' : '') + '>استثناء LTR</option>' +
+        '</select>' +
+        '<button class="list-item-remove" data-selector-index="' + index + '" title="حذف">✕</button>' +
+        '</div>';
+    }).join('');
+  }
+
+  async function handlePickElement() {
+    var response = await sendMessage({ type: 'fluent-rtl-start-picker' });
+    if (response && response.started) {
+      // إغلاق الـ popup حتى يلتقط المستخدم العنصر من الصفحة
+      window.close();
+    } else {
+      alert('تعذر بدء الالتقاط — تأكد أن الصفحة الحالية تسمح بذلك (وليست صفحة كروم داخلية).');
+    }
+  }
+
+  async function handleDoctor() {
+    elements.doctorOutput.style.display = '';
+    elements.doctorOutput.innerHTML = '<p class="empty-msg">جاري التشخيص...</p>';
+
+    var response = await sendMessage({ type: 'fluent-rtl-doctor' });
+
+    if (!response || response.error || !response.findings) {
+      elements.doctorOutput.innerHTML =
+        '<p class="doctor-finding doctor-warn">تعذر التشخيص — تأكد أن الصفحة ليست صفحة كروم داخلية.</p>';
+      return;
+    }
+
+    var html = '';
+    response.findings.forEach(function (finding) {
+      var cls = finding.level === 'ok' ? 'doctor-ok' : (finding.level === 'warn' ? 'doctor-warn' : 'doctor-info');
+      var icon = finding.level === 'ok' ? '✅' : (finding.level === 'warn' ? '⚠️' : 'ℹ️');
+      html += '<p class="doctor-finding ' + cls + '">' + icon + ' ' + escapeHtml(finding.text) + '</p>';
+    });
+
+    var meta = [];
+    if (response.profile) meta.push('profile: ' + response.profile);
+    meta.push('عربي: ' + Math.round(response.arabicRatio * 100) + '%');
+    meta.push('معالج: ' + response.processedElements);
+    if (response.mainWorldPatch === false) meta.push('MAIN patch: مفقود');
+    if (meta.length > 0) {
+      html += '<p class="doctor-meta">' + escapeHtml(meta.join(' · ')) + '</p>';
+    }
+
+    elements.doctorOutput.innerHTML = html;
+  }
+
+  async function persistSelectors(selectors) {
+    var hostname = getCurrentHostname();
+    if (!hostname) return;
+    if (!currentSettings.perSite) currentSettings.perSite = {};
+    var config = currentSettings.perSite[hostname] = currentSettings.perSite[hostname] || {};
+    config.selectors = selectors;
+    await saveSettings(currentSettings);
+    updateSelectorsUI();
+  }
+
+  async function handleAddSelector() {
+    var value = elements.selectorInput.value.trim();
+    if (!value) return;
+
+    // فحص صحة الـ selector — نتحقق أنه قابل للتحليل دون أخطاء قاتلة
+    try {
+      document.createDocumentFragment().querySelector(value);
+    } catch (e) {
+      elements.selectorInput.style.borderColor = 'var(--danger)';
+      setTimeout(function () { elements.selectorInput.style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    var config = getPerSiteConfig();
+    var selectors = (config && config.selectors) || [];
+    if (!selectors.some(function (s) { return s.selector === value; })) {
+      selectors.push({ selector: value, mode: 'auto' });
+      await persistSelectors(selectors);
+    }
+    elements.selectorInput.value = '';
+  }
+
+  async function handleRemoveSelector(index) {
+    var config = getPerSiteConfig();
+    var selectors = (config && config.selectors) || [];
+    selectors.splice(index, 1);
+    await persistSelectors(selectors);
+  }
+
+  async function handleSelectorModeChange(index, mode) {
+    var config = getPerSiteConfig();
+    var selectors = (config && config.selectors) || [];
+    if (selectors[index]) {
+      selectors[index].mode = mode;
+      await persistSelectors(selectors);
+    }
+  }
+
   // #18: دالة escapeHtml محسّنة — بدون إنشاء DOM element في كل استدعاء
   function escapeHtml(str) {
     return String(str)
@@ -202,6 +347,15 @@
     if (!value || typeof value !== 'string') return false;
     var trimmed = value.trim();
     if (trimmed.length === 0 || trimmed.length > 253) return false;
+    // #34: دعم localhost وعناوين IP (مثل 127.0.0.1 لصفحات DeepSeek Harness)
+    if (/^localhost$/i.test(trimmed)) return true;
+    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(trimmed)) {
+      var parts = trimmed.split('.');
+      for (var p = 0; p < parts.length; p++) {
+        if (Number(parts[p]) > 255) return false;
+      }
+      return true;
+    }
     // يسمح بـ hostname عادي أو بدء بـ * للـ wildcard
     return /^(\*\.)?[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/.test(trimmed);
   }
@@ -254,6 +408,20 @@
       if (typeof config.enabled === 'boolean') {
         normalized.perSite[cleanHostname].enabled = config.enabled;
       }
+      // #30: الاحتفاظ بمحددات الموقع اليدوية
+      if (Array.isArray(config.selectors)) {
+        var cleanSelectors = [];
+        config.selectors.forEach(function (sel) {
+          if (!sel || typeof sel.selector !== 'string') return;
+          var selector = sel.selector.trim();
+          if (!selector || selector.length > 500) return;
+          var mode = (sel.mode === 'rtl' || sel.mode === 'ltr' || sel.mode === 'auto') ? sel.mode : 'auto';
+          cleanSelectors.push({ selector: selector, mode: mode });
+        });
+        if (cleanSelectors.length > 0) {
+          normalized.perSite[cleanHostname].selectors = cleanSelectors;
+        }
+      }
     });
 
     return normalized;
@@ -281,7 +449,13 @@
     // إزالة list items (delegated)
     document.addEventListener('click', function (e) {
       if (e.target.classList.contains('list-item-remove')) {
-        handleRemoveListItem(e.target.dataset.type, e.target.dataset.value);
+        if (e.target.dataset.selectorIndex !== undefined) {
+          handleRemoveSelector(parseInt(e.target.dataset.selectorIndex, 10));
+          return;
+        }
+        if (e.target.dataset.type) {
+          handleRemoveListItem(e.target.dataset.type, e.target.dataset.value);
+        }
       }
     });
 
@@ -290,6 +464,21 @@
     elements.importFile.addEventListener('change', handleImport);
 
     elements.themeToggle.addEventListener('click', toggleTheme);
+
+    // أدوات الموقع
+    elements.pickElementBtn.addEventListener('click', handlePickElement);
+    elements.doctorBtn.addEventListener('click', handleDoctor);
+    elements.addSelectorBtn.addEventListener('click', handleAddSelector);
+    elements.selectorInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') handleAddSelector();
+    });
+
+    // تغيير وضع المحدد (delegated)
+    document.addEventListener('change', function (e) {
+      if (e.target.classList.contains('selector-mode')) {
+        handleSelectorModeChange(parseInt(e.target.dataset.index, 10), e.target.value);
+      }
+    });
 
     // #20: تسجيل handleReset مرة واحدة فقط (كان مسجلاً مرتين سابقاً)
     elements.resetBtn.addEventListener('click', handleReset);

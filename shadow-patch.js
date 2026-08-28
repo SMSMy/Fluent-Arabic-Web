@@ -81,5 +81,16 @@
         }
       });
     });
+
+    // #32: نبض حياة لطبيب الموقع — content.js (Isolated World) يسأل
+    // ونحن نجيب عبر CustomEvent يعبر العوالم. إن لم يصل هذا الحدث
+    // فالسبب غالباً CSP يمنع سكربتات MAIN world.
+    document.addEventListener('fluent-shadow-request-alive', function () {
+      try {
+        document.dispatchEvent(new CustomEvent('fluent-shadow-patch-alive'));
+      } catch (e) {
+        // تجاهل
+      }
+    });
   }
 })();

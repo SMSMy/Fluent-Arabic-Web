@@ -46,7 +46,9 @@
   var lazyObserver = null;   // IntersectionObserver للمعالجة الكسولة
   var debounceTimer = null;  // Debounce timer
   // #16: تقليل الـ debounce من 300ms إلى 100ms لتحسين تجربة مواقع الـ streaming
-  var DEBOUNCE_DELAY = 100;
+  // #29: قيمتان — يُختار ديناميكياً حسب نوع الـ profile (بث حي أم صفحة ثابتة)
+  var STREAMING_DEBOUNCE = 100;
+  var STATIC_DEBOUNCE = 300;
 
   // #1: مصفوفة لتجميع mutations أثناء فترة الـ debounce
   var pendingMutations = [];
@@ -156,35 +158,35 @@
       'al-masmak': {
         family: '"FluentAlMasmak"',
         faces: [
-          { src: 'fonts/المصمك.otf', weight: 400, style: 'normal' }
+          { src: 'fonts/المصمك.woff2', weight: 400, style: 'normal' }
         ]
       },
       'al-naseeb': {
         family: '"FluentAlNaseeb"',
         faces: [
-          { src: 'fonts/النسيب.otf', weight: 400, style: 'normal' }
+          { src: 'fonts/النسيب.woff2', weight: 400, style: 'normal' }
         ]
       },
       'al-watad': {
         family: '"FluentAlWatad"',
         faces: [
-          { src: 'fonts/الوتد.otf', weight: 400, style: 'normal' }
+          { src: 'fonts/الوتد.woff2', weight: 400, style: 'normal' }
         ]
       },
       'year-of-poetry': {
         family: '"FluentYearOfPoetry"',
         faces: [
-          { src: 'fonts/خط عام الشعر العربي.otf', weight: 400, style: 'normal' }
+          { src: 'fonts/خط عام الشعر العربي.woff2', weight: 400, style: 'normal' }
         ]
       },
       'year-of-handicrafts': {
         family: '"FluentYearOfHandicrafts"',
         faces: [
-          { src: 'fonts/OTF/TheYearofHandicrafts-Regular.otf', weight: 400, style: 'normal' },
-          { src: 'fonts/OTF/TheYearofHandicrafts-Medium.otf', weight: 500, style: 'normal' },
-          { src: 'fonts/OTF/TheYearofHandicrafts-SemiBold.otf', weight: 600, style: 'normal' },
-          { src: 'fonts/OTF/TheYearofHandicrafts-Bold.otf', weight: 700, style: 'normal' },
-          { src: 'fonts/OTF/TheYearofHandicrafts-Black.otf', weight: 900, style: 'normal' }
+          { src: 'fonts/OTF/TheYearofHandicrafts-Regular.woff2', weight: 400, style: 'normal' },
+          { src: 'fonts/OTF/TheYearofHandicrafts-Medium.woff2', weight: 500, style: 'normal' },
+          { src: 'fonts/OTF/TheYearofHandicrafts-SemiBold.woff2', weight: 600, style: 'normal' },
+          { src: 'fonts/OTF/TheYearofHandicrafts-Bold.woff2', weight: 700, style: 'normal' },
+          { src: 'fonts/OTF/TheYearofHandicrafts-Black.woff2', weight: 900, style: 'normal' }
         ]
       },
       'al-awwal': {
@@ -204,13 +206,13 @@
       'year-of-camel': {
         family: '"FluentYearOfCamel"',
         faces: [
-          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Thin.otf', weight: 100, style: 'normal' },
-          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-ExtraLight.otf', weight: 200, style: 'normal' },
-          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Light.otf', weight: 300, style: 'normal' },
-          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Regular.otf', weight: 400, style: 'normal' },
-          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Medium.otf', weight: 500, style: 'normal' },
-          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Bold.otf', weight: 700, style: 'normal' },
-          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-ExtraBold.otf', weight: 800, style: 'normal' }
+          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Thin.woff2', weight: 100, style: 'normal' },
+          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-ExtraLight.woff2', weight: 200, style: 'normal' },
+          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Light.woff2', weight: 300, style: 'normal' },
+          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Regular.woff2', weight: 400, style: 'normal' },
+          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Medium.woff2', weight: 500, style: 'normal' },
+          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-Bold.woff2', weight: 700, style: 'normal' },
+          { src: 'fonts/The Year of The Camel/TheYearofTheCamel-ExtraBold.woff2', weight: 800, style: 'normal' }
         ]
       }
     };
@@ -283,7 +285,7 @@
     for (var i = 0; i < fontConfig.faces.length; i++) {
       var face = fontConfig.faces[i];
       var fontUrl = chrome.runtime.getURL(urlEncodePath(face.src));
-      var format = face.format || (face.src.endsWith('.ttf') ? 'truetype' : 'opentype');
+      var format = face.format || (face.src.endsWith('.woff2') ? 'woff2' : (face.src.endsWith('.ttf') ? 'truetype' : 'opentype'));
       css += '@font-face {';
       css += '  font-family: ' + fontConfig.family + ';';
       css += '  src: url("' + fontUrl + '") format("' + format + '");';
@@ -301,6 +303,52 @@
            '}';
 
     injectStyle(css, 'fluent-rtl-font-style');
+  }
+
+  // =========================================================================
+  // 2ب. محددات يدوية لكل موقع (perSite selectors) — تُطبَّق كـ CSS خالص
+  // =========================================================================
+
+  /**
+   * #30: بناء CSS من قائمة selectors محفوظة للموقع الحالي
+   * modes: 'auto' (bidi عادي حسب أول حرف) | 'rtl' (فرض RTL) | 'ltr' (استثناء)
+   */
+  function buildPerSiteCSS(selectorConfigs) {
+    if (!Array.isArray(selectorConfigs) || selectorConfigs.length === 0) return '';
+
+    var css = '';
+    for (var i = 0; i < selectorConfigs.length; i++) {
+      var cfg = selectorConfigs[i];
+      if (!cfg || typeof cfg.selector !== 'string') continue;
+      var sel = cfg.selector.trim();
+      if (!sel) continue;
+
+      var mode = cfg.mode || 'auto';
+      if (mode === 'rtl') {
+        css += sel + '{direction:rtl !important;unicode-bidi:isolate !important;text-align:start !important;}';
+      } else if (mode === 'ltr') {
+        css += sel + '{direction:ltr !important;unicode-bidi:isolate !important;text-align:left !important;}';
+      } else {
+        css += sel + '{unicode-bidi:plaintext !important;text-align:start !important;}';
+      }
+    }
+    return css;
+  }
+
+  function applyPerSiteSelectors(hostname) {
+    removePerSiteSelectors();
+    var perSite = settings.perSite && settings.perSite[hostname];
+    var selectors = perSite ? perSite.selectors : null;
+    var css = buildPerSiteCSS(selectors);
+    if (css) {
+      injectStyle(css, 'fluent-rtl-persite-style');
+    }
+  }
+
+  function removePerSiteSelectors() {
+    var el = document.getElementById('fluent-rtl-persite-style');
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+    injectedElements = injectedElements.filter(function (x) { return x !== el; });
   }
 
   // =========================================================================
@@ -343,6 +391,9 @@
 
       // 4. حقن الخط
       injectFont(settings.font);
+
+      // 4ب. تطبيق selectors اليدوية للموقع (perSite)
+      applyPerSiteSelectors(hostname);
 
       // 5. تطبيق bidi fix
       bidiFix.apply(document, function () {
@@ -411,6 +462,9 @@
 
     // 4. إزالة site profile
     siteProfiles.removeProfile();
+
+    // 4ب. إزالة selectors اليدوية للموقع
+    removePerSiteSelectors();
 
     // 5. إزالة Shadow DOM processing
     shadowDOMTraverser.disconnectAll();
@@ -513,6 +567,10 @@
     if (mainObserver) mainObserver.disconnect();
     pendingMutations = [];
 
+    // #29: debounce ديناميكي — قصير لمواقع البث الحي، أطول للصفحات الثابتة
+    var profile = siteProfiles.getProfile(window.location.hostname);
+    var debounceDelay = (profile && profile.streaming) ? STREAMING_DEBOUNCE : STATIC_DEBOUNCE;
+
     mainObserver = new MutationObserver(function (mutations) {
       if (!isActive) return;
 
@@ -526,7 +584,7 @@
         pendingMutations = [];
         debounceTimer = null;
         handleDOMMutations(toProcess);
-      }, DEBOUNCE_DELAY);
+      }, debounceDelay);
     });
 
     mainObserver.observe(document.body, {
@@ -618,6 +676,293 @@
   }
 
   // =========================================================================
+  // 8ب. Element Picker — التقاط عنصر وحفظ selector للموقع الحالي
+  // =========================================================================
+
+  var pickerActive = false;
+  var _pickerHighlightEl = null;
+  var _pickerOverHandler = null;
+  var _pickerClickHandler = null;
+  var _pickerEscHandler = null;
+
+  function startElementPicker() {
+    if (pickerActive) return;
+    pickerActive = true;
+
+    _pickerHighlightEl = document.createElement('div');
+    _pickerHighlightEl.style.cssText =
+      'position:fixed;z-index:2147483647;pointer-events:none;' +
+      'border:2px solid #4CAF50;background:rgba(76,175,80,0.15);border-radius:4px;' +
+      'transition:all 0.08s ease;display:none;';
+    document.documentElement.appendChild(_pickerHighlightEl);
+
+    _pickerOverHandler = function (e) {
+      if (!pickerActive) return;
+      var target = e.target;
+      if (!target || target === _pickerHighlightEl || !target.getBoundingClientRect) return;
+      try {
+        var r = target.getBoundingClientRect();
+        _pickerHighlightEl.style.display = 'block';
+        _pickerHighlightEl.style.left = r.left + 'px';
+        _pickerHighlightEl.style.top = r.top + 'px';
+        _pickerHighlightEl.style.width = r.width + 'px';
+        _pickerHighlightEl.style.height = r.height + 'px';
+      } catch (err) { /* ignore */ }
+    };
+
+    _pickerClickHandler = function (e) {
+      if (!pickerActive) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var target = e.target;
+      if (!target || target === _pickerHighlightEl) return;
+      var selector = buildStableSelector(target);
+      stopElementPicker();
+      savePickedSelector(selector);
+    };
+
+    _pickerEscHandler = function (e) {
+      if (e.key === 'Escape') stopElementPicker();
+    };
+
+    document.addEventListener('mouseover', _pickerOverHandler, true);
+    document.addEventListener('click', _pickerClickHandler, true);
+    document.addEventListener('keydown', _pickerEscHandler, true);
+    document.body.style.cursor = 'crosshair';
+  }
+
+  function stopElementPicker() {
+    if (!pickerActive) return;
+    pickerActive = false;
+    document.removeEventListener('mouseover', _pickerOverHandler, true);
+    document.removeEventListener('click', _pickerClickHandler, true);
+    document.removeEventListener('keydown', _pickerEscHandler, true);
+    if (_pickerHighlightEl && _pickerHighlightEl.parentNode) {
+      _pickerHighlightEl.parentNode.removeChild(_pickerHighlightEl);
+    }
+    _pickerHighlightEl = null;
+    if (document.body) document.body.style.cursor = '';
+  }
+
+  /**
+   * #31: بناء selector مستقر — data-testid ثم id ثم aria-label ثم مرساة قريبة
+   * ثم كلاسات مستقرة (بدون هاشات عشوائية) ثم مسار وسوم
+   */
+  function escapeCssString(value) {
+    return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+
+  function tagPath(el, stopParent) {
+    var parts = [];
+    var current = el;
+    var depth = 0;
+    while (current && current !== stopParent && current.nodeType === Node.ELEMENT_NODE && depth < 5) {
+      var tag = current.tagName.toLowerCase();
+      var parent = current.parentElement;
+      if (parent) {
+        var siblings = Array.prototype.slice.call(parent.children);
+        var sameTagCount = 0;
+        for (var i = 0; i < siblings.length; i++) {
+          if (siblings[i].tagName === current.tagName) sameTagCount++;
+        }
+        if (sameTagCount > 1) {
+          var index = Array.prototype.indexOf.call(siblings, current) + 1;
+          parts.unshift(tag + ':nth-of-type(' + index + ')');
+        } else {
+          parts.unshift(tag);
+        }
+      } else {
+        parts.unshift(tag);
+      }
+      current = parent;
+      depth++;
+    }
+    return parts.join(' > ');
+  }
+
+  function buildStableSelector(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return 'body';
+
+    // 1. data-testid
+    var testId = el.getAttribute('data-testid');
+    if (testId) {
+      return el.tagName.toLowerCase() + '[data-testid="' + escapeCssString(testId) + '"]';
+    }
+
+    // 2. id
+    if (el.id) {
+      return '#' + el.id.replace(/:/g, '\\:');
+    }
+
+    // 3. aria-label (قصير ومعبّر)
+    var aria = el.getAttribute('aria-label');
+    if (aria && aria.trim().length > 0 && aria.length <= 80) {
+      return el.tagName.toLowerCase() + '[aria-label="' + escapeCssString(aria.trim()) + '"]';
+    }
+
+    // 4. مرساة قريبة (id أو data-testid في الأجداد)
+    var current = el.parentElement;
+    var depth = 0;
+    while (current && depth < 4) {
+      if (current.id) {
+        return '#' + current.id.replace(/:/g, '\\:') + ' > ' + tagPath(el, current);
+      }
+      var parentTestId = current.getAttribute('data-testid');
+      if (parentTestId) {
+        return current.tagName.toLowerCase() + '[data-testid="' + escapeCssString(parentTestId) + '"] > ' + tagPath(el, current);
+      }
+      current = current.parentElement;
+      depth++;
+    }
+
+    // 5. كلاسات مستقرة — تجنب الهاشات والأرقام العشوائية
+    var tag = el.tagName.toLowerCase();
+    var stableClasses = [];
+    try {
+      var classes = Array.prototype.slice.call(el.classList || []);
+      for (var i = 0; i < classes.length && stableClasses.length < 2; i++) {
+        var cls = classes[i];
+        if (cls.length > 4 && cls.length < 24 &&
+            !/\d{3,}/.test(cls) &&
+            !/^(css|sc|emotion|jss|styled)-/i.test(cls)) {
+          stableClasses.push(cls);
+        }
+      }
+    } catch (e) { /* ignore */ }
+    if (stableClasses.length > 0) {
+      return tag + '.' + stableClasses.join('.');
+    }
+
+    // 6. مسار الوسوم
+    return tagPath(el, null);
+  }
+
+  function savePickedSelector(selector) {
+    var hostname = window.location.hostname;
+    chrome.storage.sync.get('fluentRTLSettings', function (result) {
+      var stored = Object.assign({}, DEFAULT_SETTINGS, result.fluentRTLSettings || {});
+      stored.perSite = stored.perSite || {};
+      var site = stored.perSite[hostname] = stored.perSite[hostname] || {};
+      site.selectors = site.selectors || [];
+
+      var exists = site.selectors.some(function (s) { return s && s.selector === selector; });
+      if (!exists) {
+        site.selectors.push({ selector: selector, mode: 'auto', addedAt: Date.now() });
+      }
+
+      chrome.storage.sync.set({ fluentRTLSettings: stored }, function () {
+        applySettingsFromMessage(stored);
+        if (isActive) {
+          applyPerSiteSelectors(hostname);
+        }
+        showPickerToast('✓ حُفظ المحدد: ' + selector);
+      });
+    });
+  }
+
+  function showPickerToast(text) {
+    var toast = document.createElement('div');
+    toast.textContent = text;
+    var side = (document.documentElement.dir === 'rtl') ? 'right:24px' : 'left:24px';
+    toast.style.cssText =
+      'position:fixed;bottom:24px;' + side + ';z-index:2147483647;' +
+      'background:#0F6E56;color:#fff;padding:10px 16px;border-radius:10px;' +
+      'font-family:sans-serif;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
+    document.documentElement.appendChild(toast);
+    setTimeout(function () {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 3000);
+  }
+
+  // =========================================================================
+  // 8ج. طبيب الموقع — تشخيص سبب فشل/نجاح الإضافة في هذه الصفحة
+  // =========================================================================
+
+  function runDoctor() {
+    return new Promise(function (resolve) {
+      var hostname = window.location.hostname;
+      var profile = siteProfiles.getProfile(hostname);
+      var processedCount = 0;
+      try {
+        processedCount = document.querySelectorAll('[' + bidiFix.MARKER_ATTR + ']').length;
+      } catch (e) { /* ignore */ }
+
+      var report = {
+        url: window.location.href,
+        hostname: hostname,
+        active: isActive,
+        enabled: settings.enabled,
+        autoDetect: settings.autoDetect,
+        arabicRatio: detector.getPageArabicRatio(),
+        threshold: settings.detectionThreshold || 0.15,
+        nativeRTL: detector.isLikelyArabicNativeSite(),
+        profile: profile ? profile.id : null,
+        blacklisted: isHostnameInList(hostname, settings.blacklist),
+        whitelisted: isHostnameInList(hostname, settings.whitelist),
+        hasPerSite: !!(settings.perSite && settings.perSite[hostname]),
+        perSiteSelectorCount: (settings.perSite && settings.perSite[hostname] && settings.perSite[hostname].selectors) ? settings.perSite[hostname].selectors.length : 0,
+        processedElements: processedCount,
+        mainWorldPatch: null,
+        findings: []
+      };
+
+      // #32: فحص نبض الـ MAIN world patch (shadow-patch.js) عبر حدث DOM يعبر العوالم
+      var gotHeartbeat = false;
+      function onHeartbeat() { gotHeartbeat = true; }
+      document.addEventListener('fluent-shadow-patch-alive', onHeartbeat);
+      document.dispatchEvent(new CustomEvent('fluent-shadow-request-alive'));
+
+      setTimeout(function () {
+        document.removeEventListener('fluent-shadow-patch-alive', onHeartbeat);
+        report.mainWorldPatch = gotHeartbeat;
+        buildFindings(report);
+        resolve(report);
+      }, 350);
+    });
+  }
+
+  function buildFindings(report) {
+    var f = report.findings;
+    if (!report.enabled) {
+      f.push({ level: 'info', text: 'الإضافة معطّلة كلياً من الإعدادات.' });
+    }
+    if (report.blacklisted) {
+      f.push({ level: 'info', text: 'الموقع في القائمة السوداء — لن تُفعَّل الإضافة هنا.' });
+    }
+    if (report.nativeRTL) {
+      f.push({ level: 'info', text: 'الموقع أصلي RTL — لا حاجة للتدخل.' });
+    }
+    if (report.active) {
+      if (report.profile) {
+        f.push({ level: 'ok', text: 'يوجد profile جاهز لهذا الموقع: ' + report.profile + '.' });
+      }
+      if (report.hasPerSite) {
+        f.push({ level: 'ok', text: 'توجد محددات يدوية لهذا الموقع: ' + report.perSiteSelectorCount + '.' });
+      }
+      if (report.processedElements === 0) {
+        f.push({ level: 'warn', text: 'لم يُعالج أي عنصر — النصوص قد تكون داخل flex containers أو عناصر مستثناة (code/pre).' });
+      } else {
+        f.push({ level: 'ok', text: 'عناصر عولجت: ' + report.processedElements + '.' });
+      }
+      if (!report.mainWorldPatch) {
+        f.push({ level: 'warn', text: 'لم يصل الـ patch إلى MAIN world (ربما CSP) — Shadow DOM لن يُعالج.' });
+      }
+    } else {
+      if (!report.profile && !report.whitelisted && report.arabicRatio < report.threshold) {
+        f.push({
+          level: 'warn',
+          text: 'نسبة العربية (' + Math.round(report.arabicRatio * 100) + '%) أقل من العتبة (' + Math.round(report.threshold * 100) + '%). ارفع الحساسية، أو أضف الموقع للقائمة البيضاء، أو استخدم «التقاط عنصر».'
+        });
+      } else {
+        f.push({ level: 'info', text: 'الإضافة غير مفعّلة في هذا التبويب.' });
+      }
+    }
+    if (f.length === 0) {
+      f.push({ level: 'ok', text: 'كل شيء يبدو طبيعياً.' });
+    }
+  }
+
+  // =========================================================================
   // 9. الرسائل من background.js / popup
   // =========================================================================
 
@@ -683,6 +1028,22 @@
         }
         sendResponse({ applied: true });
         return false;
+
+      case 'fluent-rtl-start-picker':
+        startElementPicker();
+        sendResponse({ started: true });
+        return false;
+
+      case 'fluent-rtl-stop-picker':
+        stopElementPicker();
+        sendResponse({ stopped: true });
+        return false;
+
+      case 'fluent-rtl-doctor':
+        runDoctor().then(function (report) {
+          sendResponse(report);
+        });
+        return true; // async
 
       default:
         // #3: لرسائل غير معروفة — لا نعيد true (لن نستدعي sendResponse لاحقاً)

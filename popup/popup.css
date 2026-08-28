@@ -1136,3 +1136,88 @@ details[open] summary {
 #app {
   animation: fadeSlideIn 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* ═══════════════════════════════════════
+   أدوات الموقع (التقاط عنصر + طبيب الموقع + محددات)
+═══════════════════════════════════════ */
+.tool-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tool-row .btn {
+  flex: 1;
+  justify-content: center;
+  gap: 6px;
+}
+
+.selectors-block {
+  margin-top: 10px;
+}
+
+.selectors-block .list-block-header {
+  margin-bottom: 8px;
+}
+
+.selector-item {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selector-item .selector-text {
+  flex: 1 1 100%;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  direction: ltr;
+  text-align: left;
+  word-break: break-all;
+}
+
+.selector-mode {
+  flex: 1;
+  font-size: 11px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(128, 128, 128, 0.25));
+  background: var(--bg-card, #fff);
+  color: var(--text-1, #111);
+  outline: none;
+}
+
+.doctor-output {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.doctor-finding {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.doctor-ok {
+  background: rgba(76, 175, 80, 0.12);
+  color: #2e7d32;
+}
+
+.doctor-warn {
+  background: rgba(255, 152, 0, 0.12);
+  color: #b26a00;
+}
+
+.doctor-info {
+  background: rgba(33, 150, 243, 0.10);
+  color: #1565c0;
+}
+
+.doctor-meta {
+  font-size: 11px;
+  color: var(--text-muted, #666);
+  margin: 4px 0 0;
+  padding: 0 2px;
+}

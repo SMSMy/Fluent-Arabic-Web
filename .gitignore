@@ -3,3 +3,6 @@ AGENTS.md
 audit_report.md
 تطوير.md
 /agent-kit
+node_modules/
+research/
+lib/site-packages/
