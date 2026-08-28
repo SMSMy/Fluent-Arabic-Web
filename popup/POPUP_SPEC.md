@@ -320,8 +320,18 @@ PerSiteConfig = {
 **البناء بعد أي تعديل على `popup.html` أو `input.css`:**
 
 ```bash
-npx tailwindcss -c popup/tailwind.config.js -i popup/input.css -o popup/popup.css --minify
+npm run build:popup
 ```
+
+(وهي اختصار للأمر الطويل: `npx tailwindcss -c popup/tailwind.config.js -i popup/input.css -o popup/popup.css --minify`)
+
+**متى تحتاج البناء فعلاً (ومتى لا):**
+| التعديل | بناء؟ |
+|---|---|
+| نص فقط في `popup.html` («طبيب الموقع» → «الفحص») | ❌ لا |
+| إضافة/تغيير كلاس Tailwind في `popup.html` (مثل `rounded-2xl`) | ✅ نعم |
+| تعديل `input.css` أو `tailwind.config.js` (ألوان/فئات ديناميكية) | ✅ نعم |
+| تعديل `popup.js` بدون كلاسات جديدة | ❌ لا |
 
 **قاعدتان حرجتان للفئات الديناميكية:**
 1. الفئات التي يضيفها `popup.js` وقت التشغيل (`.status-dot.active/inactive`، `#mainToggle.active`، `.list-item*`، `.selector-*`، `.doctor-*`، `.empty-msg`، `.glow-active`، `.status-pulse`) **يجب أن تعيش خارج `@layer`** في `input.css` — وإلا جرّدها Tailwind من البناء لأنها غير ظاهرة في المحتوى الساكن.
