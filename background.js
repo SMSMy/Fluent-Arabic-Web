@@ -212,22 +212,34 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       });
       return true; // async
 
-    // #31/#32: إعادة توجيه رسائل منتقي العناصر وطبيب الموقع إلى التبويب النشط
+    // #31/#32:#44: إعادة توجيه رسائل منتقي العناصر وطبيب الموقع إلى التبويب النشط
     case 'fluent-rtl-start-picker':
     case 'fluent-rtl-stop-picker':
     case 'fluent-rtl-doctor':
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        if (tabs.length > 0) {
-          chrome.tabs.sendMessage(tabs[0].id, { type: message.type }, function (response) {
-            if (chrome.runtime.lastError) {
-              sendResponse({ error: 'tab-unavailable' });
-              return;
-            }
-            sendResponse(response || {});
-          });
-        } else {
+        if (tabs.length === 0) {
           sendResponse({ error: 'no-tab' });
+          return;
         }
+        var tabUrl = tabs[0].url || '';
+        var isChromePage = tabUrl.indexOf('chrome://') === 0 ||
+          tabUrl.indexOf('edge://') === 0 ||
+          tabUrl.indexOf('chrome-extension://') === 0 ||
+          tabUrl.indexOf('chrome-search://') === 0;
+        if (isChromePage) {
+          sendResponse({ error: 'chrome-page', detail: tabUrl });
+          return;
+        }
+
+        chrome.tabs.sendMessage(tabs[0].id, { type: message.type }, function (response) {
+          if (chrome.runtime.lastError) {
+            // #44: التبويب قديم — أعد تحميله بعد تحديث الإضافة (content script ميت)
+            var msg = chrome.runtime.lastError.message || '';
+            sendResponse({ error: 'no-receiver', detail: msg });
+            return;
+          }
+          sendResponse(response || {});
+        });
       });
       return true; // async
 

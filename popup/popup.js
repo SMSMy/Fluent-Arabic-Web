@@ -249,7 +249,14 @@
       // إغلاق الـ popup حتى يلتقط المستخدم العنصر من الصفحة
       window.close();
     } else {
-      alert('تعذر بدء الالتقاط — تأكد أن الصفحة الحالية تسمح بذلك (وليست صفحة كروم داخلية).');
+      // #44: رسائل دقيقة حسب سبب الفشل
+      if (response && response.error === 'no-receiver') {
+        alert('الصفحة الحالية لا تستجيب — أعد تحميلها (F5) بعد إعادة تحميل الإضافة، ثم أعد المحاولة.');
+      } else if (response && response.error === 'chrome-page') {
+        alert('لا يمكن الالتقاط على صفحات كروم الداخلية (chrome://) — افتح موقعاً عادياً أولاً.');
+      } else {
+        alert('تعذر بدء الالتقاط — تأكد أن الصفحة الحالية تسمح بذلك (وليست صفحة كروم داخلية).');
+      }
     }
   }
 
@@ -260,8 +267,17 @@
     var response = await sendMessage({ type: 'fluent-rtl-doctor' });
 
     if (!response || response.error || !response.findings) {
-      elements.doctorOutput.innerHTML =
-        '<p class="doctor-finding doctor-warn">تعذر التشخيص — تأكد أن الصفحة ليست صفحة كروم داخلية.</p>';
+      // #44: رسائل دقيقة حسب سبب الفشل
+      if (response && response.error === 'no-receiver') {
+        elements.doctorOutput.innerHTML =
+          '<p class="doctor-finding doctor-warn">⚠️ الصفحة لا تستجيب — أعد تحميلها (F5) بعد إعادة تحميل الإضافة ثم أعد المحاولة.</p>';
+      } else if (response && response.error === 'chrome-page') {
+        elements.doctorOutput.innerHTML =
+          '<p class="doctor-finding doctor-warn">⚠️ صفحة كروم داخلية — افتح موقعاً عادياً أولاً.</p>';
+      } else {
+        elements.doctorOutput.innerHTML =
+          '<p class="doctor-finding doctor-warn">⚠️ تعذر التشخيص — تأكد أن الصفحة ليست صفحة كروم داخلية.</p>';
+      }
       return;
     }
 
