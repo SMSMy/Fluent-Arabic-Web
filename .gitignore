@@ -6,3 +6,5 @@ audit_report.md
 node_modules/
 research/
 lib/site-packages/
+*.lnk
+
