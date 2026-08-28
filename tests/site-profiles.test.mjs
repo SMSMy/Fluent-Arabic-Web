@@ -55,11 +55,12 @@ test('Grok CSS: plaintext للنصوص و LTR للكود', () => {
   assert.match(grok.css, /\.response-content-markdown/);
 });
 
-test('DSH CSS: يستهدف data-chat-flow-kind و md-code-block', () => {
+test('DSH CSS: يستهدف data-chat-flow-kind و md-code-block و backdrop', () => {
   const dsh = siteProfiles.getProfile('127.0.0.1');
   assert.match(dsh.css, /data-chat-flow-kind="assistant-step"/);
   assert.match(dsh.css, /\.md-code-block/);
   assert.match(dsh.css, /textarea\[data-phase\]/);
+  assert.match(dsh.css, /data-input-backdrop/);
 });
 
 test('كل profiles البث الحي عليها streaming: true', () => {

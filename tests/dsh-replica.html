@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DSH Replica — اختبار بنية الواجهة الحقيقية</title>
+<style>
+  /* نسخة مبسطة من أنماط DSH الفعلية (المقتطفات من السورس) */
+  body { font-family: var(--dsw-font-family, sans-serif); padding: 0; margin: 0; background: #f7f7f5; color: #333; }
+  #root > div > div { display: flex; }
+  .pI_x6G_centerCol { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; height: 100vh; }
+  .wSkVaW_scrollBody { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 20px; }
+  .Md3f7G_column { max-width: 748px; flex-direction: column; gap: 16px; width: 100%; margin: 0 auto; display: flex; }
+  .Md3f7G_flowItem { min-width: 0; }
+  .gdEzaW_userRow { flex-direction: column; align-items: flex-end; gap: 6px; display: flex; }
+  .gdEzaW_userStack { flex-direction: column; align-items: flex-end; gap: 8px; min-width: 0; max-width: min(525px, 82%); display: flex; }
+  .gdEzaW_bubble { background: #eef2f5; max-width: 100%; border-radius: 22px; padding: 10px 16px; font-size: 16px; line-height: 24px; }
+  .Sxvs8a_root { flex-direction: column; font-size: 16px; line-height: 28px; display: flex; }
+  .Sxvs8a_body { flex-direction: column; gap: 16px; display: flex; }
+  ._markdown_1r4m5_5 { color: #1f1f1f; }
+  .md-code-block pre { background: #f3f3f1; border-radius: 8px; padding: 12px 16px; font-family: Consolas, monospace; font-size: 13px; overflow: auto; }
+  .md-code-block { margin: 8px 0; }
+
+  /* composer — بترجمة دقيقة لأنماط DSH (input شفاف + backdrop مرئي + mirror للقياس) */
+  [data-composer-card] { position: relative; max-width: 780px; margin: 16px auto; border: 1px solid #e3e3e0; border-radius: 22px; background: #fff; }
+  [data-input-scroll] { position: relative; min-height: 52px; }
+  [data-composer-card] textarea,
+  [data-input-mirror],
+  [data-input-backdrop] {
+    box-sizing: border-box; font-family: sans-serif, 'Segoe UI'; font-size: inherit; line-height: inherit;
+    white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; padding: 4px 12px 0 16px;
+  }
+  [data-composer-card] textarea.uV2eYG_input {
+    resize: none; color: transparent; -webkit-text-fill-color: transparent; width: 100%; height: 100%;
+    caret-color: #2f9e73; background: transparent; border: none; outline: none; position: absolute; inset: 0; overflow: hidden;
+  }
+  [data-input-mirror] { visibility: hidden; pointer-events: none; }
+  [data-input-backdrop] { color: #1f1f1f; pointer-events: none; position: absolute; inset: 0; overflow: hidden; }
+
+  #checks { margin: 12px auto; max-width: 748px; font-family: monospace; font-size: 12px; background: #111; color: #9f9; padding: 12px; border-radius: 8px; white-space: pre; }
+</style>
+</head>
+<body>
+<div id="root">
+  <div><div>
+    <div class="pI_x6G_centerCol">
+      <div><div>
+        <div class="wSkVaW_scrollBody" data-conversation-scroll>
+          <div data-chat-flow=""><!-- session wrapper -->
+            <div><div><div>
+              <div class="Md3f7G_column" data-chat-flow="">
+
+                <!-- رسالة مستخدم -->
+                <div class="Md3f7G_flowItem" data-chat-anchor-key="u1" data-chat-flow-key="u1" data-chat-flow-kind="user">
+                  <div><div>
+                    <div class="gdEzaW_userRow"><div class="gdEzaW_userStack">
+                      <div class="gdEzaW_bubble">مرحبا، اشرح الفرق بين RTL و LTR بوضوح</div>
+                    </div></div>
+                  </div></div>
+                </div>
+
+                <!-- رد مساعد يحتوي قائمة متداخلة (ol > ul) + قائمة عادية + كود + انجليزي -->
+                <div class="Md3f7G_flowItem" data-chat-anchor-key="a113" data-chat-flow-key="a113" data-chat-flow-kind="assistant-step">
+                  <div><div>
+                    <div class="Sxvs8a_root" data-streaming="">
+                      <div class="Sxvs8a_body">
+                        <div class="_markdown_1r4m5_5">
+                          <p>أهداف المرحلة الثانية:</p>
+                          <ol>
+                            <li><p>أولا: بناء المحددات لكل المواقع</p>
+                              <ul>
+                                <li><p>بند فرعي واحد بالعربية</p></li>
+                                <li><p>بند فرعي اثنان بالعربية</p></li>
+                              </ul>
+                            </li>
+                            <li><p>ثانيا: رفع النتائج إلى جيت هاب</p></li>
+                          </ol>
+                          <ul>
+                            <li>عنصر قائمة عربية بسيط يجب أن تظهر نقطته على اليمين</li>
+                            <li>عنصر ثان مع <code>inline code</code> داخل النص</li>
+                          </ul>
+                          <div class="md-code-block">
+                            <pre><code>const multiply = (a, b) =&gt; a * b;
+// هذا الكود يجب أن يبقى يسار المحاذاة دائما</code></pre>
+                          </div>
+                          <p>This paragraph is plain English and should stay left-to-right.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div></div>
+                </div>
+
+              </div>
+            </div></div></div>
+          </div>
+        </div>
+
+        <!-- composer -->
+        <div data-composer-seat>
+          <div data-composer-card>
+            <div data-input-scroll>
+              <textarea class="uV2eYG_input" data-phase="active" placeholder="Message the agent" aria-label="Message the agent"></textarea>
+              <div class="uV2eYG_mirror" data-input-mirror aria-hidden="true"></div>
+              <div class="uV2eYG_backdrop" data-input-backdrop aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+
+      </div></div>
+    </div>
+  </div></div>
+</div>
+
+<div id="checks">جاري التشغيل...</div>
+
+<!-- محاكاة التطبيق: يعكس نص textarea إلى الـ backdrop (مثل DSH تماماً) -->
+<script>
+  var ta = document.querySelector('textarea.uV2eYG_input');
+  var backdrop = document.querySelector('[data-input-backdrop]');
+  var mirror = document.querySelector('[data-input-mirror]');
+  function sync() {
+    backdrop.textContent = ta.value;
+    mirror.textContent = ta.value;
+  }
+  ta.value = 'مرحبا، أريد كتابة رسالة عربية كاملة في صندوق الإدخال';
+  ta.addEventListener('input', sync);
+  sync();
+</script>
+
+<!-- Stub كروم + الإضافة الحقيقية -->
+<script>
+  window.FluentRTL = {};
+  window.chrome = {
+    storage: { sync: { get: function (k, cb) { cb({ fluentRTLSettings: { enabled: true, autoDetect: true, detectionThreshold: 0.15, font: 'default', customFonts: [], whitelist: [], blacklist: [], perSite: {} } }); }, set: function (o, cb) { if (cb) cb(); } }, local: { get: function (k, cb) { cb({}); }, set: function (o, cb) { if (cb) cb(); } } },
+    runtime: { getURL: function (p) { return p; }, onMessage: { addListener: function () {} }, sendMessage: function (m, cb) { if (cb) cb({}); } }
+  };
+</script>
+<script src="../lib/detector.js?v=2"></script>
+<script src="../lib/bidi-fix.js?v=2"></script>
+<script src="../lib/transition-guard.js?v=2"></script>
+<script src="../lib/transform-fixer.js?v=2"></script>
+<script src="../lib/shadow-dom-traverser.js?v=2"></script>
+<script src="../lib/site-profiles.js?v=2"></script>
+<script src="../content.js?v=2"></script>
+
+<script>
+  function check(name, cond) {
+    console.log((cond ? 'PASS' : 'FAIL') + ' | ' + name + '  [' + cond + ']');
+    return name + ': ' + (cond ? 'PASS' : 'FAIL');
+  }
+
+  setTimeout(function () {
+    var out = [];
+    var ul = document.querySelector('ul:not(:has(ul))'); // أعمق قائمة
+    var ol = document.querySelector('ol');
+    var codePre = document.querySelector('.md-code-block pre');
+    var backdrop = document.querySelector('[data-input-backdrop]');
+    var cs = function (el) { return getComputedStyle(el); };
+
+    out.push(check('ul gets dir=rtl (bidi-fix JS)', ul && ul.getAttribute('dir') === 'rtl'));
+    out.push(check('أعمق li direction=rtl عبر الوراثة', ul && getComputedStyle(ul.querySelector('li')).direction === 'rtl'));
+    out.push(check('ol gets dir=rtl', ol && ol.getAttribute('dir') === 'rtl'));
+    out.push(check('أول عنصر في ol (p) gets dir=rtl', ol && ol.querySelector('li p').getAttribute('dir') === 'rtl'));
+    out.push(check('backdrop unicode-bidi=plaintext', backdrop && cs(backdrop).unicodeBidi === 'plaintext'));
+    out.push(check('textarea unicode-bidi=plaintext', cs(document.querySelector('textarea')).unicodeBidi === 'plaintext'));
+    out.push(check('code block direction=ltr', codePre && cs(codePre).direction === 'ltr'));
+    out.push(check('English p بدون dir', !document.querySelector('._markdown_1r4m5_5 > p:last-child').hasAttribute('dir')));
+    out.push(check('html active class', document.documentElement.classList.contains('fluent-rtl-active')));
+    out.push(check('profile dsh مطابق', window.FluentRTL.siteProfiles.getProfile('127.0.0.1').id === 'dsh'));
+
+    document.getElementById('checks').textContent = out.join('\n');
+    console.log('DONE');
+  }, 1500);
+</script>
+</body>
+</html>

@@ -77,6 +77,31 @@ test('الاقتباس وعناصر القائمة العربية تُعالج',
   assert.equal(window.document.getElementById('list-item').getAttribute('data-fluent-rtl-dir'), 'rtl');
 });
 
+test('ul/ol المحتوية عربي تنقلب إلى dir=rtl (النقاط لليمين)', async () => {
+  const container = window.document.createElement('div');
+  container.innerHTML =
+    '<ul id="test-ul"><li><p>عنصر أول بالعربية</p></li><li><p>عنصر ثانٍ بالعربية</p></li></ul>' +
+    '<ol id="test-ol"><li><p>مرقّم أول بالعربية</p></li><li><p>مرقّم ثانٍ بالعربية</p></li></ol>' +
+    '<ul id="en-ul"><li>English only list item</li></ul>';
+  window.document.body.appendChild(container);
+
+  bidiFix.processElement(container);
+  assert.equal(window.document.getElementById('test-ul').getAttribute('dir'), 'rtl');
+  assert.equal(window.document.getElementById('test-ol').getAttribute('dir'), 'rtl');
+  // قائمة إنجليزية لا تُلمس
+  assert.equal(window.document.getElementById('en-ul').hasAttribute('data-fluent-rtl-dir'), false);
+  // li داخل القائمة يرث rtl
+  assert.equal(window.document.getElementById('test-ul').querySelector('li').getAttribute('data-fluent-rtl-dir') !== null ||
+    window.document.getElementById('test-ul').querySelector('li p').getAttribute('data-fluent-rtl-dir') === 'rtl', true);
+});
+
+test('revert يستعيد القوائم كما كانت', async () => {
+  const ul = window.document.getElementById('test-ul');
+  bidiFix.revert(window.document);
+  assert.equal(ul.hasAttribute('data-fluent-rtl-dir'), false);
+  assert.equal(ul.hasAttribute('dir'), false);
+});
+
 test('revert يعيد كل شيء كما كان', async () => {
   await runApply();
   const p = window.document.getElementById('arabic-msg');
