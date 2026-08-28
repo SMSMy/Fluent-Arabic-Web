@@ -59,6 +59,39 @@
   // مرجع مستمع Shadow DOM للتنظيف
   var _shadowAttachedHandler = null;
 
+  // #46: اكتشاف «Extension context invalidated» — بعد إعادة تحميل الإضافة
+  // وتبقى الصفحات مفتوحة، يموت سياق السكربت القديم؛ هنا ينسحب بصمت وينظف أثره
+  function isExtensionAlive() {
+    try {
+      return !!(chrome && chrome.runtime && chrome.runtime.id);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  var _teardownDone = false;
+
+  function teardownStaleScript() {
+    if (_teardownDone) return;
+    _teardownDone = true;
+    try {
+      if (mainObserver) { mainObserver.disconnect(); mainObserver = null; }
+      if (lazyObserver) { lazyObserver.disconnect(); lazyObserver = null; }
+      if (debounceTimer) { clearTimeout(debounceTimer); debounceTimer = null; }
+      pendingMutations = [];
+      isActive = false;
+      document.documentElement.classList.remove(ACTIVE_CLASS);
+      injectedElements.forEach(function (el) {
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+      });
+      injectedElements = [];
+      if (_shadowAttachedHandler) {
+        document.removeEventListener('fluent-shadow-attached', _shadowAttachedHandler);
+        _shadowAttachedHandler = null;
+      }
+    } catch (e) { /* ignore */ }
+  }
+
   // =========================================================================
   // 1. استقبال الإعدادات من background.js
   // =========================================================================
@@ -114,13 +147,20 @@
   // =========================================================================
 
   function injectCSS(filePath, id) {
+    if (!isExtensionAlive()) { teardownStaleScript(); return; }
     var existing = document.getElementById(id);
     if (existing) existing.remove();
 
     var link = document.createElement('link');
     link.id = id;
     link.rel = 'stylesheet';
-    link.href = chrome.runtime.getURL(filePath);
+    try {
+      link.href = chrome.runtime.getURL(filePath);
+    } catch (e) {
+      // #46: السياق مات — انسحاب صامت
+      teardownStaleScript();
+      return;
+    }
     link.setAttribute('data-fluent-rtl', 'true');
     document.head.appendChild(link);
     injectedElements.push(link);
@@ -140,6 +180,8 @@
 
   function injectFont(fontName) {
     if (!fontName || fontName === 'default') return;
+    // #46: سياق ميت — انسحاب صامت قبل أي نداء chrome
+    if (!isExtensionAlive()) { teardownStaleScript(); return; }
 
     // ترميز المسافات في مسارات الخطوط
     function urlEncodePath(path) {
@@ -435,12 +477,16 @@
       }, 2500);
 
       // إعلام background.js
-      chrome.runtime.sendMessage({
-        type: 'fluent-rtl-status',
-        active: true,
-        url: window.location.href,
-        arabicRatio: detector.getPageArabicRatio()
-      });
+      try {
+        chrome.runtime.sendMessage({
+          type: 'fluent-rtl-status',
+          active: true,
+          url: window.location.href,
+          arabicRatio: detector.getPageArabicRatio()
+        });
+      } catch (e) {
+        // #46: سياق ميت — تجاهل (التنظيف تم أعلاه)
+      }
     } catch (e) {
       console.error('[FluentRTL] Activation error:', e.message);
       transitionGuard.forceUnfreeze();
@@ -524,11 +570,15 @@
     transitionGuard.forceUnfreeze();
 
     // إعلام background.js
-    chrome.runtime.sendMessage({
-      type: 'fluent-rtl-status',
-      active: false,
-      url: window.location.href
-    });
+    try {
+      chrome.runtime.sendMessage({
+        type: 'fluent-rtl-status',
+        active: false,
+        url: window.location.href
+      });
+    } catch (e) {
+      // #46: سياق ميت — تجاهل
+    }
   }
 
   // =========================================================================
@@ -582,6 +632,11 @@
     var debounceDelay = (profile && profile.streaming) ? STREAMING_DEBOUNCE : STATIC_DEBOUNCE;
 
     mainObserver = new MutationObserver(function (mutations) {
+      // #46: سياق ميت (إعادة تحميل الإضافة) — انسحاب صامت فوري
+      if (!isExtensionAlive()) {
+        teardownStaleScript();
+        return;
+      }
       if (!isActive) return;
 
       // #39: فحص سلامة الأنماط المحقونة (Angular ينظف head أحياناً)
@@ -615,6 +670,11 @@
   var _lastSelfHeal = 0;
 
   function selfHealInjectedStyles(minIntervalMs) {
+    // #46: السياق مات — انسحاب صامت بدل استثناءات متكررة مع كل mutation
+    if (!isExtensionAlive()) {
+      teardownStaleScript();
+      return;
+    }
     var now = Date.now();
     var minInterval = minIntervalMs || 1000;
     if (now - _lastSelfHeal < minInterval) return;
@@ -922,6 +982,8 @@
   }
 
   function savePickedSelector(selector) {
+    // #46: سياق ميت — انسحاب صامت
+    if (!isExtensionAlive()) { teardownStaleScript(); return; }
     var hostname = window.location.hostname;
     chrome.storage.sync.get('fluentRTLSettings', function (result) {
       var stored = Object.assign({}, DEFAULT_SETTINGS, result.fluentRTLSettings || {});
@@ -1051,6 +1113,15 @@
   // =========================================================================
 
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (!message || !message.type) return false;
+
+    // #46: السياق مات — لا نستطيع الرد بأمان
+    if (!isExtensionAlive()) {
+      teardownStaleScript();
+      try { sendResponse({}); } catch (e) { /* ignore */ }
+      return false;
+    }
+
     switch (message.type) {
       case 'fluent-rtl-toggle':
         toggle();

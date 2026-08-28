@@ -83,3 +83,29 @@ test('deactivate يزيل style الـ perSite', async () => {
   assert.equal(window.document.getElementById('fluent-rtl-persite-style'), null);
   env.dom.window.close();
 });
+
+test('#46: موت سياق الإضافة (Extension context invalidated) → انسحاب صامت وتنظيف', async () => {
+  const env = await setupExtension(PAGE_HTML, {
+    url: 'https://example.com/page',
+    storage: JSON.parse(JSON.stringify(STORAGE))
+  });
+  const { window } = env;
+
+  await waitFor(() => window.document.getElementById('fluent-rtl-base-css') !== null, 1500);
+  assert.equal(window.FluentRTL.isActive(), true);
+
+  // محاكاة إعادة تحميل الإضافة: سياق الكروم يموت
+  window.chrome.runtime.id = undefined;
+  window.chrome.runtime.getURL = function () { throw new Error('Extension context invalidated.'); };
+
+  // أي mutation يُشغّل المراقب — يجب أن ينسحب بصمت وينظف أثره
+  const el = window.document.createElement('div');
+  window.document.body.appendChild(el);
+
+  await waitFor(() => window.FluentRTL.isActive() === false, 1500);
+  assert.equal(window.document.getElementById('fluent-rtl-base-css'), null, 'base css يُزال');
+  assert.equal(window.document.getElementById('fluent-rtl-protection-css'), null);
+  assert.equal(window.document.getElementById('fluent-rtl-fixes-css'), null);
+  assert.equal(window.document.documentElement.classList.contains('fluent-rtl-active'), false);
+  env.dom.window.close();
+});

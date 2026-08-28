@@ -65,6 +65,7 @@ export function createDom(html, opts = {}) {
       }
     },
     runtime: {
+      id: 'test-extension-id',
       getURL(p) { return 'chrome-extension://test/' + p; },
       onMessage: {
         addListener(fn) { messageListener = fn; }
