@@ -64,6 +64,14 @@ test('DSH CSS: يستهدف data-chat-flow-kind و md-code-block و backdrop', (
   assert.match(dsh.css, /\.gdEzaW_bubble/); // #41: فقاعة المستخدم بقاعدة عامة
 });
 
+test('AI Studio profile يغطي بنية composer الحية (ms-prompt-box)', () => {
+  const aistudio = siteProfiles.getProfile('aistudio.google.com');
+  assert.match(aistudio.css, /ms-prompt-box textarea/); // #42: مؤكد من البنية الحية
+  assert.match(aistudio.css, /textarea\[formcontrolname="promptText"\]/);
+  assert.match(aistudio.css, /ms-cmark-node/);
+  assert.match(aistudio.css, /main p/); // شبكة الأمان العامة
+});
+
 test('كل profiles البث الحي عليها streaming: true', () => {
   for (const host of ['chatgpt.com', 'claude.ai', 'gemini.google.com', 'grok.com', 'aistudio.google.com', 'copilot.microsoft.com', 'discord.com', '127.0.0.1']) {
     const p = siteProfiles.getProfile(host);
