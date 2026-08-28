@@ -306,4 +306,32 @@ PerSiteConfig = {
 
 ---
 
-*آخر تحديث: v4.1.0 — الأيقونة بشفافية كاملة، الطبيب والالتقاط بعد أخطاء no-receiver / chrome-page.*
+## 10) خط أنابيب CSS المحلي (لا CDN — ممنوع في إضافة MV3)
+
+التصميم الحالي مبني بـ **Tailwind v3 محلياً** (سكربتات CDN محجوبة بسياسة `script-src 'self'`):
+
+| الملف | الدور |
+|---|---|
+| `popup/input.css` | المصدر: `@tailwind` + الفئات الديناميكية (`#45`) |
+| `popup/tailwind.config.js` | الـ config (الألوان/المسافات/الخطوط) — مسارات content نسبية لجذر المستودع |
+| `popup/popup.css` | **الناتج المبنّى — لا تحرره يدوياً أبداً** |
+| `popup/fonts/material-symbols-outlined.css` + `MaterialSymbolsOutlined.woff2` | أيقونات Material محلية (تعمل بدون إنترنت) |
+
+**البناء بعد أي تعديل على `popup.html` أو `input.css`:**
+
+```bash
+npx tailwindcss -c popup/tailwind.config.js -i popup/input.css -o popup/popup.css --minify
+```
+
+**قاعدتان حرجتان للفئات الديناميكية:**
+1. الفئات التي يضيفها `popup.js` وقت التشغيل (`.status-dot.active/inactive`، `#mainToggle.active`، `.list-item*`، `.selector-*`، `.doctor-*`، `.empty-msg`، `.glow-active`، `.status-pulse`) **يجب أن تعيش خارج `@layer`** في `input.css` — وإلا جرّدها Tailwind من البناء لأنها غير ظاهرة في المحتوى الساكن.
+2. أي فئة Tailwind جديدة تستخدمها في HTML أعد البناء — الناتج لا يتحدث ذاتياً.
+
+**تغيّرات popup.js المتعلقة بالتصميم الجديد (لا تلغِها):**
+- `statusDot` يبدّل `active`/`inactive` عبر `classList` (يحافظ على كلاسات الحجم/اللون في HTML).
+- الثيم يزامن `data-theme` **و** `class="dark"` معاً؛ أيقونة الثيم بأسماء Material (`light_mode`/`dark_mode`).
+- `logoVersion` نص ساكن؛ للتحديث الديناميكي: `chrome.runtime.getManifest().version`.
+
+---
+
+*آخر تحديث: v4.1.0 — تصميم جديد مبني محلياً، أيقونات محلية، 43 اختباراً آلياً.*

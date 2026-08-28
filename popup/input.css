@@ -1,0 +1,86 @@
+/* input.css — المصدر الذي يُبنى منه popup.css محلياً (بدل CDN)
+   البناء: npx tailwindcss -c popup/tailwind.config.js -i popup/input.css -o popup/popup.css --minify
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { width: 380px; margin: 0; padding: 0; }
+}
+
+/* ────────────────────────────────────────────────
+   فئات ديناميكية (يضيفها popup.js وقت التشغيل)
+   خارج @layer حتى لا يجردها Tailwind من البناء
+   ──────────────────────────────────────────────── */
+
+/* اللوحة الزجاجية */
+.glass-panel {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+/* توهج زر الطاقة عند التفعيل */
+.glow-active {
+  box-shadow: 0 0 0 8px rgba(47, 169, 140, 0.12), 0 0 32px rgba(47, 169, 140, 0.35);
+}
+
+/* نبض نقطة الحالة */
+.status-pulse { animation: fluent-pulse 2s infinite; }
+@keyframes fluent-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 110, 86, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(15, 110, 86, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 110, 86, 0); }
+}
+
+/* ── حالة نقطة الحالة (popup.js يبدّل active/inactive فقط) ── */
+.status-dot.active { @apply bg-brand; animation: fluent-pulse 2s infinite; }
+.status-dot.inactive { @apply bg-soft-gray; }
+
+/* ── زر الطاقة مفعّل (popup.js يضيف .active) ── */
+#mainToggle.active {
+  @apply border-brand bg-brand/10;
+  box-shadow: 0 0 0 8px rgba(47, 169, 140, 0.12), 0 0 32px rgba(47, 169, 140, 0.35);
+}
+#mainToggle.active .material-symbols-outlined,
+#mainToggle.active #toggleText { @apply text-brand; }
+
+/* ── عناصر popup.js المولّدة (القوائم والمحددات والطبيب) ── */
+.list-item {
+  @apply flex items-center justify-between gap-2 px-2 py-1.5 rounded-md bg-surface-container-high text-on-surface;
+  font-size: 12px;
+}
+.list-item-text {
+  @apply truncate flex-1;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  direction: ltr;
+  text-align: left;
+}
+.list-item-remove {
+  @apply w-6 h-6 shrink-0 rounded-full text-soft-gray hover:text-danger-rose hover:bg-surface-variant transition-colors;
+  font-size: 12px;
+}
+.empty-msg { @apply text-soft-gray text-[11px] py-1; }
+
+.selector-item { @apply flex-wrap; }
+.selector-text {
+  flex: 1 1 100%;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 11px;
+  direction: ltr;
+  text-align: left;
+  word-break: break-all;
+}
+.selector-mode {
+  @apply flex-1 text-[11px] px-2 py-1 rounded-md bg-surface border border-surface-variant text-on-surface outline-none;
+}
+
+.doctor-finding {
+  @apply text-[12px] leading-5 px-2 py-1 rounded-md;
+}
+.doctor-ok { @apply bg-brand/15 text-vibrant-emerald; }
+.doctor-warn { @apply bg-warning-amber/15 text-warning-amber; }
+.doctor-info { @apply bg-surface-variant/30 text-soft-gray; }
+.doctor-meta { @apply text-[10px] text-soft-gray mt-1; }

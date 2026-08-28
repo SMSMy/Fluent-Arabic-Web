@@ -1,157 +1,91 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html class="dark" dir="rtl" lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Fluent Arabic Web</title>
-  <!-- الخطوط محلية من fonts/thmanyah typeface — لا حاجة لاتصال إنترنت -->
+  <!-- CSS مبني محلياً من input.css (بدون CDN — متوافق مع CSP الإضافة) -->
   <link rel="stylesheet" href="popup.css">
+  <!-- أيقونات محلية (بدون إنترنت) -->
+  <link rel="stylesheet" href="fonts/material-symbols-outlined.css">
+  <!-- خطوط نصية: تعمل عبر الشبكة مع fallback محلي كامل -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
 </head>
-<body>
-  <div id="app">
+<body class="bg-surface text-on-surface font-body-md antialiased overflow-x-hidden w-container-width max-w-full">
+<div class="relative flex flex-col min-h-[500px] overflow-y-auto w-full pb-20" id="app">
 
-    <!-- Header -->
-    <header class="header">
-      <div class="header-bg"></div>
-      <div class="header-content">
-        <div class="logo">
-          <div class="logo-icon-wrap">
-            <img src="../icons/128.png" alt="Fluent Arabic" class="logo-img">
-          </div>
-          <div class="logo-text">
-            <h1 class="logo-title">Fluent Arabic Web</h1>
-            <span class="logo-version">الإصدار 4.1.0</span>
-          </div>
-        </div>
-        <button id="themeToggle" class="icon-btn" title="تبديل المظهر" aria-label="تبديل المظهر">
-          <span id="themeIcon">🌙</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- Status Pill -->
-    <div class="status-pill-wrap">
-      <div class="status-pill" id="statusBar">
-        <span class="status-dot" id="statusDot"></span>
-        <span id="statusText">جاري التحميل...</span>
-        <span class="status-divider">|</span>
-        <span class="arabic-ratio" id="arabicRatio"></span>
-      </div>
+  <!-- Header: TopAppBar -->
+  <header class="fixed top-0 w-full z-50 backdrop-blur-md bg-surface/80 flex justify-between items-center px-edge-margin h-touch-target border-b border-surface-container/60 shadow-sm">
+    <div class="flex items-center gap-3">
+      <span aria-hidden="true" class="material-symbols-outlined text-brand">language</span>
+      <h1 class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">Fluent Arabic Web</h1>
     </div>
+    <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-bright transition-colors active:scale-95 duration-150 ease-in-out text-on-surface-variant" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">
+      <span aria-hidden="true" class="material-symbols-outlined text-[20px]" id="themeIcon">dark_mode</span>
+    </button>
+  </header>
 
-    <!-- Main Power Toggle -->
-    <div class="power-section">
-      <button id="mainToggle" class="power-btn" aria-label="تفعيل/تعطيل RTL">
-        <div class="power-ring">
-          <svg class="power-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
-            <line x1="12" y1="2" x2="12" y2="12"/>
-          </svg>
-        </div>
-        <div class="power-label">
-          <span id="toggleText">تفعيل RTL</span>
-          <span class="power-hint" id="powerHint">اضغط للتفعيل</span>
-        </div>
+  <!-- Main Content Canvas -->
+  <main class="mt-[60px] px-edge-margin flex flex-col gap-section-gap">
+
+    <!-- Hero / Status Area -->
+    <section class="flex flex-col items-center gap-4 mt-2">
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high border border-surface-variant text-label-md font-label-md" id="statusBar">
+        <span class="w-2.5 h-2.5 rounded-full bg-soft-gray" id="statusDot"></span>
+        <span class="text-on-surface-variant" id="statusText">جاري التحميل...</span>
+        <span class="text-brand ml-1 font-technical-data text-technical-data" id="arabicRatio"></span>
+      </div>
+      <button class="w-24 h-24 rounded-full flex flex-col items-center justify-center bg-surface-container border-2 border-surface-variant hover:border-brand transition-all duration-300 group focus:outline-none" id="mainToggle" aria-label="تفعيل/تعطيل RTL">
+        <span class="material-symbols-outlined text-[40px] text-on-surface-variant group-hover:text-brand mb-1 transition-colors">power_settings_new</span>
+        <span class="font-label-md text-label-md text-on-surface-variant group-hover:text-brand transition-colors" id="toggleText">تفعيل RTL</span>
       </button>
-    </div>
+      <span class="text-body-sm font-body-sm text-soft-gray text-center max-w-[200px]" id="powerHint">اضغط للتفعيل</span>
+    </section>
 
-    <!-- Current Site Card -->
-    <div class="site-card" id="siteCard">
-      <div class="site-card-info">
-        <span class="site-card-icon">🌐</span>
-        <div class="site-card-details">
-          <span class="site-card-label">الموقع الحالي</span>
-          <span class="site-hostname" id="siteHostname">—</span>
+    <!-- Site Card -->
+    <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+      <div class="flex items-center justify-between border-b border-surface-variant pb-2">
+        <div class="flex items-center gap-2 text-brand">
+          <span class="material-symbols-outlined text-[18px]">public</span>
+          <span class="font-technical-data text-technical-data text-on-surface font-semibold" dir="ltr" id="siteHostname">—</span>
         </div>
       </div>
-      <div class="site-card-actions">
-        <button id="addToWhitelist" class="pill-btn pill-btn--allow" title="إضافة للقائمة البيضاء">
-          <span>✓</span> دائماً
-        </button>
-        <button id="addToBlacklist" class="pill-btn pill-btn--block" title="إضافة للقائمة السوداء">
-          <span>✕</span> تجاهل
-        </button>
-        <button id="removeFromLists" class="pill-btn pill-btn--remove" style="display:none" title="إزالة من القوائم">
-          🗑
-        </button>
+      <div class="flex gap-2 justify-between">
+        <button class="flex-1 h-8 rounded border border-brand text-brand hover:bg-brand/10 transition-colors font-label-md text-[11px] flex items-center justify-center" id="addToWhitelist">إضافة للمسموح</button>
+        <button class="flex-1 h-8 rounded border border-danger-rose text-danger-rose hover:bg-danger-rose/10 transition-colors font-label-md text-[11px] flex items-center justify-center" id="addToBlacklist">إضافة للممنوع</button>
       </div>
-    </div>
+      <button class="w-full h-8 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors font-label-md text-[11px] flex items-center justify-center mt-1" id="removeFromLists" style="display:none">إزالة من القوائم</button>
+    </section>
 
-    <!-- Site Tools -->
-    <div class="section" id="siteTools">
-      <h2 class="section-title">
-        <span class="section-title-icon">🎯</span>
-        أدوات الموقع
+    <!-- Settings -->
+    <section class="flex flex-col gap-item-gap">
+      <h2 class="font-label-md text-sm text-brand flex items-center gap-2 border-b border-surface-variant pb-1">
+        <span class="w-1 h-2 bg-brand rounded-full"></span>إعدادات التعرف والخط
       </h2>
 
-      <div class="tool-row">
-        <button id="pickElementBtn" class="btn btn-primary" title="يفتح نافذة التقاط في الصفحة — اضغط على العنصر المعوج">
-          <span>🎯</span> التقاط عنصر
-        </button>
-        <button id="doctorBtn" class="btn btn-secondary" title="يشخّص لماذا تعمل أو لا تعمل الإضافة في هذه الصفحة">
-          <span>🔍</span> طبيب الموقع
-        </button>
-      </div>
-
-      <!-- Doctor Output -->
-      <div class="doctor-output" id="doctorOutput" style="display:none"></div>
-
-      <!-- Per-site selectors -->
-      <div class="selectors-block" id="selectorsBlock" style="display:none">
-        <div class="list-block-header">
-          <span class="setting-label">محددات هذا الموقع</span>
+      <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high hover:bg-surface-bright transition-colors cursor-pointer">
+        <div class="flex flex-col gap-0.5">
+          <span class="font-label-md text-label-md">التعرف التلقائي</span>
+          <span class="font-body-sm text-body-sm text-soft-gray">تطبيق على النصوص العربية فقط</span>
         </div>
-        <div class="list-container" id="selectorsContainer"></div>
-        <div class="add-item">
-          <input type="text" id="selectorInput" placeholder="مثال: .message-bubble p" class="input-sm" aria-label="إضافة محدد يدوي">
-          <button id="addSelectorBtn" class="add-btn add-btn--allow" aria-label="إضافة محدد">+</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Settings -->
-    <div class="section" id="quickSettings">
-      <h2 class="section-title">
-        <span class="section-title-icon">⚙️</span>
-        إعدادات سريعة
-      </h2>
-
-      <!-- Auto Detect -->
-      <div class="setting-row">
-        <div class="setting-info">
-          <span class="setting-label">الكشف التلقائي</span>
-          <span class="setting-desc">اكتشاف المحتوى العربي تلقائياً</span>
-        </div>
-        <label class="switch" for="autoDetect">
-          <input type="checkbox" id="autoDetect" checked>
-          <span class="slider"></span>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input checked="" class="sr-only peer" id="autoDetect" type="checkbox"/>
+          <div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
         </label>
       </div>
 
-      <!-- Threshold -->
-      <div class="setting-row vertical" id="thresholdRow">
-        <div class="setting-header">
-          <div class="setting-info">
-            <span class="setting-label">حساسية الكشف</span>
-            <span class="setting-desc">الحد الأدنى لنسبة المحتوى العربي</span>
-          </div>
-          <span class="setting-badge" id="thresholdValue">15%</span>
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high">
+        <div class="flex justify-between items-center">
+          <label class="font-label-md text-label-md" for="threshold">حساسية التعرف</label>
+          <span class="font-technical-data text-technical-data text-brand" id="thresholdValue">15%</span>
         </div>
-        <input type="range" id="threshold" min="5" max="50" value="15" step="5" aria-label="حساسية الكشف">
-        <div class="range-labels">
-          <span>حساس</span>
-          <span>متحفظ</span>
-        </div>
+        <input class="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-brand" id="threshold" max="50" min="5" step="5" type="range" value="15" aria-label="حساسية الكشف"/>
       </div>
 
-      <!-- Font -->
-      <div class="setting-row">
-        <div class="setting-info">
-          <span class="setting-label">الخط العربي</span>
-          <span class="setting-desc">خط مخصص للنصوص العربية</span>
-        </div>
-        <select id="fontSelect" aria-label="اختر الخط العربي">
-          <option value="thmanyah" selected>ثمانية تايبفيس ✦</option>
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high">
+        <label class="font-label-md text-label-md" for="fontSelect">الخط المفضل</label>
+        <select class="w-full bg-surface border border-surface-variant rounded-md px-3 py-2 text-on-surface font-body-md focus:ring-1 focus:ring-brand focus:border-brand outline-none transition-shadow h-touch-target cursor-pointer" id="fontSelect" aria-label="اختر الخط العربي">
+          <option value="thmanyah">ثمانية تايبفيس ✦</option>
           <option value="default">افتراضي النظام</option>
           <option value="al-masmak">المصمك</option>
           <option value="al-naseeb">النسيب</option>
@@ -163,67 +97,95 @@
           <option value="year-of-handicrafts">الحرف اليدوية</option>
         </select>
       </div>
+    </section>
+
+    <!-- Lists -->
+    <section class="flex flex-col gap-item-gap">
+      <h2 class="font-label-md text-sm text-brand flex items-center gap-2 border-b border-surface-variant pb-1">
+        <span class="w-1 h-2 bg-brand rounded-full"></span>قوائم المواقع
+      </h2>
+
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high">
+        <details class="group">
+          <summary class="font-label-md text-label-md cursor-pointer list-none flex items-center justify-between">المواقع المسموحة <span class="material-symbols-outlined text-[18px] group-open:rotate-180 transition-transform">expand_more</span></summary>
+          <div class="mt-2 flex flex-col gap-2">
+            <div class="flex gap-2">
+              <input class="flex-1 bg-surface border border-surface-variant rounded px-2 h-8 text-on-surface font-technical-data focus:border-brand outline-none" dir="ltr" id="whitelistInput" placeholder="example.com" type="text" aria-label="إضافة موقع للقائمة البيضاء"/>
+              <button class="w-8 h-8 rounded bg-brand text-white flex items-center justify-center hover:bg-brand/90 transition-colors" id="addWhitelistBtn" aria-label="إضافة">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+              </button>
+            </div>
+            <div class="flex flex-col gap-1 max-h-24 overflow-y-auto" id="whitelistContainer"></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high">
+        <details class="group">
+          <summary class="font-label-md text-label-md cursor-pointer list-none flex items-center justify-between text-danger-rose">المواقع الممنوعة <span class="material-symbols-outlined text-[18px] group-open:rotate-180 transition-transform">expand_more</span></summary>
+          <div class="mt-2 flex flex-col gap-2">
+            <div class="flex gap-2">
+              <input class="flex-1 bg-surface border border-surface-variant rounded px-2 h-8 text-on-surface font-technical-data focus:border-danger-rose outline-none" dir="ltr" id="blacklistInput" placeholder="example.com" type="text" aria-label="إضافة موقع للقائمة السوداء"/>
+              <button class="w-8 h-8 rounded bg-danger-rose text-white flex items-center justify-center hover:bg-danger-rose/90 transition-colors" id="addBlacklistBtn" aria-label="إضافة">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+              </button>
+            </div>
+            <div class="flex flex-col gap-1 max-h-24 overflow-y-auto" id="blacklistContainer"></div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Advanced Tools -->
+    <section class="flex flex-col gap-item-gap">
+      <h2 class="font-label-md text-sm text-brand flex items-center gap-2 border-b border-surface-variant pb-1">
+        <span class="w-1 h-2 bg-brand rounded-full"></span>أدوات متقدمة
+      </h2>
+
+      <div class="grid grid-cols-2 gap-2">
+        <button class="flex items-center justify-center gap-2 h-10 rounded-lg bg-brand hover:bg-brand/90 text-white font-label-md transition-colors group" id="pickElementBtn" title="يفتح نافذة التقاط في الصفحة — اضغط على العنصر المعوج">
+          <span class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">my_location</span>التقاط عنصر
+        </button>
+        <button class="flex items-center justify-center gap-2 h-10 rounded-lg bg-transparent border-2 border-brand text-brand hover:bg-brand/10 font-label-md transition-colors group" id="doctorBtn" title="يشخّص لماذا تعمل أو لا تعمل الإضافة في هذه الصفحة">
+          <span class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">health_and_safety</span>طبيب الموقع
+        </button>
+      </div>
+
+      <div class="p-3 rounded-lg bg-surface-container-lowest border border-surface-variant font-technical-data text-technical-data text-soft-gray whitespace-pre-wrap max-h-32 overflow-y-auto" id="doctorOutput" style="display:none"></div>
+
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high border border-surface-variant" id="selectorsBlock" style="display:none">
+        <h3 class="font-label-md text-label-md mb-1">المحددات المخصصة</h3>
+        <div class="flex flex-wrap gap-1 mb-2" id="selectorsContainer"></div>
+        <div class="flex gap-2">
+          <input class="flex-1 bg-surface border border-surface-variant rounded px-2 h-8 text-on-surface font-technical-data focus:border-brand outline-none" dir="ltr" id="selectorInput" placeholder=".class, #id" type="text" aria-label="إضافة محدد يدوي"/>
+          <button class="w-8 h-8 rounded bg-brand text-white flex items-center justify-center hover:bg-brand/90 transition-colors" id="addSelectorBtn" aria-label="إضافة محدد">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spacer -->
+    <div class="h-8"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full mt-section-gap mb-4 flex flex-col items-center gap-2 px-edge-margin pb-4 text-soft-gray font-body-sm text-body-sm">
+    <div class="flex gap-4 mb-2">
+      <button class="hover:text-on-surface transition-colors flex items-center gap-1 opacity-80 hover:opacity-100" id="exportBtn">
+        <span class="material-symbols-outlined text-[14px]">download</span>تصدير
+      </button>
+      <button class="hover:text-on-surface transition-colors flex items-center gap-1 opacity-80 hover:opacity-100" id="importBtn">
+        <span class="material-symbols-outlined text-[14px]">upload</span>استيراد
+      </button>
+      <input accept=".json" id="importFile" style="display:none" type="file"/>
     </div>
-
-    <!-- Advanced (Collapsible) -->
-    <details class="section advanced-section">
-      <summary class="section-title clickable" id="advancedSummary">
-        <div class="summary-content">
-          <span class="section-title-icon">🔧</span>
-          <span>إعدادات متقدمة</span>
-        </div>
-        <span class="arrow-icon">‹</span>
-      </summary>
-
-      <!-- Whitelist -->
-      <div class="list-block">
-        <div class="list-block-header">
-          <span class="list-badge list-badge--allow">✓</span>
-          <span class="setting-label">القائمة البيضاء</span>
-        </div>
-        <div class="list-container" id="whitelistContainer">
-          <p class="empty-msg">لا توجد مواقع مضافة</p>
-        </div>
-        <div class="add-item">
-          <input type="text" id="whitelistInput" placeholder="example.com" class="input-sm" aria-label="إضافة موقع للقائمة البيضاء">
-          <button id="addWhitelistBtn" class="add-btn add-btn--allow" aria-label="إضافة">+</button>
-        </div>
-      </div>
-
-      <!-- Blacklist -->
-      <div class="list-block">
-        <div class="list-block-header">
-          <span class="list-badge list-badge--block">✕</span>
-          <span class="setting-label">القائمة السوداء</span>
-        </div>
-        <div class="list-container" id="blacklistContainer">
-          <p class="empty-msg">لا توجد مواقع مضافة</p>
-        </div>
-        <div class="add-item">
-          <input type="text" id="blacklistInput" placeholder="example.com" class="input-sm" aria-label="إضافة موقع للقائمة السوداء">
-          <button id="addBlacklistBtn" class="add-btn add-btn--block" aria-label="إضافة">+</button>
-        </div>
-      </div>
-
-      <!-- Export/Import -->
-      <div class="export-row">
-        <button id="exportBtn" class="btn btn-secondary">
-          <span>📤</span> تصدير الإعدادات
-        </button>
-        <button id="importBtn" class="btn btn-secondary">
-          <span>📥</span> استيراد
-        </button>
-        <input type="file" id="importFile" accept=".json" style="display:none">
-      </div>
-    </details>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <span class="shortcut-badge" title="اختصار لوحة المفاتيح">⌨ Alt+Shift+A</span>
-      <a href="#" id="resetBtn" class="link-btn" title="إعادة تعيين جميع الإعدادات">إعادة تعيين</a>
-    </footer>
-
-  </div>
-  <script src="popup.js"></script>
+    <div class="flex gap-4">
+      <a class="text-soft-gray hover:text-danger-rose transition-colors opacity-80 hover:opacity-100 underline decoration-surface-variant underline-offset-2" href="#" id="resetBtn" title="إعادة تعيين جميع الإعدادات">إعادة تعيين الإعدادات</a>
+      <span id="logoVersion">v4.1.0</span>
+    </div>
+  </footer>
+</div>
+<script src="popup.js"></script>
 </body>
 </html>

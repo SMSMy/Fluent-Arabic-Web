@@ -128,7 +128,9 @@
   function updateStatusUI() {
     const isActive = currentTabStatus && currentTabStatus.active;
 
-    elements.statusDot.className = 'status-dot ' + (isActive ? 'active' : 'inactive');
+    // #45: تبديل فئات فقط (لا استبدال className حتى لا تفقد كلاسات التصميم)
+    elements.statusDot.classList.toggle('active', !!isActive);
+    elements.statusDot.classList.toggle('inactive', !isActive);
     elements.statusText.textContent = isActive ? 'مفعّل' : 'غير مفعّل';
 
     if (currentTabStatus && currentTabStatus.arabicRatio > 0) {
@@ -637,14 +639,18 @@
   // =========================================================================
 
   // #15: استخدام chrome.storage.local بدل localStorage للاتساق مع بقية المشروع
+  // #45: مزامنة ثيم Tailwind (class="dark") مع data-theme
+  function applyThemeToDom(theme) {
+    var effective = theme || _getSystemTheme();
+    document.documentElement.setAttribute('data-theme', effective);
+    document.documentElement.classList.toggle('dark', effective === 'dark');
+    // أيقونات Material Symbols (التصميم الجديد)
+    elements.themeIcon.textContent = effective === 'dark' ? 'light_mode' : 'dark_mode';
+  }
+
   function loadTheme() {
     chrome.storage.local.get('fluentRTLTheme', function (result) {
-      var theme = result.fluentRTLTheme;
-      if (theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-      }
-      // تحديث الأيقونة بعد القراءة
-      elements.themeIcon.textContent = (theme || _getSystemTheme()) === 'dark' ? '☀️' : '🌙';
+      applyThemeToDom(result.fluentRTLTheme);
     });
   }
 
@@ -661,10 +667,9 @@
   function toggleTheme() {
     var current = getCurrentTheme();
     var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
     // #15: حفظ في chrome.storage.local بدل localStorage
     chrome.storage.local.set({ fluentRTLTheme: next });
-    elements.themeIcon.textContent = next === 'dark' ? '☀️' : '🌙';
+    applyThemeToDom(next);
   }
 
   // =========================================================================
