@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html class="dark" dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fluent Arabic Web</title>
+<link rel="stylesheet" href="../popup/popup.css">
+<link rel="stylesheet" href="../popup/fonts/material-symbols-outlined.css">
+<style>html,body{overflow:hidden}body{width:380px}</style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased overflow-x-hidden w-container-width max-w-full">
+<div class="relative flex flex-col overflow-y-auto w-full pb-20" id="app">
+  <header class="fixed top-0 w-full z-50 backdrop-blur-md bg-surface/80 flex justify-between items-center px-edge-margin h-touch-target border-b border-surface-container/60 shadow-sm">
+    <div class="flex items-center gap-3">
+      <span aria-hidden="true" class="material-symbols-outlined text-brand">language</span>
+      <h1 class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">Fluent Arabic Web</h1>
+    </div>
+    <button class="w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant" id="themeToggle">
+      <span aria-hidden="true" class="material-symbols-outlined text-[20px]" id="themeIcon">light_mode</span>
+    </button>
+  </header>
+  <main class="mt-[60px] px-edge-margin flex flex-col gap-section-gap">
+    <section class="flex flex-col items-center gap-4 mt-2">
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high border border-surface-variant text-label-md font-label-md" id="statusBar">
+        <span class="w-2.5 h-2.5 rounded-full status-dot active" id="statusDot"></span>
+        <span class="text-on-surface-variant" id="statusText">نشط ويعمل</span>
+        <span class="text-brand ml-1 font-technical-data text-technical-data" id="arabicRatio">98% عربية</span>
+      </div>
+      <button class="w-24 h-24 rounded-full flex flex-col items-center justify-center bg-surface-container border-2 border-surface-variant transition-all duration-300 group focus:outline-none active" id="mainToggle">
+        <span class="material-symbols-outlined text-[40px] text-brand mb-1 transition-colors">power_settings_new</span>
+        <span class="font-label-md text-label-md text-brand transition-colors" id="toggleText">إيقاف RTL</span>
+      </button>
+      <span class="text-body-sm font-body-sm text-soft-gray text-center max-w-[200px]" id="powerHint">تم تفعيل التحسينات في هذه الصفحة</span>
+    </section>
+
+    <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+      <div class="flex items-center justify-between border-b border-surface-variant pb-2">
+        <div class="flex items-center gap-2 text-brand">
+          <span class="material-symbols-outlined text-[18px]">public</span>
+          <span class="font-technical-data text-technical-data text-on-surface font-semibold" dir="ltr" id="siteHostname">grok.com</span>
+        </div>
+      </div>
+      <div class="flex gap-2 justify-between">
+        <button class="flex-1 h-8 rounded border border-brand text-brand font-label-md text-[11px] flex items-center justify-center" id="addToWhitelist">إضافة للمسموح</button>
+        <button class="flex-1 h-8 rounded border border-danger-rose text-danger-rose font-label-md text-[11px] flex items-center justify-center" id="addToBlacklist">إضافة للممنوع</button>
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-item-gap">
+      <h2 class="font-label-md text-sm text-brand flex items-center gap-2 border-b border-surface-variant pb-1">
+        <span class="w-1 h-2 bg-brand rounded-full"></span>إعدادات التعرف والخط</h2>
+      <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+        <div class="flex flex-col gap-0.5">
+          <span class="font-label-md text-label-md">التعرف التلقائي</span>
+          <span class="font-body-sm text-body-sm text-soft-gray">تطبيق على النصوص العربية فقط</span>
+        </div>
+        <div class="w-9 h-5 bg-brand rounded-full relative"><div class="absolute top-[2px] right-[2px] bg-white h-4 w-4 rounded-full"></div></div>
+      </div>
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high">
+        <div class="flex justify-between items-center">
+          <label class="font-label-md text-label-md">حساسية التعرف</label>
+          <span class="font-technical-data text-technical-data text-brand" id="thresholdValue">30%</span>
+        </div>
+        <div class="w-full h-1 bg-brand/60 rounded-lg relative"><div class="absolute right-0 top-[-3px] w-4 h-4 rounded-full bg-brand"></div></div>
+      </div>
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high">
+        <label class="font-label-md text-label-md">الخط المفضل</label>
+        <div class="w-full bg-surface border border-surface-variant rounded-md px-3 py-2 text-on-surface" dir="rtl">ثمانية تايبفيس ✦</div>
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-item-gap">
+      <h2 class="font-label-md text-sm text-brand flex items-center gap-2 border-b border-surface-variant pb-1">
+        <span class="w-1 h-2 bg-brand rounded-full"></span>قوائم المواقع</h2>
+      <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high">
+        <div class="font-label-md text-label-md flex items-center justify-between">المواقع المسموحة
+          <span class="material-symbols-outlined text-[18px]">expand_more</span></div>
+        <div class="flex flex-col gap-1">
+          <div class="list-item"><span class="list-item-text">chatgpt.com</span><button class="list-item-remove">✕</button></div>
+          <div class="list-item"><span class="list-item-text">claude.ai</span><button class="list-item-remove">✕</button></div>
+          <div class="list-item"><span class="list-item-text">grok.com</span><button class="list-item-remove">✕</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-item-gap">
+      <h2 class="font-label-md text-sm text-brand flex items-center gap-2 border-b border-surface-variant pb-1">
+        <span class="w-1 h-2 bg-brand rounded-full"></span>أدوات متقدمة</h2>
+      <div class="grid grid-cols-2 gap-2">
+        <button class="flex items-center justify-center gap-2 h-10 rounded-lg bg-brand text-white font-label-md">
+          <span class="material-symbols-outlined text-[18px]">my_location</span>التقاط عنصر</button>
+        <button class="flex items-center justify-center gap-2 h-10 rounded-lg bg-transparent border-2 border-brand text-brand font-label-md">
+          <span class="material-symbols-outlined text-[18px]">health_and_safety</span>طبيب الموقع</button>
+      </div>
+      <div class="p-3 rounded-lg bg-surface-container-lowest border border-surface-variant font-technical-data text-technical-data text-soft-gray whitespace-pre-wrap max-h-32 overflow-y-auto">
+        ✅ يوجد profile جاهز لهذا الموقع: grok.
+        ⚠️ عناصر عولجت: 89.
+      </div>
+    </section>
+  </main>
+  <footer class="w-full mt-section-gap mb-4 flex flex-col items-center gap-2 px-edge-margin pb-4 text-soft-gray font-body-sm text-body-sm">
+    <div class="flex gap-4"><span class="flex items-center gap-1">تصدير</span><span class="flex items-center gap-1">استيراد</span></div>
+    <div class="flex gap-4"><span>إعادة تعيين الإعدادات</span><span>v4.2.0</span></div>
+  </footer>
+</div>
+</body>
+</html>

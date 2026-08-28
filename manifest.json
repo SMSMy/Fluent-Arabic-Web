@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Fluent Arabic Web",
-  "version": "4.1.0",
-  "description": "تجربة تصفح عربية مثالية - بدون تحريك أو كسر التخطيط",
+  "name": "Fluent Arabic Web - RTL",
+  "version": "4.2.0",
+  "description": "تجربة تصفح عربية مثالية RTL - بدون تحريك أو كسر التخطيط",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "icons": {

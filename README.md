@@ -18,7 +18,7 @@
 <p><b>تجربة تصفح عربية مثالية — بدون تحريك أو كسر التخطيط</b></p>
 
 <img src="https://img.shields.io/badge/Manifest-v3-blueviolet?style=flat-square" alt="Manifest v3">
-<img src="https://img.shields.io/badge/Version-4.1.0-success?style=flat-square" alt="v4.1.0">
+<img src="https://img.shields.io/badge/Version-4.2.0-success?style=flat-square" alt="v4.2.0">
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT">
 
 </div>

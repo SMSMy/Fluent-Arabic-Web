@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<title>Store screenshot</title>
+<link rel="stylesheet" href="popup.css">
+<link rel="stylesheet" href="fonts/material-symbols-outlined.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    width: 1280px; height: 800px; overflow: hidden;
+    background: linear-gradient(115deg, #0B0F0E 0%, #10241D 55%, #16352A 100%);
+    color: #E0E3E5;
+    font-family: "Segoe UI", Tahoma, "Noto Kufi Arabic", sans-serif;
+    display: flex; align-items: center;
+  }
+  .panel { display: flex; align-items: center; width: 100%; padding: 0 90px 0 40px; gap: 70px; }
+  .left { flex: 1; min-width: 0; }
+  .icon { width: 210px; height: 210px; border-radius: 48px; margin-bottom: 34px; display: block; }
+  h1 { font-size: 52px; font-weight: 700; margin: 0 0 10px; color: #FFFFFF; letter-spacing: -0.5px; }
+  .tagline {
+    font-size: 30px; color: #2FA98C; font-weight: 600; margin-bottom: 36px;
+    border-inline-start: 5px solid #2FA98C; padding-inline-start: 18px;
+  }
+  .features { font-size: 22px; color: #94A3B8; line-height: 1.75; margin: 0; padding: 0; list-style: none; }
+  .features li::before { content: "•"; color: #2FA98C; font-weight: 700; margin-inline-end: 12px; }
+  .shots { position: relative; flex: none; }
+  .shot {
+    width: 300px; height: auto; display: block; border-radius: 22px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(148,163,184,0.18);
+    transform: rotate(-1deg);
+  }
+</style>
+</head>
+<body>
+  <div class="panel">
+    <div class="left">
+      <img class="icon" src="../icons/128-store.png" alt="">
+      <h1>Fluent Arabic Web - RTL</h1>
+      <div class="tagline">منسق النصوص العربية على أي موقع ويب</div>
+      <ul class="features">
+        <li>تصحيح تلقائي لاتجاه النصوص العربية بدون كسر التخطيط</li>
+        <li>حماية تصميم المواقع + دعم Shadow DOM ومواقع الذكاء الاصطناعي</li>
+        <li>خطوط عربية مدمجة + لوحة تحكم متكاملة</li>
+        <li>Profiles جاهزة: ChatGPT وClaude وGrok وGoogle AI Studio</li>
+      </ul>
+    </div>
+    <div class="shots">
+      <img class="shot" src="popup-crop.png" alt="واجهة الإضافة">
+    </div>
+  </div>
+</body>
+</html>
