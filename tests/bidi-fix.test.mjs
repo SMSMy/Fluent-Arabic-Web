@@ -102,6 +102,16 @@ test('revert يستعيد القوائم كما كانت', async () => {
   assert.equal(ul.hasAttribute('dir'), false);
 });
 
+test('#43: فقرة بلا نص مباشر (p > span) تُوسم بغالبية نصوصها', async () => {
+  const div = window.document.createElement('div');
+  div.innerHTML = '<p id="nested-p"><span>Event ID 41 (Kernel-Power): ليتحقق من توقيت الإغلاق وسجل الأخطاء الرئيسي في سجل النظام</span></p>';
+  window.document.body.appendChild(div);
+  bidiFix.processElement(div);
+  const p = window.document.getElementById('nested-p');
+  assert.equal(p.getAttribute('data-fluent-rtl-dir'), 'rtl', 'يجب توسيم p بلا نص مباشر');
+  assert.equal(p.getAttribute('dir'), 'rtl');
+});
+
 test('revert يعيد كل شيء كما كان', async () => {
   await runApply();
   const p = window.document.getElementById('arabic-msg');
