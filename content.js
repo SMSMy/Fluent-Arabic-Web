@@ -424,6 +424,16 @@
       // 11. إعداد IntersectionObserver
       setupLazyProcessing();
 
+      // #40: متابعة دورية — التطبيقات الديناميكية (Angular) قد تحذف علاماتنا
+      // أو تعيد بناء الـ DOM بعد التثبيت؛ مراقب الـ mutations يغطيها،
+      // وتمريرة توفيق واحدة بعد 2.5 ثانية تضمن الاتجاه النهائي
+      setTimeout(function () {
+        if (isActive) {
+          selfHealInjectedStyles(600);
+          bidiFix.apply(document, null);
+        }
+      }, 2500);
+
       // إعلام background.js
       chrome.runtime.sendMessage({
         type: 'fluent-rtl-status',
@@ -574,6 +584,9 @@
     mainObserver = new MutationObserver(function (mutations) {
       if (!isActive) return;
 
+      // #39: فحص سلامة الأنماط المحقونة (Angular ينظف head أحياناً)
+      selfHealInjectedStyles(debounceDelay);
+
       // #1: تجميع كل الدفعات في مصفوفة واحدة
       pendingMutations.push.apply(pendingMutations, mutations);
 
@@ -590,13 +603,67 @@
     mainObserver.observe(document.body, {
       childList: true,
       subtree: true,
-      characterData: true
+      characterData: true,
+      // #38: مراقبة تغييرات dir/style من التطبيق — كثير من تطبيقات Angular
+      // تعيد كتابة dir بعد الـ hydration فيَبدو أن التصحيح «يعود» بعد ثانية
+      attributes: true,
+      attributeFilter: ['dir', 'style']
     });
+  }
+
+  // #39: إعادة حقن أي أنماط حذفها التطبيق (منظفات head الموجودة في بعض SPAs)
+  var _lastSelfHeal = 0;
+
+  function selfHealInjectedStyles(minIntervalMs) {
+    var now = Date.now();
+    var minInterval = minIntervalMs || 1000;
+    if (now - _lastSelfHeal < minInterval) return;
+    _lastSelfHeal = now;
+
+    // أنماط الإضافة الأساسية
+    if (!document.getElementById('fluent-rtl-base-css')) {
+      injectCSS('styles/base.css', 'fluent-rtl-base-css');
+      injectCSS('styles/protection.css', 'fluent-rtl-protection-css');
+      injectCSS('styles/fixes.css', 'fluent-rtl-fixes-css');
+    }
+    if (document.getElementById('fluent-rtl-font-style') && settings.font && settings.font !== 'default') {
+      injectFont(settings.font);
+    }
+    // نمط الـ profile الخاص بالموقع
+    if (siteProfiles.ensureProfileStyleAlive) {
+      siteProfiles.ensureProfileStyleAlive();
+    }
+    // نمط محددات perSite
+    var perSiteEl = document.getElementById('fluent-rtl-persite-style');
+    var hostname = window.location.hostname;
+    var perSite = settings.perSite && settings.perSite[hostname];
+    if (!perSiteEl && perSite && perSite.selectors && perSite.selectors.length > 0) {
+      applyPerSiteSelectors(hostname);
+    }
   }
 
   function handleDOMMutations(mutations) {
     for (var m = 0; m < mutations.length; m++) {
       var mutation = mutations[m];
+
+      // #38: التطبيق غيّر dir/style على عنصر نملكه — نعيد فرض قيمتنا فوراً
+      if (mutation.type === 'attributes') {
+        var attrTarget = mutation.target;
+        if (attrTarget && attrTarget.nodeType === Node.ELEMENT_NODE &&
+            attrTarget.hasAttribute(bidiFix.MARKER_ATTR)) {
+          var markerDir = attrTarget.getAttribute(bidiFix.MARKER_ATTR);
+          var currentDir = attrTarget.getAttribute('dir');
+          if (markerDir === 'rtl' && currentDir !== 'rtl') {
+            attrTarget.setAttribute('dir', 'rtl');
+          } else if (markerDir === 'auto' && currentDir !== 'auto') {
+            attrTarget.setAttribute('dir', 'auto');
+          }
+          if (markerDir === 'rtl' && attrTarget.style.getPropertyValue('unicode-bidi') !== 'isolate') {
+            attrTarget.style.setProperty('unicode-bidi', 'isolate', '');
+          }
+        }
+        continue;
+      }
 
       // معالجة العناصر المضافة
       for (var n = 0; n < mutation.addedNodes.length; n++) {
