@@ -332,6 +332,12 @@ npx tailwindcss -c popup/tailwind.config.js -i popup/input.css -o popup/popup.cs
 - الثيم يزامن `data-theme` **و** `class="dark"` معاً؛ أيقونة الثيم بأسماء Material (`light_mode`/`dark_mode`).
 - `logoVersion` نص ساكن؛ للتحديث الديناميكي: `chrome.runtime.getManifest().version`.
 
+**نظام الثيم (فاتح/داكن) — بالمتغيرات:**
+- كل ألوان `tailwind.config.js` تشير إلى `rgb(var(--c-*) / <alpha-value>)`.
+- `input.css` يعرّف `:root` (فاتح) و`.dark` (داكن) — **نفس الكلاسات تتبدل تلقائياً مع الثيم، لا حاجة لـ `dark:` variants في HTML**.
+- متغيرات الزجاج: `--glass-bg` و`--glass-border` لكل وضع (`.glass-panel` يستهلكها).
+- لإضافة لون جديد: أضف `--c-xxx` في الكتلتين + مفتاح اللون في الـ config — فيعمل في الوضعين فوراً.
+
 ---
 
 *آخر تحديث: v4.1.0 — تصميم جديد مبني محلياً، أيقونات محلية، 43 اختباراً آلياً.*

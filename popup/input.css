@@ -6,6 +6,131 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ────────────────────────────────────────────────
+   متغيرات الثيم — نفس الكلاسات تعمل للوضعين
+   :root = فاتح (Material-3 متوافق مع DESIGN.md)
+   .dark = داكن (القيم الأصلية من DESIGN.md)
+   ──────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+  /* فاتح */
+  --c-brand: 15 110 86;
+  --c-surface: 244 247 246;
+  --c-surface-dim: 239 242 241;
+  --c-surface-bright: 255 255 255;
+  --c-surface-container-lowest: 255 255 255;
+  --c-surface-container-low: 246 248 247;
+  --c-surface-container: 239 242 241;
+  --c-surface-container-high: 231 236 234;
+  --c-surface-container-highest: 221 228 225;
+  --c-surface-variant: 221 228 225;
+  --c-on-surface: 20 33 28;
+  --c-on-surface-variant: 90 107 100;
+  --c-outline: 110 127 120;
+  --c-outline-variant: 201 213 207;
+  --c-background: 244 247 246;
+  --c-on-background: 20 33 28;
+  --c-danger-rose: 225 29 72;
+  --c-warning-amber: 180 83 9;
+  --c-vibrant-emerald: 4 120 87;
+  --c-secondary: 18 128 95;
+  --c-secondary-container: 210 235 226;
+  --c-on-secondary-container: 0 49 31;
+  --c-soft-gray: 100 116 139;
+  --c-error: 198 52 56;
+  --c-on-error: 255 255 255;
+  --c-error-container: 255 218 214;
+  --c-on-error-container: 127 29 29;
+  --c-primary: 79 91 147;
+  --c-on-primary: 255 255 255;
+  --c-primary-container: 218 226 255;
+  --c-on-primary-container: 13 26 56;
+  --c-inverse-primary: 173 185 225;
+  --c-inverse-surface: 46 49 51;
+  --c-inverse-on-surface: 227 230 231;
+  --c-surface-tint: 79 91 147;
+  --c-deep-indigo: 30 41 59;
+  --c-tertiary: 88 76 172;
+  --c-on-tertiary: 255 255 255;
+  --c-tertiary-container: 231 224 255;
+  --c-on-tertiary-container: 31 23 87;
+  --c-secondary-fixed: 158 242 201;
+  --c-secondary-fixed-dim: 120 222 172;
+  --c-on-secondary-fixed: 0 33 19;
+  --c-on-secondary-fixed-variant: 0 82 54;
+  --c-tertiary-fixed: 226 221 255;
+  --c-tertiary-fixed-dim: 194 190 255;
+  --c-on-tertiary-fixed: 22 5 95;
+  --c-on-tertiary-fixed-variant: 48 44 172;
+  --c-primary-fixed: 218 226 255;
+  --c-primary-fixed-dim: 186 198 236;
+  --c-on-primary-fixed: 13 26 56;
+  --c-on-primary-fixed-variant: 58 70 102;
+  /* زجاج فاتح */
+  --glass-bg: 255 255 255 / 0.55;
+  --glass-border: 100 116 139 / 0.15;
+}
+
+.dark {
+  color-scheme: dark;
+  /* داكن — القيم الأصلية من DESIGN.md */
+  --c-brand: 15 110 86;
+  --c-surface: 16 20 21;
+  --c-surface-dim: 16 20 21;
+  --c-surface-bright: 54 58 59;
+  --c-surface-container-lowest: 11 15 16;
+  --c-surface-container-low: 25 28 30;
+  --c-surface-container: 29 32 34;
+  --c-surface-container-high: 39 42 44;
+  --c-surface-container-highest: 50 53 55;
+  --c-surface-variant: 50 53 55;
+  --c-on-surface: 224 227 229;
+  --c-on-surface-variant: 198 198 206;
+  --c-outline: 143 144 152;
+  --c-outline-variant: 69 70 78;
+  --c-background: 16 20 21;
+  --c-on-background: 224 227 229;
+  --c-danger-rose: 244 63 94;
+  --c-warning-amber: 245 158 11;
+  --c-vibrant-emerald: 16 185 129;
+  --c-secondary: 78 222 163;
+  --c-secondary-container: 0 165 114;
+  --c-on-secondary-container: 0 49 31;
+  --c-soft-gray: 148 163 184;
+  --c-error: 255 180 171;
+  --c-on-error: 105 0 5;
+  --c-error-container: 147 0 10;
+  --c-on-error-container: 255 218 214;
+  --c-primary: 186 198 236;
+  --c-on-primary: 35 48 78;
+  --c-primary-container: 46 58 89;
+  --c-on-primary-container: 152 164 201;
+  --c-inverse-primary: 82 94 127;
+  --c-inverse-surface: 224 227 229;
+  --c-inverse-on-surface: 45 49 51;
+  --c-surface-tint: 186 198 236;
+  --c-deep-indigo: 30 41 59;
+  --c-tertiary: 192 193 255;
+  --c-on-tertiary: 16 0 169;
+  --c-tertiary-container: 32 27 179;
+  --c-on-tertiary-container: 153 156 255;
+  --c-secondary-fixed: 111 251 190;
+  --c-secondary-fixed-dim: 78 222 163;
+  --c-on-secondary-fixed: 0 33 19;
+  --c-on-secondary-fixed-variant: 0 82 54;
+  --c-tertiary-fixed: 225 224 255;
+  --c-tertiary-fixed-dim: 192 193 255;
+  --c-on-tertiary-fixed: 7 0 108;
+  --c-on-tertiary-fixed-variant: 47 46 190;
+  --c-primary-fixed: 218 226 255;
+  --c-primary-fixed-dim: 186 198 236;
+  --c-on-primary-fixed: 13 26 56;
+  --c-on-primary-fixed-variant: 58 70 102;
+  /* زجاج داكن */
+  --glass-bg: 30 41 59 / 0.4;
+  --glass-border: 148 163 184 / 0.1;
+}
+
 @layer base {
   body { width: 380px; margin: 0; padding: 0; }
 }
@@ -15,11 +140,11 @@
    خارج @layer حتى لا يجردها Tailwind من البناء
    ──────────────────────────────────────────────── */
 
-/* اللوحة الزجاجية */
+/* اللوحة الزجاجية (يتبدل لونها مع الثيم عبر متغيرات الزجاج) */
 .glass-panel {
-  background: rgba(30, 41, 59, 0.4);
+  background: rgb(var(--glass-bg));
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgb(var(--glass-border));
 }
 
 /* توهج زر الطاقة عند التفعيل */
