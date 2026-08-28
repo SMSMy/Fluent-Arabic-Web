@@ -129,18 +129,30 @@
 <!-- Stub كروم + الإضافة الحقيقية -->
 <script>
   window.FluentRTL = {};
+  window.__stored = {};
+  window.__msgListener = null;
   window.chrome = {
-    storage: { sync: { get: function (k, cb) { cb({ fluentRTLSettings: { enabled: true, autoDetect: true, detectionThreshold: 0.15, font: 'default', customFonts: [], whitelist: [], blacklist: [], perSite: {} } }); }, set: function (o, cb) { if (cb) cb(); } }, local: { get: function (k, cb) { cb({}); }, set: function (o, cb) { if (cb) cb(); } } },
-    runtime: { getURL: function (p) { return p; }, onMessage: { addListener: function () {} }, sendMessage: function (m, cb) { if (cb) cb({}); } }
+    storage: {
+      sync: {
+        get: function (k, cb) { cb({ fluentRTLSettings: window.__stored.fluentRTLSettings || { enabled: true, autoDetect: true, detectionThreshold: 0.15, font: 'default', customFonts: [], whitelist: [], blacklist: [], perSite: {} } }); },
+        set: function (o, cb) { window.__stored = o; if (cb) cb(); }
+      },
+      local: { get: function (k, cb) { cb({}); }, set: function (o, cb) { if (cb) cb(); } }
+    },
+    runtime: {
+      getURL: function (p) { return p; },
+      onMessage: { addListener: function (fn) { window.__msgListener = fn; } },
+      sendMessage: function (m, cb) { if (cb) cb({}); }
+    }
   };
 </script>
-<script src="../lib/detector.js?v=2"></script>
-<script src="../lib/bidi-fix.js?v=2"></script>
-<script src="../lib/transition-guard.js?v=2"></script>
-<script src="../lib/transform-fixer.js?v=2"></script>
-<script src="../lib/shadow-dom-traverser.js?v=2"></script>
-<script src="../lib/site-profiles.js?v=2"></script>
-<script src="../content.js?v=2"></script>
+<script src="../lib/detector.js?v=95"></script>
+<script src="../lib/bidi-fix.js?v=95"></script>
+<script src="../lib/transition-guard.js?v=95"></script>
+<script src="../lib/transform-fixer.js?v=95"></script>
+<script src="../lib/shadow-dom-traverser.js?v=95"></script>
+<script src="../lib/site-profiles.js?v=95"></script>
+<script src="../content.js?v=95"></script>
 
 <script>
   function check(name, cond) {
@@ -166,6 +178,24 @@
     out.push(check('English p بدون dir', !document.querySelector('._markdown_1r4m5_5 > p:last-child').hasAttribute('dir')));
     out.push(check('html active class', document.documentElement.classList.contains('fluent-rtl-active')));
     out.push(check('profile dsh مطابق', window.FluentRTL.siteProfiles.getProfile('127.0.0.1').id === 'dsh'));
+
+    // ── #41: اختبار «التقاط العنصر» (Element Picker) على فقاعة المستخدم ──
+    var bubble = document.querySelector('.gdEzaW_bubble');
+    if (window.__msgListener) {
+      // بدء الالتقاط كما يبدأ من الـ popup
+      window.__msgListener({ type: 'fluent-rtl-start-picker' }, {}, function () {});
+      // نقرة فعلية على الفقاعة (مثل نقر المستخدم في الصفحة)
+      bubble.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    }
+    var picked = window.__stored && window.__stored.fluentRTLSettings &&
+      window.__stored.fluentRTLSettings.perSite && window.__stored.fluentRTLSettings.perSite['127.0.0.1'] &&
+      window.__stored.fluentRTLSettings.perSite['127.0.0.1'].selectors;
+    var pickedSel = picked && picked.length > 0 ? picked[0].selector : null;
+    out.push(check('picker: selector = [' + pickedSel + ']', pickedSel === 'div.gdEzaW_bubble'));
+    console.log('DEBUG picked selector = ' + pickedSel);
+    // فحص أن نسق perSite يُحقن فعلاً
+    var perSiteStyle = document.getElementById('fluent-rtl-persite-style');
+    out.push(check('picker: نمط perSite محقون ويشمل الفقاعة', !!(perSiteStyle && perSiteStyle.textContent.indexOf('div.gdEzaW_bubble') !== -1)));
 
     document.getElementById('checks').textContent = out.join('\n');
     console.log('DONE');

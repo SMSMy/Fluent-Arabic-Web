@@ -812,11 +812,29 @@
   }
 
   /**
-   * #31: بناء selector مستقر — data-testid ثم id ثم aria-label ثم مرساة قريبة
-   * ثم كلاسات مستقرة (بدون هاشات عشوائية) ثم مسار وسوم
+   * #31: بناء selector مستقر — data-testid ثم id ثم aria-label ثم
+   * **كلاسات مستقرة فريدة** ثم مرساة قريبة ثم مسار وسوم
+   * (التفضيل للكلاس الفريد القصير على المسار الطويل — أكثر مقاوَمة لإعادة الرسم)
    */
   function escapeCssString(value) {
     return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+
+  function getStableClasses(el) {
+    var stableClasses = [];
+    try {
+      var classes = Array.prototype.slice.call(el.classList || []);
+      for (var i = 0; i < classes.length && stableClasses.length < 2; i++) {
+        var cls = classes[i];
+        // تجنب الكلاسات المبنية وقت التشغيل (هاشات موشَّاة أو أرقام عشوائية)
+        if (cls.length > 4 && cls.length < 24 &&
+            !/\d{3,}/.test(cls) &&
+            !/^(css|sc|emotion|jss|styled)-/i.test(cls)) {
+          stableClasses.push(cls);
+        }
+      }
+    } catch (e) { /* ignore */ }
+    return stableClasses;
   }
 
   function tagPath(el, stopParent) {
@@ -867,7 +885,19 @@
       return el.tagName.toLowerCase() + '[aria-label="' + escapeCssString(aria.trim()) + '"]';
     }
 
-    // 4. مرساة قريبة (id أو data-testid في الأجداد)
+    // 4. كلاسات مستقرة فريدة في الصفحة — المحدد القصير الأفضل قبل المراسي الطويلة
+    var tag = el.tagName.toLowerCase();
+    var stableClasses = getStableClasses(el);
+    if (stableClasses.length > 0) {
+      var candidate = tag + '.' + stableClasses.join('.');
+      try {
+        if (window.document.querySelectorAll(candidate).length === 1) {
+          return candidate;
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    // 5. مرساة قريبة (id أو data-testid في الأجداد)
     var current = el.parentElement;
     var depth = 0;
     while (current && depth < 4) {
@@ -882,25 +912,12 @@
       depth++;
     }
 
-    // 5. كلاسات مستقرة — تجنب الهاشات والأرقام العشوائية
-    var tag = el.tagName.toLowerCase();
-    var stableClasses = [];
-    try {
-      var classes = Array.prototype.slice.call(el.classList || []);
-      for (var i = 0; i < classes.length && stableClasses.length < 2; i++) {
-        var cls = classes[i];
-        if (cls.length > 4 && cls.length < 24 &&
-            !/\d{3,}/.test(cls) &&
-            !/^(css|sc|emotion|jss|styled)-/i.test(cls)) {
-          stableClasses.push(cls);
-        }
-      }
-    } catch (e) { /* ignore */ }
+    // 6. كلاسات مستقرة غير فريدة — أفضل من مسار وسوم طويل
     if (stableClasses.length > 0) {
       return tag + '.' + stableClasses.join('.');
     }
 
-    // 6. مسار الوسوم
+    // 7. مسار الوسوم
     return tagPath(el, null);
   }
 

@@ -61,6 +61,7 @@ test('DSH CSS: يستهدف data-chat-flow-kind و md-code-block و backdrop', (
   assert.match(dsh.css, /\.md-code-block/);
   assert.match(dsh.css, /textarea\[data-phase\]/);
   assert.match(dsh.css, /data-input-backdrop/);
+  assert.match(dsh.css, /\.gdEzaW_bubble/); // #41: فقاعة المستخدم بقاعدة عامة
 });
 
 test('كل profiles البث الحي عليها streaming: true', () => {
