@@ -21,7 +21,7 @@ Perfect Arabic browsing — RTL correction that leaves the layout alone.
 <br>
 
 <img src="https://img.shields.io/badge/Manifest-v3-blueviolet?style=flat-square" alt="Manifest V3">
-<img src="https://img.shields.io/badge/Version-4.2.0-success?style=flat-square" alt="v4.2.0">
+<img src="https://img.shields.io/badge/Version-4.2.1-success?style=flat-square" alt="v4.2.1">
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT">
 <img src="https://img.shields.io/badge/Chrome%20%7C%20Edge-4285F4?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome and Edge">
 
