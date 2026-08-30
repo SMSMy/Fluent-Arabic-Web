@@ -23,7 +23,7 @@ const DEFAULT_SETTINGS = {
   perSite: {}
 };
 
-function loadPopup() {
+function loadPopup(tabHostname = '') {
   const html = fs.readFileSync(path.join(ROOT, 'popup', 'popup.html'), 'utf8');
   const dom = new JSDOM(html, {
     url: 'chrome-extension://test/popup/popup.html',
@@ -32,6 +32,7 @@ function loadPopup() {
   });
   const { window } = dom;
   let storedSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+  window.__storedSettings = storedSettings;
 
   // stub background: يرد حسب نوع الرسالة
   window.chrome = {
@@ -45,7 +46,7 @@ function loadPopup() {
           setTimeout(() => cb && cb(out), 0);
         },
         set(obj, cb) {
-          if (obj.fluentRTLSettings) storedSettings = obj.fluentRTLSettings;
+          if (obj.fluentRTLSettings) { storedSettings = obj.fluentRTLSettings; window.__storedSettings = storedSettings; }
           setTimeout(() => cb && cb(), 0);
         }
       },
@@ -62,10 +63,10 @@ function loadPopup() {
         switch (msg.type) {
           case 'fluent-rtl-get-settings': resp = JSON.parse(JSON.stringify(storedSettings)); break;
           case 'fluent-rtl-save-settings':
-            if (msg.settings) storedSettings = JSON.parse(JSON.stringify(msg.settings));
+            if (msg.settings) { storedSettings = JSON.parse(JSON.stringify(msg.settings)); window.__storedSettings = storedSettings; }
             resp = { success: true };
             break;
-          case 'fluent-rtl-get-tab-status': resp = { active: false, arabicRatio: 0, hostname: '' }; break;
+          case 'fluent-rtl-get-tab-status': resp = { active: false, arabicRatio: 0, hostname: tabHostname }; break;
           case 'fluent-rtl-toggle-tab': resp = { active: false }; break;
           case 'fluent-rtl-update-font': resp = { applied: true }; break;
           case 'fluent-rtl-doctor': resp = { error: 'chrome-page' }; break;
@@ -154,5 +155,31 @@ test('الالتقاط: بدء ناجح', async () => {
   await waitFor(() => true, 300);
   // window.close() في jsdom لا يغلق فعلاً — نتحقق فقط أنه لم يرمِ خطأ
   assert.ok(true);
+  dom.window.close();
+});
+
+test('#47: إضافة موقع لقائمة «تزيله» من الأخرى (النقل لا الازدواج)', async () => {
+  const { dom, window } = loadPopup('example.com');
+  await waitFor(() => window.document.getElementById('statusText').textContent === 'غير مفعّل', 1000);
+
+  // أضف للممنوعة
+  window.document.getElementById('addToBlacklist').click();
+  await waitFor(() => window.__storedSettings.blacklist.includes('example.com'), 1000);
+
+  // ثم أضف للمسموحة — يجب أن ينتقل (يُحذف من الممنوعة)
+  window.document.getElementById('addToWhitelist').click();
+  await waitFor(() => window.__storedSettings.whitelist.includes('example.com'), 1000);
+
+  assert.equal(window.__storedSettings.blacklist.includes('example.com'), false, 'يجب إزالته من الممنوعة');
+  assert.equal(window.__storedSettings.whitelist.includes('example.com'), true, 'يجب وجوده في المسموحة');
+  dom.window.close();
+});
+
+test('الشعار العربي الجديد بخط ثمانية', async () => {
+  const { dom, window } = loadPopup();
+  await waitFor(() => window.document.getElementById('statusText').textContent === 'غير مفعّل', 1000);
+  const h1 = window.document.querySelector('h1');
+  assert.equal(h1.textContent, 'إجـــادة العربـــيـــة');
+  assert.ok(h1.classList.contains('wordmark'), 'يحمل فئة الشعار');
   dom.window.close();
 });

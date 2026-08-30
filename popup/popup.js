@@ -537,13 +537,17 @@
     const hostname = currentTabStatus ? currentTabStatus.hostname : '';
     if (!hostname) return;
 
+    // #47: لا يبقى الموقع في القائمتين معاً — الإضافة إلى إحداهما تزيله من الأخرى
+    const other = type === 'whitelist' ? 'blacklist' : 'whitelist';
+    currentSettings[other] = (currentSettings[other] || []).filter(function (h) { return h !== hostname; });
+
     if (!currentSettings[type]) currentSettings[type] = [];
     if (!currentSettings[type].includes(hostname)) {
       currentSettings[type].push(hostname);
-      await saveSettings(currentSettings);
-      updateSiteUI();
-      updateListsUI();
     }
+    await saveSettings(currentSettings);
+    updateSiteUI();
+    updateListsUI();
   }
 
   async function handleRemoveFromLists() {
@@ -569,12 +573,16 @@
       return;
     }
 
+    // #47: لا يبقى الموقع في القائمتين معاً — الإضافة إلى إحداهما تزيله من الأخرى
+    const other = type === 'whitelist' ? 'blacklist' : 'whitelist';
+    currentSettings[other] = (currentSettings[other] || []).filter(function (h) { return h !== value; });
+
     if (!currentSettings[type]) currentSettings[type] = [];
     if (!currentSettings[type].includes(value)) {
       currentSettings[type].push(value);
-      await saveSettings(currentSettings);
-      updateListsUI();
     }
+    await saveSettings(currentSettings);
+    updateListsUI();
     inputEl.value = '';
     inputEl.style.borderColor = '';
   }

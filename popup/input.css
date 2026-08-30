@@ -6,6 +6,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* الخط الشعار — خط ثمانية (محلي، يعمل بدون إنترنت) */
+@font-face {
+  font-family: "Thmanyah";
+  src: url("../fonts/thmanyah typeface/thmanyahsans/woff2/thmanyahsans-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal;
+}
+@font-face {
+  font-family: "Thmanyah";
+  src: url("../fonts/thmanyah typeface/thmanyahsans/woff2/thmanyahsans-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal;
+}
+
+/* الشعار العربي بخط ثمانية */
+.wordmark {
+  font-family: "Thmanyah", "Segoe UI", Tahoma, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
 /* ────────────────────────────────────────────────
    متغيرات الثيم — نفس الكلاسات تعمل للوضعين
    :root = فاتح (Material-3 متوافق مع DESIGN.md)
@@ -176,6 +198,7 @@
 .list-item {
   @apply flex items-center justify-between gap-2 px-2 py-1.5 rounded-md bg-surface-container-high text-on-surface;
   font-size: 12px;
+  min-width: 0; /* #48: يسمح بانكماش عناصر flex داخل العرض */
 }
 .list-item-text {
   @apply truncate flex-1;
@@ -196,6 +219,9 @@
   font-size: 11px;
   direction: ltr;
   text-align: left;
+  /* #48: نص المحدد الطويل يلتف داخل الإطار (لا يفيض أفقياً) */
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
   word-break: break-all;
 }
 .selector-mode {
