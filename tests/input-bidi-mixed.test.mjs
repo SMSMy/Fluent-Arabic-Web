@@ -104,3 +104,56 @@ test('content.js: input events trigger dynamic bidi direction in full environmen
   assert.equal(textarea.getAttribute('data-fluent-rtl-input'), 'rtl');
   assert.equal(textarea.getAttribute('dir'), 'rtl');
 });
+
+test('input: preserves and restores preexisting inline CSS styles when clearing input', () => {
+  const html = '<!DOCTYPE html><html><body><textarea id="box" dir="ltr" style="direction: ltr !important; text-align: left; unicode-bidi: normal;"></textarea></body></html>';
+  const { dom, window } = createDom(html);
+  const libs = loadLibs(window);
+  const textarea = window.document.getElementById('box');
+
+  assert.equal(textarea.style.getPropertyValue('direction'), 'ltr');
+  assert.equal(textarea.style.getPropertyPriority('direction'), 'important');
+  assert.equal(textarea.style.getPropertyValue('text-align'), 'left');
+  assert.equal(textarea.style.getPropertyValue('unicode-bidi'), 'normal');
+
+  // كتابة نص عربي
+  textarea.value = 'مرحبا بك في الاختبار العربي';
+  libs.bidiFix.handleInput(textarea);
+
+  assert.equal(textarea.getAttribute('dir'), 'rtl');
+  assert.equal(textarea.getAttribute('data-fluent-rtl-input'), 'rtl');
+  assert.equal(textarea.style.getPropertyValue('direction'), 'rtl');
+  assert.equal(textarea.style.getPropertyValue('text-align'), 'right');
+  assert.equal(textarea.style.getPropertyValue('unicode-bidi'), 'isolate');
+
+  // مسح النص واستعادة الأنماط الأصلية
+  textarea.value = '';
+  libs.bidiFix.handleInput(textarea);
+
+  assert.equal(textarea.hasAttribute('data-fluent-rtl-input'), false);
+  assert.equal(textarea.getAttribute('dir'), 'ltr');
+  assert.equal(textarea.style.getPropertyValue('direction'), 'ltr');
+  assert.equal(textarea.style.getPropertyPriority('direction'), 'important');
+  assert.equal(textarea.style.getPropertyValue('text-align'), 'left');
+  assert.equal(textarea.style.getPropertyValue('unicode-bidi'), 'normal');
+});
+
+test('input: revertBidiFix restores preexisting inline styles accurately', () => {
+  const html = '<!DOCTYPE html><html><body><input id="fld" type="text" dir="ltr" style="direction: ltr; text-align: left; unicode-bidi: embed;" /></body></html>';
+  const { dom, window } = createDom(html);
+  const libs = loadLibs(window);
+  const input = window.document.getElementById('fld');
+
+  input.value = 'تجربة إدخال عربية';
+  libs.bidiFix.handleInput(input);
+  assert.equal(input.style.getPropertyValue('direction'), 'rtl');
+
+  libs.bidiFix.revert(window.document);
+
+  assert.equal(input.hasAttribute('data-fluent-rtl-input'), false);
+  assert.equal(input.getAttribute('dir'), 'ltr');
+  assert.equal(input.style.getPropertyValue('direction'), 'ltr');
+  assert.equal(input.style.getPropertyValue('text-align'), 'left');
+  assert.equal(input.style.getPropertyValue('unicode-bidi'), 'embed');
+});
+

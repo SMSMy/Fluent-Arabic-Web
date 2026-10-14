@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluent Arabic Web — العربية بطلاقة على الويب</title>
+  <meta name="description" content="إضافة متصفح ذكية لتصحيح اتجاه النصوص العربية (RTL) في المواقع وتطبيقات الذكاء الاصطناعي دون كسر تخطيط الواجهات.">
+  <link rel="icon" type="image/png" href="../icons/icon-48.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #121826;
+      --card-border: #1f293d;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+    body {
+      font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+    }
+    .code {
+      font-family: 'JetBrains Mono', monospace;
+      direction: ltr;
+      display: inline-block;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass {
+      background: rgba(18, 24, 38, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:hover {
+      background: #1a2234;
+      border-color: #3b82f6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+  <!-- Header -->
+  <header style="border-bottom: 1px solid var(--card-border); padding: 1rem 2rem;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.5rem;">🌍</span>
+        <span style="font-weight: 800; font-size: 1.25rem;">Fluent Arabic Web</span>
+        <span style="background: #1e3a8a; color: #93c5fd; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 9999px;">v4.3.0</span>
+      </div>
+      <nav style="display: flex; gap: 1.5rem; align-items: center;">
+        <a href="#features" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem;">المميزات</a>
+        <a href="#install" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem;">التثبيت</a>
+        <a href="https://github.com/SMSMy/Fluent-Arabic-Web" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 700;">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main style="max-width: 1100px; margin: 0 auto; padding: 4rem 1.5rem;">
+    <div style="text-align: center; margin-bottom: 4rem;">
+      <h1 style="font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem;">
+        اقرأ واكتب بالعربية على الويب <br>
+        <span class="gradient-text">بمحاذاة طبيعية وجمالية فائقة</span>
+      </h1>
+      <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 750px; margin: 0 auto 2.5rem;">
+        إضافة متصفح رائدة ومفتوحة المصدر تعالج مشكلة النصوص العربية والمختلطة (BiDi) على منصات الذكاء الاصطناعي والمواقع العالمية دون العبث بهيكل الصفحات أو كسر الأزرار والتخطيط.
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="https://github.com/SMSMy/Fluent-Arabic-Web/releases/latest" class="btn btn-primary">
+          📦 تحميل أحدث حزمة (v4.3.0)
+        </a>
+        <a href="https://github.com/SMSMy/Fluent-Arabic-Web" class="btn btn-secondary">
+          ⭐ مستودع GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Features Grid -->
+    <section id="features" style="margin-bottom: 5rem;">
+      <h2 style="font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 2.5rem;">مميزات الإصدار 4.3.0</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <div class="glass" style="padding: 1.75rem; border-radius: 1rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">نهج Text-Only BiDi</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            عزل ذكي للنصوص العربية دون فرض RTL على حاويات CSS Grid أو Flexbox، مما يضمن بقاء القوائم الجانبية ومربعات الإدخال سليمة تماماً.
+          </p>
+        </div>
+
+        <div class="glass" style="padding: 1.75rem; border-radius: 1rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">🤖</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">دعم متقدم لنماذج الذكاء الاصطناعي</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            تكامل كامل ومخصص مع Grok, DeepSeek, Google AI Studio, ChatGPT, Claude, Gemini, و Perplexity مع محاذاة حية للردود المتدفقة (Streaming).
+          </p>
+        </div>
+
+        <div class="glass" style="padding: 1.75rem; border-radius: 1rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">✍️</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">محاذاة ديناميكية لمربعات الكتابة</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            كشف تلقائي وفوري لاتجاه الكتابة في حقول الإدخال حتى عند بدء الجملة بمصطلحات تقنية إنجليزية، مع حفظ واستعادة دقيقة للأنماط الأصلية.
+          </p>
+        </div>
+
+        <div class="glass" style="padding: 1.75rem; border-radius: 1rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">🔤</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">خطوط عربية احترافية مدمجة</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            دعم حزم خطوط أصيلة عالية الجودة (خط ثمانية Thmanyah، الخط الأميري Amiri، الكوفي الحديث، و Noto Sans Arabic) مع التحكم في ارتفاع السطر لمنع تداخل الحركات.
+          </p>
+        </div>
+
+        <div class="glass" style="padding: 1.75rem; border-radius: 1rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">🌐</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">كشف ترجمة الصفحات (GitHub & Edge)</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            مراقب ذكي يكتشف متى تترجم الصفحة بواسطة Google Translate أو Edge ويطبق قواعد RTL فوراً على العناوين والقوائم وملفات README.
+          </p>
+        </div>
+
+        <div class="glass" style="padding: 1.75rem; border-radius: 1rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">🔒</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">خصوصية مطلقة وخالية من التتبع</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            كل المعالجة تتم محلياً 100% داخل متصفحك. لا تجمع الإضافة أي بيانات، لا تتصل بخوادم خارجية، ولا تستخدم أي أدوات تتبع تحليلي.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="install" class="glass" style="padding: 2.5rem; border-radius: 1rem; margin-bottom: 4rem;">
+      <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">طريقة التثبيت اليدوي للمطورين (Developer Mode)</h2>
+      <ol style="padding-right: 1.5rem; color: var(--text-muted); line-height: 2;">
+        <li>قم بتحميل ملف الحزمة المضغوط <span class="code">fluent-arabic-web-4.3.0.zip</span> من صفحة الإصدارات في GitHub.</li>
+        <li>فك ضغط الملف إلى أي مجلد على جهازك.</li>
+        <li>افتح متصفح Chrome أو Edge أو Brave وانتقل إلى <span class="code">chrome://extensions</span>.</li>
+        <li>فعّل <strong>وضع المطور (Developer mode)</strong> في أعلى الزاوية.</li>
+        <li>انقر على زر <strong>تحميل حزمة مفكوكة (Load unpacked)</strong> واختر المجلد المفكوك.</li>
+        <li>استمتع بتجربة قراءة وكتابة عربية فائقة السلاسة فوراً!</li>
+      </ol>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid var(--card-border); padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+    <p>مشروع مفتوح المصدر مرخص برخصة MIT © 2026 — مستضاف على GitHub Pages.</p>
+  </footer>
+</body>
+</html>

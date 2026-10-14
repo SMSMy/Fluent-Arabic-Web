@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/SMSMy/Fluent-Arabic-Web#readme",
   "devDependencies": {
+    "archiver": "^8.0.0",
     "jsdom": "^30.0.1",
     "tailwindcss": "3.4"
   }
