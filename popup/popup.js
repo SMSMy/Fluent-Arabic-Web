@@ -71,7 +71,10 @@
     selectorsBlock: document.getElementById('selectorsBlock'),
     selectorsContainer: document.getElementById('selectorsContainer'),
     selectorInput: document.getElementById('selectorInput'),
-    addSelectorBtn: document.getElementById('addSelectorBtn')
+    addSelectorBtn: document.getElementById('addSelectorBtn'),
+    exportSelectorsBtn: document.getElementById('exportSelectorsBtn'),
+    importSelectorsBtn: document.getElementById('importSelectorsBtn'),
+    importSelectorsFile: document.getElementById('importSelectorsFile')
   };
 
   // =========================================================================
@@ -413,34 +416,55 @@
       return font && typeof font === 'object';
     }) : (Array.isArray(base.customFonts) ? base.customFonts : []);
 
-    normalized.perSite = {};
+    normalized.perSite = Object.assign({}, (base.perSite || {}));
     var perSite = source.perSite && typeof source.perSite === 'object' && !Array.isArray(source.perSite)
       ? source.perSite
-      : (base.perSite || {});
+      : (source.selectors ? null : source);
 
-    Object.keys(perSite).forEach(function (hostname) {
-      var cleanHostname = hostname.trim().toLowerCase();
-      var config = perSite[hostname];
-      if (!isValidHostname(cleanHostname) || !config || typeof config !== 'object') return;
-      normalized.perSite[cleanHostname] = {};
-      if (typeof config.enabled === 'boolean') {
-        normalized.perSite[cleanHostname].enabled = config.enabled;
-      }
-      // #30: الاحتفاظ بمحددات الموقع اليدوية
-      if (Array.isArray(config.selectors)) {
-        var cleanSelectors = [];
-        config.selectors.forEach(function (sel) {
+    if (perSite && typeof perSite === 'object' && !Array.isArray(perSite)) {
+      Object.keys(perSite).forEach(function (hostname) {
+        var cleanHostname = hostname.trim().toLowerCase();
+        var config = perSite[hostname];
+        if (!isValidHostname(cleanHostname) || !config || typeof config !== 'object') return;
+        normalized.perSite[cleanHostname] = normalized.perSite[cleanHostname] || {};
+        if (typeof config.enabled === 'boolean') {
+          normalized.perSite[cleanHostname].enabled = config.enabled;
+        }
+        // #30: الاحتفاظ بمحددات الموقع اليدوية
+        if (Array.isArray(config.selectors)) {
+          var cleanSelectors = [];
+          config.selectors.forEach(function (sel) {
+            if (!sel || typeof sel.selector !== 'string') return;
+            var selector = sel.selector.trim();
+            if (!selector || selector.length > 500) return;
+            var mode = (sel.mode === 'rtl' || sel.mode === 'ltr' || sel.mode === 'auto') ? sel.mode : 'auto';
+            cleanSelectors.push({ selector: selector, mode: mode });
+          });
+          if (cleanSelectors.length > 0) {
+            normalized.perSite[cleanHostname].selectors = cleanSelectors;
+          }
+        }
+      });
+    }
+
+    // دعم استيراد كائن محددات مباشر { selectors: [...] } للموقع الحالي
+    if (Array.isArray(source.selectors)) {
+      var currHost = (currentTabStatus && currentTabStatus.hostname) || '';
+      if (currHost && isValidHostname(currHost)) {
+        normalized.perSite[currHost] = normalized.perSite[currHost] || {};
+        var directSelectors = [];
+        source.selectors.forEach(function (sel) {
           if (!sel || typeof sel.selector !== 'string') return;
-          var selector = sel.selector.trim();
-          if (!selector || selector.length > 500) return;
-          var mode = (sel.mode === 'rtl' || sel.mode === 'ltr' || sel.mode === 'auto') ? sel.mode : 'auto';
-          cleanSelectors.push({ selector: selector, mode: mode });
+          var s = sel.selector.trim();
+          if (!s || s.length > 500) return;
+          var m = (sel.mode === 'rtl' || sel.mode === 'ltr' || sel.mode === 'auto') ? sel.mode : 'auto';
+          directSelectors.push({ selector: s, mode: m });
         });
-        if (cleanSelectors.length > 0) {
-          normalized.perSite[cleanHostname].selectors = cleanSelectors;
+        if (directSelectors.length > 0) {
+          normalized.perSite[currHost].selectors = directSelectors;
         }
       }
-    });
+    }
 
     return normalized;
   }
@@ -487,6 +511,15 @@
     elements.pickElementBtn.addEventListener('click', handlePickElement);
     elements.doctorBtn.addEventListener('click', handleDoctor);
     elements.addSelectorBtn.addEventListener('click', handleAddSelector);
+    if (elements.exportSelectorsBtn) {
+      elements.exportSelectorsBtn.addEventListener('click', handleExportSelectors);
+    }
+    if (elements.importSelectorsBtn && elements.importSelectorsFile) {
+      elements.importSelectorsBtn.addEventListener('click', function () {
+        elements.importSelectorsFile.click();
+      });
+      elements.importSelectorsFile.addEventListener('change', handleImportSelectors);
+    }
     elements.selectorInput.addEventListener('keypress', function (e) {
       if (e.key === 'Enter') handleAddSelector();
     });
@@ -624,6 +657,76 @@
         updateUI();
       } catch (err) {
         alert('خطأ في قراءة الملف — تأكد أنه ملف إعدادات Fluent Arabic Web');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
+  function handleExportSelectors() {
+    var hostname = getCurrentHostname();
+    if (!hostname) return;
+    var config = getPerSiteConfig();
+    var selectors = (config && config.selectors) || [];
+    var payload = {
+      hostname: hostname,
+      exportedAt: new Date().toISOString(),
+      selectors: selectors
+    };
+    var data = JSON.stringify(payload, null, 2);
+    var blob = new Blob([data], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'fluent-rtl-' + hostname + '-selectors.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleImportSelectors(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = async function (event) {
+      try {
+        var imported = JSON.parse(event.target.result);
+        if (!imported || typeof imported !== 'object') throw new Error('Invalid format');
+        var hostname = getCurrentHostname();
+        if (!hostname) return;
+
+        var selectorsToImport = [];
+        if (Array.isArray(imported.selectors)) {
+          selectorsToImport = imported.selectors;
+        } else if (imported.perSite && imported.perSite[hostname] && Array.isArray(imported.perSite[hostname].selectors)) {
+          selectorsToImport = imported.perSite[hostname].selectors;
+        } else if (imported[hostname] && Array.isArray(imported[hostname].selectors)) {
+          selectorsToImport = imported[hostname].selectors;
+        }
+
+        if (selectorsToImport.length === 0) {
+          alert('لم يتم العثور على محددات صالحة في الملف');
+          return;
+        }
+
+        var config = getPerSiteConfig();
+        var existing = (config && config.selectors) ? config.selectors.slice() : [];
+        selectorsToImport.forEach(function (item) {
+          if (!item || typeof item.selector !== 'string') return;
+          var s = item.selector.trim();
+          if (!s) return;
+          var m = (item.mode === 'rtl' || item.mode === 'ltr' || item.mode === 'auto') ? item.mode : 'auto';
+          var existingIdx = existing.findIndex(function (x) { return x.selector === s; });
+          if (existingIdx >= 0) {
+            existing[existingIdx].mode = m;
+          } else {
+            existing.push({ selector: s, mode: m });
+          }
+        });
+
+        await persistSelectors(existing);
+      } catch (err) {
+        alert('خطأ في استيراد ملف المحددات — تأكد من صيغة JSON');
       }
     };
     reader.readAsText(file);

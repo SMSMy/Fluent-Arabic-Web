@@ -154,7 +154,18 @@
       <div class="p-3 rounded-lg bg-surface-container-lowest border border-surface-variant font-technical-data text-technical-data text-soft-gray whitespace-pre-wrap max-h-32 overflow-y-auto" id="doctorOutput" style="display:none"></div>
 
       <div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high border border-surface-variant" id="selectorsBlock" style="display:none">
-        <h3 class="font-label-md text-label-md mb-1">المحددات المخصصة</h3>
+        <div class="flex items-center justify-between mb-1">
+          <h3 class="font-label-md text-label-md">المحددات المخصصة</h3>
+          <div class="flex items-center gap-2">
+            <button class="text-xs text-soft-gray hover:text-brand flex items-center gap-0.5 transition-colors" id="exportSelectorsBtn" title="تصدير محددات هذا الموقع كملف JSON">
+              <span class="material-symbols-outlined text-[14px]">download</span>تصدير
+            </button>
+            <button class="text-xs text-soft-gray hover:text-brand flex items-center gap-0.5 transition-colors" id="importSelectorsBtn" title="استيراد محددات لهذا الموقع">
+              <span class="material-symbols-outlined text-[14px]">upload</span>استيراد
+            </button>
+            <input accept=".json" id="importSelectorsFile" style="display:none" type="file"/>
+          </div>
+        </div>
         <div class="flex flex-wrap gap-1 mb-2" id="selectorsContainer"></div>
         <div class="flex gap-2">
           <input class="flex-1 bg-surface border border-surface-variant rounded px-2 h-8 text-on-surface font-technical-data focus:border-brand outline-none" dir="ltr" id="selectorInput" placeholder=".class, #id" type="text" aria-label="إضافة محدد يدوي"/>
