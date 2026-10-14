@@ -93,6 +93,17 @@
         document.removeEventListener('fluent-shadow-attached', _shadowAttachedHandler);
         _shadowAttachedHandler = null;
       }
+      teardownInputManager();
+      if (_translationReapplyTimer) {
+        clearTimeout(_translationReapplyTimer);
+        _translationReapplyTimer = null;
+      }
+      if (_spaNavHandler) {
+        document.removeEventListener('turbo:render', _spaNavHandler);
+        document.removeEventListener('turbo:load', _spaNavHandler);
+        document.removeEventListener('pjax:end', _spaNavHandler);
+        _spaNavHandler = null;
+      }
     } catch (e) { /* ignore */ }
   }
 
@@ -484,6 +495,9 @@
           // 8. معالجة Shadow DOM
           setupShadowDOM();
 
+          // 8ب. إدارة حقول الإدخال
+          setupInputManager();
+
           // 9. إعادة transitions بعد المدة المحسوبة
           transitionGuard.unfreeze();
         } catch (e) {
@@ -565,6 +579,9 @@
       document.removeEventListener('fluent-shadow-attached', _shadowAttachedHandler);
       _shadowAttachedHandler = null;
     }
+
+    // 6ب. إزالة مستمع حقول الإدخال
+    teardownInputManager();
 
     // 7. إزالة MutationObserver
     if (mainObserver) {
@@ -658,6 +675,65 @@
 
     // طلب shadowRoots الموجودة مسبقاً
     document.dispatchEvent(new CustomEvent('fluent-shadow-request-existing', {}));
+  }
+
+  // =========================================================================
+  // 6ب. إدارة حقول الإدخال الديناميكية (Input Manager)
+  // =========================================================================
+
+  var _inputHandler = null;
+
+  function setupInputManager() {
+    if (_inputHandler) return;
+    _inputHandler = function (e) {
+      if (!isActive) return;
+      var target = e.target;
+      if (!target || target.nodeType !== Node.ELEMENT_NODE) return;
+      bidiFix.handleInput(target);
+    };
+    document.addEventListener('input', _inputHandler, true);
+    document.addEventListener('keyup', _inputHandler, true);
+    document.addEventListener('compositionend', _inputHandler, true);
+    document.addEventListener('focusin', _inputHandler, true);
+  }
+
+  function teardownInputManager() {
+    if (!_inputHandler) return;
+    document.removeEventListener('input', _inputHandler, true);
+    document.removeEventListener('keyup', _inputHandler, true);
+    document.removeEventListener('compositionend', _inputHandler, true);
+    document.removeEventListener('focusin', _inputHandler, true);
+    _inputHandler = null;
+  }
+
+  // =========================================================================
+  // 6ج. جدولة إعادة تطبيق الترجمة (Translation Reapply)
+  // =========================================================================
+
+  var _translationReapplyTimer = null;
+  var _lastTranslationReapply = 0;
+
+  function scheduleTranslationReapply(delayMs) {
+    if (!isActive) return;
+    var delay = delayMs || 250;
+    if (_translationReapplyTimer) clearTimeout(_translationReapplyTimer);
+    _translationReapplyTimer = setTimeout(function () {
+      _translationReapplyTimer = null;
+      if (!isActive) return;
+      var now = Date.now();
+      if (now - _lastTranslationReapply < 150) return;
+      _lastTranslationReapply = now;
+
+      detector.invalidateCache();
+      bidiFix.clearExcludedCache();
+
+      bidiFix.apply(document, function () {
+        selfHealInjectedStyles(0);
+        var hostname = window.location.hostname;
+        var profile = siteProfiles.getProfile(hostname);
+        if (profile) siteProfiles.applyProfile(profile);
+      });
+    }, delay);
   }
 
   // =========================================================================
@@ -760,14 +836,35 @@
       if (mutation.type === 'attributes') {
         var attrTarget = mutation.target;
 
-        // #50: فحص التراجع عن الترجمة (Show Original)
-        if (attrTarget === document.documentElement) {
+        // #50: مراقبة تغييرات الجذر والجسم لكشف الترجمة والتراجع عنها (Show Original)
+        if (attrTarget === document.documentElement || attrTarget === document.body) {
           var rootAttrName = mutation.attributeName;
-          if ((rootAttrName === 'class' || rootAttrName === 'lang') && isActive && !isManualOverride) {
-            var hasSiteProf = !!siteProfiles.getProfile(window.location.hostname);
-            if (!hasSiteProf && !detector.isPageTranslated() && !detector.shouldActivate(settings.detectionThreshold)) {
-              deactivate(false);
-              return;
+          if (rootAttrName === 'class' || rootAttrName === 'lang' || rootAttrName === 'dir' ||
+              rootAttrName === 'data-google-lang' || rootAttrName === '_mstmutation') {
+            if (isActive) {
+              detector.invalidateCache();
+              var isTrans = detector.isPageTranslated();
+              var hasSiteProf = !!siteProfiles.getProfile(window.location.hostname);
+
+              if (isTrans) {
+                // تُرجمت الصفحة (مثل GitHub أو أي موقع) — إعادة تطبيق bidiFix على كامل المستند
+                scheduleTranslationReapply(200);
+              } else if (!isManualOverride) {
+                // فحص التراجع عن الترجمة (Show Original)
+                if (!hasSiteProf && !detector.shouldActivate(settings.detectionThreshold)) {
+                  deactivate(false);
+                  return;
+                } else if (hasSiteProf && !detector.shouldActivate(settings.detectionThreshold)) {
+                  // موقع ذو profile (مثل GitHub) عند التراجع للإنجليزية: نزيل وسوم RTL عن النصوص
+                  bidiFix.revert(document);
+                }
+              }
+            } else if (settings.enabled && settings.autoDetect) {
+              // إذا لم تكن الإضافة نشطة وتُرجمت الصفحة — تنشيط فوري
+              detector.invalidateCache();
+              if (detector.isPageTranslated() || detector.shouldActivate(settings.detectionThreshold)) {
+                activate(false);
+              }
             }
           }
           continue;
@@ -796,7 +893,28 @@
           // #13: فحص مبكر — تخطي العناصر المعالجة مسبقاً دون استدعاء getComputedStyle
           if (node.hasAttribute(bidiFix.MARKER_ATTR)) continue;
 
+          // كشف مؤشرات ترجمة Google / Edge في العقد المضافة
+          var isTranslationNode = (node.tagName === 'FONT') ||
+            (node.classList && (node.classList.contains('translated-rtl') || node.classList.contains('goog-text-highlight')));
+
+          if (isTranslationNode && detector.isPageTranslated()) {
+            scheduleTranslationReapply(200);
+          }
+
           bidiFix.processElement(node);
+          bidiFix.handleInput(node);
+
+          // إذا كانت عقدة ترجمة داخل كتلة نصية (مثل p > font أو li > font) — معالجة الحاوية الحاضنة
+          if (node.tagName === 'FONT' || (node.classList && node.classList.contains('goog-text-highlight'))) {
+            var parentBlock = node.closest('p, li, blockquote, h1, h2, h3, h4, h5, h6, td, th, [role="paragraph"], [role="listitem"]');
+            if (parentBlock && !parentBlock.hasAttribute(bidiFix.MARKER_ATTR)) {
+              bidiFix.processElement(parentBlock, true);
+              if (parentBlock.tagName === 'LI') {
+                var parentList = parentBlock.closest('ul, ol');
+                if (parentList) bidiFix.processList(parentList);
+              }
+            }
+          }
 
           // معالجة الأبناء النصية
           try {
@@ -810,6 +928,22 @@
             }
           } catch (e) { /* ignore */ }
 
+          // معالجة القوائم داخل العقدة المضافة
+          try {
+            var addedLists = node.querySelectorAll('ul, ol');
+            for (var al = 0; al < addedLists.length; al++) {
+              bidiFix.processList(addedLists[al]);
+            }
+          } catch (e) { /* ignore */ }
+
+          // معالجة حقول الإدخال داخل العقدة المضافة
+          try {
+            var inputs = node.querySelectorAll('textarea, input, [contenteditable="true"], [contenteditable=""]');
+            for (var inp = 0; inp < inputs.length; inp++) {
+              bidiFix.handleInput(inputs[inp]);
+            }
+          } catch (e) { /* ignore */ }
+
           // Shadow root جديدة
           if (node.shadowRoot) {
             shadowDOMTraverser.process(node.shadowRoot);
@@ -818,14 +952,30 @@
         }
       }
 
-      // تغييرات النص — دعم إعادة التقييم لمواقع البث الحي
+      // تغييرات النص — دعم إعادة التقييم لمواقع البث الحي والترقية إلى RTL
       if (mutation.type === 'characterData' && mutation.target.parentElement) {
         var parentEl = mutation.target.parentElement;
         var prof = siteProfiles.getProfile(window.location.hostname);
         if (prof && prof.streaming) {
           bidiFix.processElement(parentEl);
-        } else if (!parentEl.hasAttribute(bidiFix.MARKER_ATTR)) {
+          var block = parentEl.closest('p, li, blockquote, h1, h2, h3, h4, h5, h6, [role="paragraph"], [role="listitem"]');
+          if (block && block !== parentEl) {
+            bidiFix.processElement(block, true);
+            if (block.tagName === 'LI') {
+              var listEl = block.closest('ul, ol');
+              if (listEl) bidiFix.processList(listEl);
+            }
+          }
+        } else if (!parentEl.hasAttribute(bidiFix.MARKER_ATTR) || parentEl.getAttribute(bidiFix.MARKER_ATTR) === 'auto') {
           bidiFix.processElement(parentEl);
+          var blockStatic = parentEl.closest('p, li, blockquote, h1, h2, h3, h4, h5, h6, [role="paragraph"], [role="listitem"]');
+          if (blockStatic && blockStatic !== parentEl) {
+            bidiFix.processElement(blockStatic, true);
+            if (blockStatic.tagName === 'LI') {
+              var listElStatic = blockStatic.closest('ul, ol');
+              if (listElStatic) bidiFix.processList(listElStatic);
+            }
+          }
         }
       }
     }
@@ -1363,11 +1513,41 @@
   // 10. التهيئة
   // =========================================================================
 
+  var _spaNavHandler = null;
+
+  function setupSPANavigation() {
+    if (_spaNavHandler) return;
+    _spaNavHandler = function () {
+      if (!isExtensionAlive()) { teardownStaleScript(); return; }
+      if (isActive) {
+        selfHealInjectedStyles(0);
+        detector.invalidateCache();
+        bidiFix.clearExcludedCache();
+        bidiFix.apply(document, function () {
+          var prof = siteProfiles.getProfile(window.location.hostname);
+          if (prof) siteProfiles.applyProfile(prof);
+        });
+      } else if (settings.enabled && settings.autoDetect) {
+        detector.invalidateCache();
+        if (detector.isPageTranslated() || detector.shouldActivate(settings.detectionThreshold)) {
+          activate(false);
+        }
+      }
+    };
+
+    document.addEventListener('turbo:render', _spaNavHandler);
+    document.addEventListener('turbo:load', _spaNavHandler);
+    document.addEventListener('pjax:end', _spaNavHandler);
+  }
+
   async function init() {
     try {
       await loadSettings();
 
       var hostname = window.location.hostname;
+
+      // تهيئة مراقبة تنقلات SPA (مثل GitHub Turbo / pjax)
+      setupSPANavigation();
 
       // فحص القائمة السوداء — دائماً أولاً
       if (isHostnameInList(hostname, settings.blacklist)) {
