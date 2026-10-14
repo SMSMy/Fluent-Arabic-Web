@@ -21,7 +21,7 @@ Perfect Arabic browsing — RTL correction that leaves the layout alone.
 <br>
 
 <img src="https://img.shields.io/badge/Manifest-v3-blueviolet?style=flat-square" alt="Manifest V3">
-<img src="https://img.shields.io/badge/Version-4.2.1-success?style=flat-square" alt="v4.2.1">
+<img src="https://img.shields.io/badge/Version-4.3.0-success?style=flat-square" alt="v4.3.0">
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT">
 <img src="https://img.shields.io/badge/Chrome%20%7C%20Edge-4285F4?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome and Edge">
 
@@ -191,7 +191,7 @@ npm run build:popup
 أضف المحدد في وضع **استثناء LTR**، أو تأكد أن الملف الجاهز يستثني `pre`/`code`. لا تستخدم فرض RTL على الصفحة كلها.
 
 **قروك / AI Studio / Harness.**  
-لها ملفات جاهزة في 4.2. إن كسر تحديث الواجهة شيئاً: التقاط عنصر على الصندوق أو فقرة الرد.
+لها ملفات جاهزة في 4.3. إن كسر تحديث الواجهة شيئاً: التقاط عنصر على الصندوق أو فقرة الرد.
 
 **localhost.**  
 Harness يُطابق `127.0.0.1` و`localhost`. القواعد لا تُطبَّق إلا بوجود سمات الواجهة الخاصة به.
@@ -218,7 +218,7 @@ Harness يُطابق `127.0.0.1` و`localhost`. القواعد لا تُطبَّ
 
 **Use:** auto-detect (adjustable threshold) or `Alt+Shift+A`. Per-site allow/deny lists (`*.example.com`). **Pick an element** to save a stable selector. **Site doctor** explains misses (Arabic ratio, missing profile, CSP). Optional Arabic fonts. Settings stay in `chrome.storage` — no accounts, no telemetry, no page content leaves the machine.
 
-**Built-in profiles** (CSS that survives React re-renders, code excluded): Grok, Google AI Studio, ChatGPT, Claude, Gemini, Copilot, Perplexity, NotebookLM, DeepSeek Harness (`localhost` / `127.0.0.1:3080`), Slack, Discord, WhatsApp Web, Notion, plus YouTube, X, Facebook, Google, Gmail, Reddit, LinkedIn, GitHub.
+**Built-in profiles** (CSS that survives React re-renders, code excluded): Grok, DeepSeek, Google AI Studio, ChatGPT, Claude, Gemini, Copilot, Perplexity, NotebookLM, DeepSeek Harness (`localhost` / `127.0.0.1:3080`), Slack, Discord, WhatsApp Web, Notion, plus YouTube, X, Facebook, Google, Gmail, Reddit, LinkedIn, GitHub.
 
 **Dev:** `npm test` · `npm run build:popup` · MIT.
 
