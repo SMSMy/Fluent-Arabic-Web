@@ -96,9 +96,17 @@
 
   function sendMessage(message) {
     return new Promise(function (resolve) {
-      chrome.runtime.sendMessage(message, function (response) {
-        resolve(response);
-      });
+      try {
+        chrome.runtime.sendMessage(message, function (response) {
+          if (chrome.runtime.lastError) {
+            resolve(null);
+            return;
+          }
+          resolve(response);
+        });
+      } catch (e) {
+        resolve(null);
+      }
     });
   }
 

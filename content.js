@@ -515,6 +515,8 @@
           active: true,
           url: window.location.href,
           arabicRatio: detector.getPageArabicRatio()
+        }, function () {
+          if (chrome.runtime.lastError) { /* ignore */ }
         });
       } catch (e) {
         // #46: سياق ميت — تجاهل (التنظيف تم أعلاه)
@@ -607,6 +609,8 @@
         type: 'fluent-rtl-status',
         active: false,
         url: window.location.href
+      }, function () {
+        if (chrome.runtime.lastError) { /* ignore */ }
       });
     } catch (e) {
       // #46: سياق ميت — تجاهل

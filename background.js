@@ -116,12 +116,24 @@ function updateBadge(tabId, active) {
   // تحديث الكاش المحلي
   if (tabId) tabRTLStatus[tabId] = !!active;
 
-  if (active) {
-    chrome.action.setBadgeText({ text: 'RTL', tabId: tabId });
-    chrome.action.setBadgeBackgroundColor({ color: '#4CAF50', tabId: tabId });
-    chrome.action.setBadgeTextColor({ color: '#FFFFFF', tabId: tabId });
-  } else {
-    chrome.action.setBadgeText({ text: '', tabId: tabId });
+  try {
+    if (active) {
+      chrome.action.setBadgeText({ text: 'RTL', tabId: tabId }, function () {
+        if (chrome.runtime.lastError) { /* ignore */ }
+      });
+      chrome.action.setBadgeBackgroundColor({ color: '#4CAF50', tabId: tabId }, function () {
+        if (chrome.runtime.lastError) { /* ignore */ }
+      });
+      chrome.action.setBadgeTextColor({ color: '#FFFFFF', tabId: tabId }, function () {
+        if (chrome.runtime.lastError) { /* ignore */ }
+      });
+    } else {
+      chrome.action.setBadgeText({ text: '', tabId: tabId }, function () {
+        if (chrome.runtime.lastError) { /* ignore */ }
+      });
+    }
+  } catch (e) {
+    // ignore
   }
 }
 
@@ -266,7 +278,11 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.sendMessage(tabId, { type: 'fluent-rtl-get-status' }, function (response) {
     if (chrome.runtime.lastError) {
       // التبويب لا يحتوي على content script (صفحة عادية)
-      chrome.action.setBadgeText({ text: '', tabId: tabId });
+      try {
+        chrome.action.setBadgeText({ text: '', tabId: tabId }, function () {
+          if (chrome.runtime.lastError) { /* ignore */ }
+        });
+      } catch (e) { /* ignore */ }
       return;
     }
     if (response) {
