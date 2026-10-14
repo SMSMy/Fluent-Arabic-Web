@@ -55,6 +55,8 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "styles/*.css",
+        "styles/**/*.css",
         "fonts/*.woff2",
         "fonts/*.woff",
         "fonts/*.otf",

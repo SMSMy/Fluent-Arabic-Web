@@ -75,3 +75,40 @@ test('response: markdown bullet with nested strong tag starting with english get
   assert.equal(bullet.getAttribute('dir'), 'rtl');
   assert.equal(bullet.getAttribute('data-fluent-rtl-dir'), 'rtl');
 });
+
+test('response: list item with Tailwind whitespace classes (pre-wrap, normal) is not excluded and gets rtl', () => {
+  const html = `<!DOCTYPE html>
+  <html>
+    <body>
+      <ul id="list" class="marker:text-fg-secondary">
+        <li id="target" class="break-words whitespace-pre-wrap [&>ul]:whitespace-normal [&>ol]:whitespace-normal">System Partitions هي الأقسام الأساسية التي تحتوي على نظام التشغيل والملفات الحيوية في أجهزة أندرويد.</li>
+      </ul>
+    </body>
+  </html>`;
+
+  const { dom, window } = createDom(html);
+  const libs = loadLibs(window);
+
+  libs.bidiFix.apply(window.document);
+
+  const target = window.document.getElementById('target');
+  const list = window.document.getElementById('list');
+
+  assert.equal(list.getAttribute('dir'), 'rtl');
+  assert.equal(list.getAttribute('data-fluent-rtl-dir'), 'rtl');
+  assert.equal(target.getAttribute('dir'), 'rtl');
+  assert.equal(target.getAttribute('data-fluent-rtl-dir'), 'rtl');
+  assert.equal(target.style.unicodeBidi, 'isolate');
+});
+
+test('response: grok site profile defines targetSelectors for message-bubble and response-content-markdown', () => {
+  const { dom, window } = createDom('<!DOCTYPE html><html><body></body></html>');
+  const libs = loadLibs(window);
+
+  const prof = libs.siteProfiles.getProfile('grok.com');
+  assert.ok(prof);
+  assert.ok(prof.targetSelectors.length > 0);
+  const hasLiSelector = prof.targetSelectors.some(t => t.selector.includes('li'));
+  assert.equal(hasLiSelector, true);
+});
+
