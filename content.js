@@ -44,6 +44,8 @@
   var injectedElements = []; // عناصر style و link المحقونة
   var mainObserver = null;   // MutationObserver الرئيسي
   var lazyObserver = null;   // IntersectionObserver للمعالجة الكسولة
+  var standbyObserver = null; // #50: MutationObserver خامل للاكتشاف التلقائي عند التعريب لاحقاً
+  var standbyTimer = null;   // #50: مؤقت فحص الخمول
   var debounceTimer = null;  // Debounce timer
   // #16: تقليل الـ debounce من 300ms إلى 100ms لتحسين تجربة مواقع الـ streaming
   // #29: قيمتان — يُختار ديناميكياً حسب نوع الـ profile (بث حي أم صفحة ثابتة)
@@ -77,6 +79,8 @@
     try {
       if (mainObserver) { mainObserver.disconnect(); mainObserver = null; }
       if (lazyObserver) { lazyObserver.disconnect(); lazyObserver = null; }
+      if (standbyObserver) { standbyObserver.disconnect(); standbyObserver = null; }
+      if (standbyTimer) { clearTimeout(standbyTimer); standbyTimer = null; }
       if (debounceTimer) { clearTimeout(debounceTimer); debounceTimer = null; }
       pendingMutations = [];
       isActive = false;
@@ -415,7 +419,21 @@
       // كشف المحتوى العربي — نتخطاه إذا يوجد site profile أو كان تبديل يدوي
       if (!force && !hasProfile && settings.autoDetect) {
         var shouldActivateResult = detector.shouldActivate(settings.detectionThreshold);
-        if (!shouldActivateResult) return;
+        if (!shouldActivateResult) {
+          // #50: تفعيل مراقب الخمول لانتظار تعريب الصفحة لاحقاً عبر المترجمات
+          setupStandbyObserver();
+          return;
+        }
+      }
+
+      // #50: تنظيف مراقب الخمول لأن الإضافة تنشط الآن
+      if (standbyObserver) {
+        standbyObserver.disconnect();
+        standbyObserver = null;
+      }
+      if (standbyTimer) {
+        clearTimeout(standbyTimer);
+        standbyTimer = null;
       }
 
       isActive = true;
@@ -579,6 +597,11 @@
     } catch (e) {
       // #46: سياق ميت — تجاهل
     }
+
+    // #50: إعادة مراقب الخمول لانتظار أي تعريب لاحق عبر المترجم
+    if (settings.enabled && settings.autoDetect && !isManualOverride) {
+      setupStandbyObserver();
+    }
   }
 
   // =========================================================================
@@ -664,6 +687,14 @@
       attributes: true,
       attributeFilter: ['dir', 'style']
     });
+
+    // #50: مراقبة سمات الجذر لضبط التراجع عن الترجمة (Show original)
+    try {
+      mainObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['lang', 'class', 'dir', 'data-google-lang', '_mstmutation']
+      });
+    } catch (e) { /* ignore */ }
   }
 
   // #39: إعادة حقن أي أنماط حذفها التطبيق (منظفات head الموجودة في بعض SPAs)
@@ -709,6 +740,20 @@
       // #38: التطبيق غيّر dir/style على عنصر نملكه — نعيد فرض قيمتنا فوراً
       if (mutation.type === 'attributes') {
         var attrTarget = mutation.target;
+
+        // #50: فحص التراجع عن الترجمة (Show Original)
+        if (attrTarget === document.documentElement) {
+          var rootAttrName = mutation.attributeName;
+          if ((rootAttrName === 'class' || rootAttrName === 'lang') && isActive && !isManualOverride) {
+            var hasSiteProf = !!siteProfiles.getProfile(window.location.hostname);
+            if (!hasSiteProf && !detector.isPageTranslated() && !detector.shouldActivate(settings.detectionThreshold)) {
+              deactivate(false);
+              return;
+            }
+          }
+          continue;
+        }
+
         if (attrTarget && attrTarget.nodeType === Node.ELEMENT_NODE &&
             attrTarget.hasAttribute(bidiFix.MARKER_ATTR)) {
           var markerDir = attrTarget.getAttribute(bidiFix.MARKER_ATTR);
@@ -763,6 +808,87 @@
         }
       }
     }
+  }
+
+  // =========================================================================
+  // 7ب. مراقب الخمول للاكتشاف التلقائي عند التعريب (Standby Observer)
+  // =========================================================================
+
+  function setupStandbyObserver() {
+    if (standbyObserver) {
+      standbyObserver.disconnect();
+      standbyObserver = null;
+    }
+    if (isActive) return;
+    if (!settings.enabled || !settings.autoDetect) return;
+
+    var hostname = window.location.hostname;
+    if (isHostnameInList(hostname, settings.blacklist)) return;
+
+    standbyObserver = new MutationObserver(function (mutations) {
+      if (!isExtensionAlive()) { teardownStaleScript(); return; }
+      if (isActive) {
+        if (standbyObserver) { standbyObserver.disconnect(); standbyObserver = null; }
+        return;
+      }
+
+      var hasTrigger = false;
+      for (var i = 0; i < mutations.length; i++) {
+        var m = mutations[i];
+        if (m.type === 'attributes') {
+          var name = m.attributeName;
+          if (name === 'lang' || name === 'class' || name === 'dir' || name === 'data-google-lang' || name === '_mstmutation') {
+            hasTrigger = true;
+            break;
+          }
+        } else if (m.type === 'childList') {
+          for (var a = 0; a < m.addedNodes.length; a++) {
+            var node = m.addedNodes[a];
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              if (node.tagName === 'FONT' || (node.classList && (node.classList.contains('translated-rtl') || node.classList.contains('goog-te-banner-frame')))) {
+                hasTrigger = true;
+                break;
+              }
+              if (detector.hasArabicContent(node.textContent || '')) {
+                hasTrigger = true;
+                break;
+              }
+            } else if (node.nodeType === Node.TEXT_NODE && detector.hasArabicContent(node.textContent || '')) {
+              hasTrigger = true;
+              break;
+            }
+          }
+          if (hasTrigger) break;
+        }
+      }
+
+      if (hasTrigger) {
+        if (standbyTimer) clearTimeout(standbyTimer);
+        standbyTimer = setTimeout(function () {
+          standbyTimer = null;
+          if (isActive) return;
+          detector.invalidateCache();
+          var isTrans = detector.isPageTranslated && detector.isPageTranslated();
+          var shouldAct = detector.shouldActivate(settings.detectionThreshold);
+          if (isTrans || shouldAct) {
+            if (standbyObserver) {
+              standbyObserver.disconnect();
+              standbyObserver = null;
+            }
+            activate(false);
+          }
+        }, 200);
+      }
+    });
+
+    try {
+      standbyObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['lang', 'class', 'dir', 'data-google-lang', '_mstmutation'],
+        childList: true,
+        subtree: true
+      });
+    } catch (e) { /* ignore */ }
   }
 
   // =========================================================================
@@ -1243,6 +1369,11 @@
       // تفعيل: إذا الإضافة مفعّلة AND (يوجد profile OR كشف تلقائي)
       if (settings.enabled && (hasProfile || settings.autoDetect)) {
         activate(false);
+      }
+
+      // #50: إذا لم تتفعل الإضافة وكان الكشف التلقائي مفعلاً، تشغيل مراقب الخمول
+      if (!isActive && settings.enabled && settings.autoDetect) {
+        setupStandbyObserver();
       }
     } catch (e) {
       console.warn('[FluentRTL] Init error:', e.message);
