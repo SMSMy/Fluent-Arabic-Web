@@ -1283,9 +1283,15 @@
         return false;
 
       case 'fluent-rtl-get-status':
+        var processedCount = 0;
+        try {
+          processedCount = document.querySelectorAll('[' + bidiFix.MARKER_ATTR + ']').length;
+        } catch (e) { /* ignore */ }
         sendResponse({
           active: isActive,
           arabicRatio: detector.getPageArabicRatio(),
+          processedCount: processedCount,
+          isTranslated: detector.isPageTranslated(),
           url: window.location.href,
           hostname: window.location.hostname
         });

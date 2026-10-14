@@ -33,6 +33,7 @@
     statusDot: document.getElementById('statusDot'),
     statusText: document.getElementById('statusText'),
     arabicRatio: document.getElementById('arabicRatio'),
+    processedCount: document.getElementById('processedCount'),
 
     mainToggle: document.getElementById('mainToggle'),
     toggleText: document.getElementById('toggleText'),
@@ -142,6 +143,15 @@
       elements.arabicRatio.style.display = '';
     } else {
       elements.arabicRatio.style.display = 'none';
+    }
+
+    if (elements.processedCount) {
+      if (currentTabStatus && typeof currentTabStatus.processedCount === 'number' && currentTabStatus.processedCount > 0) {
+        elements.processedCount.textContent = '• ' + currentTabStatus.processedCount + ' عنصر';
+        elements.processedCount.style.display = '';
+      } else {
+        elements.processedCount.style.display = 'none';
+      }
     }
 
     elements.toggleText.textContent = isActive ? 'إيقاف RTL' : 'تفعيل RTL';
