@@ -13,13 +13,26 @@
 
 /* === اتجاه النص للعناصر المعالجة === */
 html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] {
-  direction: rtl;
-  text-align: start;
-  unicode-bidi: isolate;
+  direction: rtl !important;
+  text-align: start !important;
+  unicode-bidi: isolate !important;
 }
 
 html.fluent-rtl-active [data-fluent-rtl-dir="auto"] {
   text-align: start;
+}
+
+/* === اتجاه حقول الإدخال الديناميكية (نصوص مختلطة وإنجليزي أولاً) === */
+html.fluent-rtl-active [data-fluent-rtl-input="rtl"] {
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: isolate !important;
+}
+
+html.fluent-rtl-active [data-fluent-rtl-input="ltr"] {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
 }
 
 /* === تحسينات الخطوط العربية === */
@@ -61,7 +74,13 @@ html.fluent-rtl-active article[data-fluent-rtl-dir="rtl"] {
   line-height: 1.65;
 }
 
-/* === عناصر القوائم === */
+/* === عناصر وحاويات القوائم === */
+html.fluent-rtl-active ul[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active ol[data-fluent-rtl-dir="rtl"] {
+  padding-inline-start: 2em;
+  padding-inline-end: 0;
+}
+
 html.fluent-rtl-active li[data-fluent-rtl-dir="rtl"] {
   unicode-bidi: isolate;
   line-height: 1.65;

@@ -8,8 +8,11 @@
  * ⚠️ #11/#12: أُزيلت القواعد الفارغة والمتكررة مع protection.css
  */
 
-/* === إصلاح النصوص المختلطة داخل RTL === */
-html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [dir="ltr"] {
+/* === إصلاح النصوص المختلطة واللاتينية المضمنة داخل RTL لمنع تسرب الأقواس والرموز === */
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] [dir="ltr"],
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] strong,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] b,
+html.fluent-rtl-active [data-fluent-rtl-dir="rtl"] em {
   unicode-bidi: isolate;
 }
 

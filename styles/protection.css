@@ -128,8 +128,8 @@ html.fluent-rtl-active input[type="search"] {
 }
 
 /* === عناصر contentEditable === */
-html.fluent-rtl-active [contenteditable="true"],
-html.fluent-rtl-active [contenteditable=""] {
+html.fluent-rtl-active [contenteditable="true"]:not([data-fluent-rtl-input]),
+html.fluent-rtl-active [contenteditable=""]:not([data-fluent-rtl-input]) {
   unicode-bidi: plaintext !important;
 }
 
