@@ -318,6 +318,13 @@
              '  font-feature-settings:"calt" 1,"liga" 1;' +
              '}';
 
+      // ضبط ارتفاع الأسطر للفقرات والقوائم لمنع تداخل الحركات
+      css += 'html.' + ACTIVE_CLASS + ' p[data-fluent-rtl-dir="rtl"],' +
+             'html.' + ACTIVE_CLASS + ' article[data-fluent-rtl-dir="rtl"],' +
+             'html.' + ACTIVE_CLASS + ' li[data-fluent-rtl-dir="rtl"]{' +
+             '  line-height: 1.65;' +
+             '}';
+
       injectStyle(css, 'fluent-rtl-font-style');
       return;
     }
@@ -346,6 +353,13 @@
     css += 'html.' + ACTIVE_CLASS + ' [data-fluent-rtl-dir="rtl"],' +
            'html.' + ACTIVE_CLASS + ' [data-fluent-rtl-dir="auto"] {' +
            '  font-family: ' + fontConfig.family + ', "Segoe UI", Tahoma, sans-serif !important;' +
+           '}';
+
+    // ضبط ارتفاع الأسطر للفقرات والقوائم لمنع تداخل الحركات
+    css += 'html.' + ACTIVE_CLASS + ' p[data-fluent-rtl-dir="rtl"],' +
+           'html.' + ACTIVE_CLASS + ' article[data-fluent-rtl-dir="rtl"],' +
+           'html.' + ACTIVE_CLASS + ' li[data-fluent-rtl-dir="rtl"] {' +
+           '  line-height: 1.65;' +
            '}';
 
     injectStyle(css, 'fluent-rtl-font-style');

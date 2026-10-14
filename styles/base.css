@@ -54,14 +54,17 @@ html.fluent-rtl-active h6[data-fluent-rtl-dir="rtl"] {
   unicode-bidi: isolate;
 }
 
-/* === فقرات === */
-html.fluent-rtl-active p[data-fluent-rtl-dir="rtl"] {
+/* === فقرات ومقالات === */
+html.fluent-rtl-active p[data-fluent-rtl-dir="rtl"],
+html.fluent-rtl-active article[data-fluent-rtl-dir="rtl"] {
   unicode-bidi: isolate;
+  line-height: 1.65;
 }
 
 /* === عناصر القوائم === */
 html.fluent-rtl-active li[data-fluent-rtl-dir="rtl"] {
   unicode-bidi: isolate;
+  line-height: 1.65;
 }
 
 /* === خلايا الجداول === */
