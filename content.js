@@ -720,6 +720,7 @@
       teardownStaleScript();
       return;
     }
+    if (typeof document === 'undefined' || !document || !document.getElementById) return;
     var now = Date.now();
     var minInterval = minIntervalMs || 1000;
     if (now - _lastSelfHeal < minInterval) return;
@@ -813,11 +814,13 @@
         }
       }
 
-      // تغييرات النص
+      // تغييرات النص — دعم إعادة التقييم لمواقع البث الحي
       if (mutation.type === 'characterData' && mutation.target.parentElement) {
         var parentEl = mutation.target.parentElement;
-        // #13: فحص مبكر — تخطي المعالجة إذا لم يوجد تغيير محتمل
-        if (!parentEl.hasAttribute(bidiFix.MARKER_ATTR)) {
+        var prof = siteProfiles.getProfile(window.location.hostname);
+        if (prof && prof.streaming) {
+          bidiFix.processElement(parentEl);
+        } else if (!parentEl.hasAttribute(bidiFix.MARKER_ATTR)) {
           bidiFix.processElement(parentEl);
         }
       }
