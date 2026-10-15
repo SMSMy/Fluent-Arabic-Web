@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/SMSMy/Fluent-Arabic-Web/issues"
   },
-  "homepage": "https://github.com/SMSMy/Fluent-Arabic-Web#readme",
+  "homepage": "https://smsmy.github.io/Fluent-Arabic-Web/",
   "devDependencies": {
     "archiver": "^8.0.0",
     "jsdom": "^30.0.1",

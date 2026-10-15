@@ -9,6 +9,9 @@
 <a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag">
   <img src="https://img.shields.io/badge/Install%20from%20Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Install from Chrome Web Store">
 </a>
+<a href="https://smsmy.github.io/Fluent-Arabic-Web/">
+  <img src="https://img.shields.io/badge/Website-smsmy.github.io-10b981?style=for-the-badge&logo=githubpages&logoColor=white" alt="Website">
+</a>
 
 <img src="assets/fluent_arabic_web_icon.svg" alt="Fluent Arabic Web" width="220">
 

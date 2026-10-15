@@ -3,6 +3,7 @@
   "name": "Fluent Arabic Web - RTL",
   "version": "4.3.0",
   "description": "تجربة تصفح عربية مثالية RTL - بدون تحريك أو كسر التخطيط",
+  "homepage_url": "https://smsmy.github.io/Fluent-Arabic-Web/",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "icons": {
