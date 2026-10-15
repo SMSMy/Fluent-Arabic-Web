@@ -10,6 +10,7 @@
   "scripts": {
     "test": "node --test",
     "build:popup": "tailwindcss -c popup/tailwind.config.js -i popup/input.css -o popup/popup.css --minify",
+    "build:privacy": "node scripts/build-privacy.mjs",
     "pack": "node scripts/pack.mjs"
   },
   "repository": {

@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, readSource } from './read-source.mjs';
+import { renderPrivacyHtml } from '../scripts/build-privacy.mjs';
 
 const SITE_DIR = path.join(ROOT, 'docs');
 const PAGE = readSource('docs/index.html');
@@ -52,5 +53,15 @@ test('docs/PRIVACY.md: سياسة الخصوصية منشورة ومربوطة �
   assert.ok(policy.length > 800, 'ملف السياسة أقصر من أن يكون سياسة كاملة');
   assert.match(policy, /سياسة الخصوصية/, 'النسخة العربية مفقودة');
   assert.match(policy, /Privacy Policy/, 'النسخة الإنجليزية مفقودة');
-  assert.match(PAGE, /href="PRIVACY\.md"/, 'الصفحة الرئيسية يجب أن تربط سياسة الخصوصية');
+  assert.match(PAGE, /href="privacy\.html"/, 'الصفحة الرئيسية يجب أن تربط صفحة الخصوصية');
+});
+
+test('docs/privacy.html: الصفحة المنسَّقة مطابقة لناتج التوليد من PRIVACY.md', () => {
+  const policyPath = path.join(SITE_DIR, 'PRIVACY.md');
+  if (!fs.existsSync(policyPath)) return; // يغطّيه الاختبار السابق
+  assert.ok(fs.existsSync(path.join(SITE_DIR, 'privacy.html')), 'docs/privacy.html مفقود — شغّل npm run build:privacy');
+  const generated = renderPrivacyHtml(readSource('docs/PRIVACY.md'));
+  const actual = readSource('docs/privacy.html');
+  assert.equal(actual, generated, 'صفحة الخصوصية قديمة — شغّل: npm run build:privacy');
+  assert.match(actual, /href="PRIVACY\.md"/, 'الصفحة المنسَّقة يجب أن تربط النسخة النصية');
 });

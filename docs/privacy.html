@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!-- مُولَّد آليًّا من docs/PRIVACY.md — لا تُحرّر هذا الملف يدويًّا. شغّل: npm run build:privacy -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سياسة الخصوصية — Fluent Arabic Web</title>
+<meta name="description" content="سياسة خصوصية إضافة Fluent Arabic Web: لا جمع بيانات، ولا نداء شبكة، وشرح كل صلاحية وما يُحفظ على جهازك.">
+<meta name="theme-color" content="#07100d">
+<link rel="canonical" href="https://smsmy.github.io/Fluent-Arabic-Web/privacy.html">
+<link rel="icon" type="image/png" href="assets/icon-128.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="سياسة الخصوصية — Fluent Arabic Web">
+<meta property="og:description" content="لا جمع بيانات، ولا نداء شبكة، وشرح كل صلاحية وما يُحفظ على جهازك.">
+<meta property="og:url" content="https://smsmy.github.io/Fluent-Arabic-Web/privacy.html">
+<meta property="og:image" content="https://smsmy.github.io/Fluent-Arabic-Web/assets/store-banner.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --bg: #07100d;
+    --card: #101b18;
+    --border: #1e2f29;
+    --border-strong: #2b4239;
+    --primary: #10b981;
+    --primary-bright: #34d399;
+    --on-primary: #04231a;
+    --text: #eef5f2;
+    --muted: #9fb4ac;
+    --radius: 16px;
+    --maxw: 820px;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: radial-gradient(900px 420px at 50% -12%, rgba(16, 185, 129, 0.14), transparent 70%), var(--bg);
+    color: var(--text);
+    font-family: 'Tajawal', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 17px;
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--primary-bright); }
+  a:hover { color: #6ee7b7; }
+  :focus-visible { outline: 3px solid var(--primary-bright); outline-offset: 3px; border-radius: 6px; }
+  .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: 1.25rem; }
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    background: rgba(7, 16, 13, 0.86);
+    backdrop-filter: blur(14px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .site-header .wrap { display: flex; flex-wrap: wrap; gap: 0.6rem 1.25rem; align-items: center; justify-content: space-between; padding-block: 0.8rem; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); font-weight: 800; }
+  .brand img { width: 34px; height: 34px; border-radius: 9px; }
+  .header-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-size: 0.92rem; }
+  .header-links a { color: var(--muted); text-decoration: none; }
+  .header-links a:hover { color: var(--text); }
+  main { padding-block: clamp(2rem, 5vw, 3rem) 3.5rem; }
+  .page-title { margin: 0 0 0.4rem; font-size: clamp(1.7rem, 4.4vw, 2.4rem); font-weight: 800; text-wrap: balance; }
+  .page-meta { color: var(--muted); font-size: 0.95rem; margin: 0 0 1.5rem; }
+  .notice {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: var(--radius);
+    padding: 1rem 1.15rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+  .notice strong { color: var(--text); }
+  article h1 { font-size: clamp(1.45rem, 3.6vw, 1.9rem); margin: 2.25rem 0 0.75rem; font-weight: 800; }
+  article h2 { font-size: clamp(1.25rem, 3vw, 1.55rem); margin: 2rem 0 0.6rem; font-weight: 800; color: var(--text); }
+  article h3 { font-size: 1.1rem; margin: 1.6rem 0 0.5rem; font-weight: 700; }
+  article p { margin: 0 0 1rem; }
+  article ul, article ol { padding-inline-start: 1.5rem; margin: 0 0 1.15rem; }
+  article li { margin-bottom: 0.45rem; }
+  article strong { color: #ffffff; }
+  article hr { border: 0; border-top: 1px solid var(--border); margin: 2.25rem 0; }
+  article code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.88em;
+    background: #0b1512;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.1rem 0.35rem;
+    direction: ltr;
+    unicode-bidi: isolate;
+    display: inline-block;
+  }
+  article pre {
+    direction: ltr;
+    text-align: left;
+    background: #060d0b;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    margin: 0 0 1.25rem;
+  }
+  article pre code { background: none; border: 0; padding: 0; display: block; color: #cde7dd; font-size: 0.86rem; }
+  article table { width: 100%; border-collapse: collapse; margin: 0 0 1.35rem; font-size: 0.95rem; }
+  article th, article td { border: 1px solid var(--border); padding: 0.55rem 0.7rem; text-align: start; vertical-align: top; }
+  article th { background: #0d1a16; font-weight: 700; }
+  article td code { white-space: nowrap; }
+  .ltr-block { direction: ltr; text-align: left; }
+  footer.site-footer { border-top: 1px solid var(--border); padding-block: 1.75rem 2.25rem; color: var(--muted); font-size: 0.92rem; }
+  footer.site-footer a { color: var(--muted); }
+  footer.site-footer a:hover { color: var(--primary-bright); }
+  footer.site-footer ul { list-style: none; padding: 0; margin: 0.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+  @media print {
+    body { background: #fff; color: #111; }
+    .site-header, .notice, footer.site-footer { display: none; }
+    article code, article pre, article th { background: #f4f4f4; border-color: #ccc; }
+    a { color: #064e3b; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./">
+      <img src="assets/icon-128.png" width="128" height="128" alt="">
+      <span>Fluent Arabic Web</span>
+    </a>
+    <nav class="header-links" aria-label="روابط">
+      <a href="./">الصفحة الرئيسية</a>
+      <a href="PRIVACY.md">نسخة Markdown</a>
+      <a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">GitHub ↗</a>
+      <a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">تثبيت الإضافة</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1 class="page-title">سياسة الخصوصية</h1>
+  <p class="page-meta">Fluent Arabic Web — إضافة المتصفح وموقع المشروع.</p>
+  <p class="notice">
+    <strong>الخلاصة:</strong> لا نجمع أي بيانات ولا نرسلها إلى أي مكان. هذه الصفحة مبنيّة آليًّا من
+    <a href="PRIVACY.md">ملف السياسة</a> — وهو الرابط ذاته المُعلن في متجر كروم، فتجدان النسختان متطابقتين دائماً.
+  </p>
+  <article>
+<h1>سياسة الخصوصية — Fluent Arabic Web</h1>
+<p><strong>آخر تحديث:</strong> 15 أكتوبر 2026 تنطبق على إضافة المتصفح «Fluent Arabic Web - RTL» وعلى موقع المشروع هذا.</p>
+<hr>
+<h2>الخلاصة في سطر واحد</h2>
+<p><strong>لا نجمع أي بيانات، ولا نرسل أي شيء إلى أي مكان.</strong> لا حسابات، ولا تحليلات، ولا تتبّع، ولا إعلانات، ولا خادم خارجي.</p>
+<p>وهذا هو نفس ما أُعلن عنه في صفحة الإضافة على متجر كروم: أن المطوّر لا يجمع بياناتك ولا يستخدمها، وأنها لا تُباع لأطراف ثالثة، ولا تُستخدم لأغراض غير وظيفة الإضافة، ولا لتحديد الجدارة الائتمانية.</p>
+<h2>ما لا تفعله الإضافة</h2>
+<ul>
+<li><strong>لا نداء شبكة إطلاقاً.</strong> لا يوجد في ملفات الإضافة أي <code>fetch</code> أو <code>XMLHttpRequest</code> أو <code>WebSocket</code> أو <code>sendBeacon</code>. كل المعالجة تجري داخل متصفحك.</li>
+<li><strong>لا جمع محتوى.</strong> لا يُرسل نص الصفحات التي تزورها، ولا عناوينها، ولا روابطها، ولا أي جزء منها إلى أي جهة.</li>
+<li><strong>لا أدوات تحليل ولا تتبّع ولا إعلانات ولا بصمة جهاز.</strong></li>
+<li><strong>لا حسابات ولا تسجيل دخول.</strong></li>
+</ul>
+<p>يمكنك التحقق بنفسك على نسخة المستودع:</p>
+<pre dir="ltr"><code>grep -rn &quot;fetch(\|XMLHttpRequest\|WebSocket\|sendBeacon&quot; content.js background.js lib/ shadow-patch.js</code></pre>
+<p>الأمر لا يُخرج شيئاً.</p>
+<h2>ما تحفظه الإضافة على جهازك</h2>
+<p>تُحفظ الإعدادات في تخزين المتصفح <code>chrome.storage</code>، وهي:</p>
+<ul>
+<li>حالة التفعيل، وحساسية الكشف التلقائي للعربية.</li>
+<li>الخط العربي المختار.</li>
+<li>قوائم المواقع المسموحة والممنوعة، والمحددات المخصصة التي تلتقطها بنفسك.</li>
+<li>إعدادات كل موقع على حدة.</li>
+</ul>
+<p>تفاصيل تخصّ هذا التخزين:</p>
+<ul>
+<li><strong>إن كنت مفعّلاً لمزامنة المتصفح</strong>، فقد يُزامن <code>chrome.storage.sync</code> هذه الإعدادات بين أجهزتك عبر حساب المتصفح الخاص بك. هذا نقل يديره المتصفح نفسه بين أجهزتك، ولا يمرّ بنا ولا نصل إليه.</li>
+<li><strong>التصدير والاستيراد</strong> ملف JSON محلي أنت من يحفظه في جهازك، ولا يُرفع إلى أي مكان.</li>
+<li><strong>إلغاء تثبيت الإضافة</strong> يحذف هذه الإعدادات من جهازك.</li>
+</ul>
+<h2>الصلاحيات وسبب طلبها</h2>
+<table>
+<thead><tr><th>الصلاحية</th><th>لماذا</th></tr></thead>
+<tbody>
+<tr><td><code>storage</code></td><td>حفظ إعداداتك على جهازك.</td></tr>
+<tr><td><code>activeTab</code></td><td>التعامل مع التبويب الحالي عند تفعيلك الإضافة أو استخدام الاختصار.</td></tr>
+<tr><td><code>&lt;all_urls&gt;</code> (صلاحية مواقع)</td><td>لأن الإضافة تعمل على أي موقع تزوره: تحتاج قراءة نصوص الصفحة لتصحيح اتجاهها. القراءة والتعديل يجريان داخل متصفحك فقط.</td></tr>
+<tr><td>ملفات الخطوط والأنماط في <code>web_accessible_resources</code></td><td>لتتمكن الصفحة من تحميل الخطوط العربية المدمجة عند اختيارك خطاً.</td></tr>
+</tbody>
+</table>
+<h2>موقع المشروع (GitHub Pages)</h2>
+<ul>
+<li>صفحات ثابتة: لا حسابات، ولا نماذج، ولا أدوات تحليل، ولا ملفات تعريف ارتباط من جهتنا.</li>
+<li>تُحمَّل خطوط العرض في الموقع من خدمة <strong>Google Fonts</strong>، وعندها يتصل متصفحك بخوادم جوجل لجلب ملف الخط — كما يفعل أي موقع يستخدم هذه الخدمة. لا نرسل نحن أي بيانات، ويمكنك منع ذلك بحجب الخطوط في متصفحك دون أن يتعطل شيء.</li>
+</ul>
+<h2>الأطراف الثالثة</h2>
+<p>لا نشارك أي بيانات مع أي طرف ثالث، لأننا لا نملك أصلاً أي بيانات نجمعها. لا خدمات تحليل، ولا حِزم تتبّع، ولا خوادم وسيطة. (استخدامك لمتجر كروم نفسه يخضع لسياسات جوجل، لا لسياساتنا.)</p>
+<h2>الأطفال</h2>
+<p>لا نجمع بيانات من أي مستخدم، بمن فيهم الأطفال دون الثالثة عشرة.</p>
+<h2>التغييرات على هذه السياسة</h2>
+<p>أي تعديل يُسجَّل علناً في تاريخ المستودع، ويمكنك مراجعة كل نسخة سابقة على: <a href="https://github.com/SMSMy/Fluent-Arabic-Web/commits/main/docs/PRIVACY.md" rel="noopener">https://github.com/SMSMy/Fluent-Arabic-Web/commits/main/docs/PRIVACY.md</a></p>
+<h2>التواصل</h2>
+<p>لأي سؤال أو ملاحظة حول الخصوصية: <a href="https://github.com/SMSMy/Fluent-Arabic-Web/issues" rel="noopener">Issues على GitHub</a>.</p>
+<hr>
+<section class="ltr-block" lang="en">
+<h1>Privacy Policy — Fluent Arabic Web</h1>
+<p><strong>Last updated:</strong> 15 October 2026 Applies to the &quot;Fluent Arabic Web - RTL&quot; browser extension and to this project site.</p>
+<h2>In one line</h2>
+<p><strong>We collect nothing and send nothing anywhere.</strong> No accounts, no analytics, no tracking, no ads, no external server. This matches the Chrome Web Store declaration: the developer does not collect or use your data, it is not sold to third parties, not used or transferred for purposes unrelated to the extension's core functionality, and not used to determine creditworthiness.</p>
+<h2>What the extension does not do</h2>
+<ul>
+<li><strong>No network calls at all.</strong> There is no <code>fetch</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code> or <code>sendBeacon</code> anywhere in the extension code.</li>
+<li><strong>No content collection.</strong> Page text, titles and URLs never leave your browser.</li>
+<li><strong>No analytics, tracking, ads or fingerprinting.</strong></li>
+<li><strong>No accounts and no sign-in.</strong></li>
+</ul>
+<p>Verify it yourself on a clone of the repository:</p>
+<pre dir="ltr"><code>grep -rn &quot;fetch(\|XMLHttpRequest\|WebSocket\|sendBeacon&quot; content.js background.js lib/ shadow-patch.js</code></pre>
+<p>The command prints nothing.</p>
+<h2>What is stored on your device</h2>
+<p>Settings live in the browser's <code>chrome.storage</code>: enabled state, Arabic-detection threshold, chosen font, per-site allow/deny lists and any custom selectors you pick. If you have browser sync enabled, <code>chrome.storage.sync</code> may sync those settings between your own devices through your browser account — that transfer is handled by the browser and never passes through us. Export/import writes a local JSON file that you keep. Uninstalling the extension removes the stored settings.</p>
+<h2>Permissions and why they are needed</h2>
+<table>
+<thead><tr><th>Permission</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><code>storage</code></td><td>Save your settings on your device.</td></tr>
+<tr><td><code>activeTab</code></td><td>Act on the current tab when you invoke the extension or its shortcut.</td></tr>
+<tr><td><code>&lt;all_urls&gt;</code> (host access)</td><td>The extension works on any site you visit, so it must read page text to fix its direction. Reading and correction happen inside your browser only.</td></tr>
+<tr><td>Fonts/styles in <code>web_accessible_resources</code></td><td>So a page can load the bundled Arabic fonts when you choose one.</td></tr>
+</tbody>
+</table>
+<h2>The project website (GitHub Pages)</h2>
+<p>Static pages: no accounts, no forms, no analytics, no cookies of our own. Display fonts are loaded from <strong>Google Fonts</strong>, which means your browser contacts Google to fetch the font file, as any site using that service does. We send nothing ourselves, and blocking those fonts breaks nothing.</p>
+<h2>Third parties</h2>
+<p>None. There is no data to share, because none is collected.</p>
+<h2>Children</h2>
+<p>No data is collected from anyone, including children under 13.</p>
+<h2>Changes to this policy</h2>
+<p>Every change is recorded publicly in the repository history: <a href="https://github.com/SMSMy/Fluent-Arabic-Web/commits/main/docs/PRIVACY.md" rel="noopener">https://github.com/SMSMy/Fluent-Arabic-Web/commits/main/docs/PRIVACY.md</a></p>
+<h2>Contact</h2>
+<p>Questions about privacy: <a href="https://github.com/SMSMy/Fluent-Arabic-Web/issues" rel="noopener">GitHub Issues</a>.</p>
+</section>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p style="margin: 0;">© 2026 Fluent Arabic Web — رخصة MIT. هذه الصفحة مُولَّدة من <a href="PRIVACY.md">docs/PRIVACY.md</a>.</p>
+    <ul>
+      <li><a href="./">الصفحة الرئيسية</a></li>
+      <li><a href="PRIVACY.md">النسخة النصية</a></li>
+      <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener">سجل التغييرات</a></li>
+      <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/issues" rel="noopener">المشاكل</a></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

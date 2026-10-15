@@ -154,7 +154,7 @@ git clone https://github.com/SMSMy/Fluent-Arabic-Web.git
 - الإعدادات تُحفظ في `chrome.storage` على جهازك (مع مزامنة المتصفح إن فعّلتها).
 - الإضافة تحتاج صلاحية الصفحات لتصحيح النص داخلها، ولا ترسل محتوى الصفحات إلى أي جهة.
 - تصدير/استيراد الإعدادات ملف JSON محلي أنت من يحفظه.
-- السياسة الكاملة: **[docs/PRIVACY.md](https://smsmy.github.io/Fluent-Arabic-Web/PRIVACY.md)** (وهي نفس الصفحة المربوطة في متجر كروم).
+- السياسة الكاملة: **[صفحة الخصوصية](https://smsmy.github.io/Fluent-Arabic-Web/privacy.html)** · [نسخة Markdown](https://smsmy.github.io/Fluent-Arabic-Web/PRIVACY.md) — وهي الرابط المُعلن في متجر كروم، والصفحة المنسَّقة مُولَّدة منها بـ `npm run build:privacy`.
 
 ## ما الجديد في 4.2
 
