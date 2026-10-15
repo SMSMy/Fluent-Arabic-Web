@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fluent Arabic Web — منسّق النصوص العربية على أي موقع</title>
 <meta name="description" content="إضافة متصفح (Manifest V3) تكتشف النص العربي في الصفحة وتصحّح اتجاهه دون قلب التخطيط: قوائم جانبية وأزرار وكتل كود سليمة، مع 22 ملف موقع جاهز لنماذج الذكاء الاصطناعي ومنصات العمل.">
-<meta name="theme-color" content="#07100d">
+<meta name="theme-color" content="#f7f2e8">
 <link rel="canonical" href="https://smsmy.github.io/Fluent-Arabic-Web/">
 <link rel="icon" type="image/png" href="assets/icon-128.png">
 <link rel="apple-touch-icon" href="assets/icon-128.png">
@@ -26,517 +26,731 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Reem+Kufi:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+  /* =========================================================================
+     مطبعة عربية: ورق، حبر أخضر، مساطر شعرية، ولا ظلّ ولا زاوية مدوّرة.
+     ========================================================================= */
   *, *::before, *::after { box-sizing: border-box; }
 
   :root {
-    --bg: #07100d;
-    --bg-soft: #0b1613;
-    --card: rgba(17, 27, 24, 0.72);
-    --card-solid: #101b18;
-    --border: #1e2f29;
-    --border-strong: #2b4239;
-    --primary: #10b981;
-    --primary-bright: #34d399;
-    --primary-deep: #047857;
-    --on-primary: #04231a;
-    --text: #eef5f2;
-    --muted: #9fb4ac;
-    --radius: 18px;
-    --radius-sm: 12px;
-    --shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
-    --maxw: 1140px;
+    --paper: #f7f2e8;
+    --paper-2: #efe7d7;
+    --paper-3: #e6dcc6;
+    --ink: #1b2a24;
+    --ink-2: #3f5249;
+    --muted: #6d7c74;
+    --green: #0f5132;
+    --green-2: #14603c;
+    --green-tint: #e3ece5;
+    --rust: #9a3b1f;
+    --rule: rgba(27, 42, 36, 0.18);
+    --rule-2: rgba(27, 42, 36, 0.45);
+    --measure: 68ch;
+    --pad: clamp(1.1rem, 4vw, 2.5rem);
   }
 
   html { scroll-behavior: smooth; }
 
   body {
     margin: 0;
-    background:
-      radial-gradient(1100px 520px at 50% -12%, rgba(16, 185, 129, 0.16), transparent 70%),
-      var(--bg);
-    color: var(--text);
-    font-family: 'Tajawal', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    font-size: 17px;
-    line-height: 1.85;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Amiri', 'Times New Roman', Times, serif;
+    font-size: 19px;
+    line-height: 1.9;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* حبيبات الورق: طبقة ثابتة غير تفاعلية */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 
   img { max-width: 100%; height: auto; }
-  a { color: var(--primary-bright); }
-  a:hover { color: #6ee7b7; }
 
-  :focus-visible {
-    outline: 3px solid var(--primary-bright);
-    outline-offset: 3px;
-    border-radius: 6px;
+  a {
+    color: var(--green);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    transition: color 0.15s ease, text-decoration-thickness 0.15s ease;
   }
+  a:hover { color: var(--ink); text-decoration-thickness: 2px; }
+
+  :focus-visible { outline: 2px dashed var(--rust); outline-offset: 3px; }
 
   .skip {
     position: absolute;
     inset-inline-start: -9999px;
     top: 0;
-    background: var(--primary);
-    color: var(--on-primary);
-    padding: 0.6rem 1rem;
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    font-weight: 700;
-    z-index: 50;
+    background: var(--green);
+    color: var(--paper);
+    padding: 0.5rem 1rem;
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.9rem;
+    z-index: 20;
   }
-  .skip:focus { inset-inline-start: 1rem; }
+  .skip:focus { inset-inline-start: 0; }
 
-  .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: 1.25rem; }
+  .sheet {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1080px;
+    margin-inline: auto;
+    padding-inline: var(--pad);
+  }
 
-  /* ===== Header ===== */
-  .site-header {
+  /* ====== الترويسة ====== */
+  .masthead {
     position: sticky;
     top: 0;
-    z-index: 30;
-    background: rgba(7, 16, 13, 0.86);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
+    z-index: 10;
+    background: var(--paper);
+    border-bottom: 3px double var(--rule-2);
   }
-  .site-header .wrap {
+  .masthead-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 0.85rem 0.5rem;
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .wordmark img { width: 30px; height: 30px; border-radius: 2px; }
+  .wordmark:hover { color: var(--green); }
+  .edition {
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .masthead-nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem 1.5rem;
-    padding-block: 0.85rem;
+    gap: 0.25rem 1.1rem;
+    padding-block: 0.35rem 0.6rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.88rem;
   }
-  .brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--text); }
-  .brand img { width: 38px; height: 38px; border-radius: 10px; }
-  .brand-name { font-weight: 800; font-size: 1.12rem; letter-spacing: -0.01em; }
-  .brand-tag {
-    display: none;
-    color: var(--muted);
-    font-size: 0.82rem;
-    border-inline-start: 1px solid var(--border-strong);
-    padding-inline-start: 0.7rem;
+  .masthead-nav a { color: var(--ink-2); text-decoration: none; }
+  .masthead-nav a:hover { color: var(--green); text-decoration: underline; text-decoration-thickness: 2px; }
+  .masthead-nav a.install {
+    color: var(--green);
+    font-weight: 600;
+    border-inline-start: 1px solid var(--rule);
+    padding-inline-start: 1.1rem;
   }
-  @media (min-width: 900px) { .brand-tag { display: inline; } }
+  .masthead-nav .sep { color: var(--rule-2); }
 
-  .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 1.15rem; font-size: 0.95rem; }
-  .nav a { color: var(--muted); text-decoration: none; }
-  .nav a:hover { color: var(--text); }
-  .nav .nav-store {
-    color: var(--on-primary);
-    background: linear-gradient(135deg, var(--primary-bright), var(--primary));
-    padding: 0.4rem 0.95rem;
-    border-radius: 999px;
-    font-weight: 700;
-  }
-  .nav .nav-store:hover { color: var(--on-primary); filter: brightness(1.06); }
-
-  @media (max-width: 640px) {
-    .site-header .wrap { padding-block: 0.65rem; }
-    .nav {
-      width: 100%;
+  @media (max-width: 700px) {
+    /* ترويسة أخفّ على الجوال: بلا سطر الإصدار، وشريط تنقّل واحد يُمرَّر جانبياً */
+    .masthead { position: static; }
+    .masthead-top { padding-block: 0.7rem 0.45rem; }
+    .edition { display: none; }
+    .masthead-nav {
       flex-wrap: nowrap;
       overflow-x: auto;
-      gap: 1rem;
-      font-size: 0.88rem;
+      gap: 0.9rem;
+      font-size: 0.85rem;
       scrollbar-width: none;
     }
-    .nav::-webkit-scrollbar { display: none; }
-    .nav > a { white-space: nowrap; }
-    .nav .nav-store { order: -1; }
+    .masthead-nav::-webkit-scrollbar { display: none; }
+    .masthead-nav a, .masthead-nav .sep { white-space: nowrap; }
+    .masthead-nav .install { order: -1; border-inline-start: 0; padding-inline-start: 0; font-weight: 600; }
   }
 
-  /* ===== Sections ===== */
-  main { display: block; }
-  section { padding-block: clamp(2.75rem, 6vw, 4.5rem); }
-  .eyebrow {
-    display: inline-block;
-    color: var(--primary-bright);
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: 999px;
-    padding: 0.15rem 0.8rem;
-    font-size: 0.82rem;
+  /* ====== ترويسة الأقسام ====== */
+  section { padding-block: clamp(2.4rem, 6vw, 4rem) 0; }
+  .rubric {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--rust);
+    margin: 0 0 0.9rem;
+    padding-top: 0.55rem;
+    border-top: 2px solid var(--rust);
+  }
+  .rubric .of { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; }
+  h2 {
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    line-height: 1.35;
     font-weight: 700;
-    margin-bottom: 0.9rem;
-  }
-  h2 { font-size: clamp(1.5rem, 3.4vw, 2.05rem); line-height: 1.35; margin: 0 0 0.75rem; font-weight: 800; text-wrap: balance; }
-  h3 { font-size: 1.1rem; margin: 0 0 0.4rem; font-weight: 700; }
-  .lead { color: var(--muted); max-width: 68ch; margin: 0 0 1.6rem; text-wrap: pretty; }
-  .section-head { margin-bottom: 2rem; }
-
-  /* ===== Hero ===== */
-  .hero { padding-block: clamp(2.5rem, 7vw, 4.75rem) 2.5rem; }
-  .hero-grid { display: grid; gap: clamp(1.75rem, 4vw, 3rem); align-items: center; }
-  @media (min-width: 940px) { .hero-grid { grid-template-columns: 1.05fr 0.95fr; } }
-  .hero h1 {
-    font-size: clamp(2rem, 5.4vw, 3.15rem);
-    line-height: 1.25;
     margin: 0 0 1rem;
-    font-weight: 800;
-    letter-spacing: -0.01em;
     text-wrap: balance;
   }
-  .grad {
-    background: linear-gradient(120deg, #6ee7b7 0%, #34d399 55%, #10b981 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .deck { color: var(--ink-2); max-width: var(--measure); margin: 0 0 1.6rem; }
+  .rule { border: 0; border-top: 1px solid var(--rule); margin: 2.4rem 0 0; }
+
+  /* ====== صدر الصفحة ====== */
+  .lede { padding-top: clamp(1.8rem, 5vw, 3rem); }
+  .kicker {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--rust);
+    margin: 0 0 0.75rem;
   }
-  .hero p.hero-lead { font-size: 1.12rem; color: var(--muted); margin: 0 0 1.75rem; max-width: 60ch; text-wrap: pretty; }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+  h1 {
+    font-size: clamp(2.1rem, 6.4vw, 3.9rem);
+    line-height: 1.25;
+    font-weight: 700;
+    margin: 0 0 1.1rem;
+    max-width: 30ch;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: clamp(1.12rem, 2.2vw, 1.32rem);
+    line-height: 1.8;
+    color: var(--ink-2);
+    max-width: 56ch;
+    margin: 0 0 1.6rem;
+  }
+  .standfirst em { font-style: italic; }
+
+  .columns { columns: 2; column-gap: 2.6rem; column-rule: 1px solid var(--rule); margin-bottom: 1.4rem; }
+  .columns p { margin: 0 0 1rem; break-inside: avoid; }
+  @media (max-width: 780px) { .columns { columns: 1; } }
+
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem 1.4rem; margin-bottom: 1.4rem; }
   .btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.8rem 1.45rem;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 1rem;
+    padding: 0.62rem 1.25rem;
+    border: 1px solid var(--green);
+    background: transparent;
+    color: var(--green);
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
     text-decoration: none;
-    border: 1px solid transparent;
-    transition: transform 0.18s ease, filter 0.18s ease, background 0.18s ease;
+    transition: background 0.16s ease, color 0.16s ease;
   }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--primary-bright), var(--primary));
-    color: var(--on-primary);
-    box-shadow: 0 10px 26px rgba(16, 185, 129, 0.22);
-  }
-  .btn-primary:hover { color: var(--on-primary); transform: translateY(-2px); filter: brightness(1.05); }
-  .btn-ghost { background: rgba(255, 255, 255, 0.03); color: var(--text); border-color: var(--border-strong); }
-  .btn-ghost:hover { color: var(--text); background: rgba(255, 255, 255, 0.07); transform: translateY(-2px); }
+  .btn:hover { background: var(--green); color: var(--paper); text-decoration: none; }
+  .btn-solid { background: var(--green); color: #f4efe4; }
+  .btn-solid:hover { background: var(--ink); color: #f4efe4; }
+  .text-link { font-family: 'Reem Kufi', sans-serif; font-size: 0.92rem; }
 
-  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
-  .chips li {
-    font-size: 0.84rem;
+  .dateline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.2rem;
+    padding-block: 0.7rem;
+    border-block: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
     color: var(--muted);
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.25rem 0.75rem;
+    margin-bottom: 2.2rem;
   }
-  .chips li strong { color: var(--text); font-weight: 700; }
+  .dateline span { direction: ltr; unicode-bidi: isolate; }
 
-  .concept-card {
-    background: #fdfdfb;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.75rem;
-    box-shadow: var(--shadow);
-  }
-  .concept-card figcaption { color: #3f4b45; font-size: 0.82rem; text-align: center; padding: 0.35rem 0.5rem 0; }
-
-  /* ===== Cards & grids ===== */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-  }
-  .grid { display: grid; gap: 1.15rem; }
-  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
-  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); }
-
-  .feature { display: flex; flex-direction: column; gap: 0.35rem; }
-  .feature .ico {
-    width: 42px; height: 42px;
-    display: grid; place-items: center;
-    border-radius: 12px;
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.22);
-    color: var(--primary-bright);
-    margin-bottom: 0.5rem;
-  }
-  .feature .ico svg { width: 22px; height: 22px; }
-  .feature p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.8; }
-
-  /* ===== Before / after ===== */
-  .ba-grid { display: grid; gap: 1.15rem; }
-  @media (min-width: 900px) { .ba-grid { grid-template-columns: 1fr 1fr; } }
-  .ba-card { background: var(--card-solid); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-  .ba-card header {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
-    font-weight: 700; font-size: 0.95rem;
-  }
-  .ba-badge { font-size: 0.78rem; font-weight: 700; border-radius: 999px; padding: 0.1rem 0.65rem; }
-  .ba-before .ba-badge { background: rgba(248, 113, 113, 0.14); color: #fca5a5; }
-  .ba-after .ba-badge { background: rgba(52, 211, 153, 0.14); color: #6ee7b7; }
-  .ba-card img { display: block; width: 100%; background: #0d1512; }
-  .ba-card p { margin: 0; padding: 0.7rem 1rem 1rem; color: var(--muted); font-size: 0.87rem; }
-
-  /* ===== Chips lists (sites / fonts) ===== */
-  .ltr { direction: ltr; unicode-bidi: isolate; font-family: 'JetBrains Mono', ui-monospace, monospace; }
-  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.9em; }
-  .site-group h3 { margin-bottom: 0.75rem; font-size: 1rem; color: var(--muted); font-weight: 700; }
-  .site-list { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
-  .site-list li {
-    background: var(--card-solid);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.3rem 0.7rem;
-    font-size: 0.9rem;
-  }
-  .site-list li .ltr { font-size: 0.84rem; color: var(--muted); }
-  .site-list li.stream { border-color: rgba(16, 185, 129, 0.35); }
-  .site-list li.stream::after {
-    content: 'بث حي';
-    font-family: 'Tajawal', sans-serif;
-    font-size: 0.72rem;
-    color: var(--primary-bright);
-    background: rgba(16, 185, 129, 0.12);
-    border-radius: 999px;
-    padding: 0.05rem 0.45rem;
-    margin-inline-start: 0.5rem;
-  }
-
-  .note {
-    border-inline-start: 3px solid var(--primary-deep);
-    background: rgba(16, 185, 129, 0.06);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    padding: 0.85rem 1.1rem;
+  /* ====== اللوحات ====== */
+  figure.plate { margin: 0 0 1.6rem; }
+  figure.plate img { display: block; width: 100%; border: 1px solid var(--rule-2); background: #fff; }
+  figure.plate figcaption {
+    display: flex;
+    gap: 0.7rem;
+    align-items: baseline;
+    margin-top: 0.55rem;
+    font-size: 0.88rem;
     color: var(--muted);
-    font-size: 0.93rem;
-    margin-top: 1.25rem;
   }
-
-  /* ===== Screenshots ===== */
-  .shots { display: grid; gap: 1.5rem; align-items: start; }
-  @media (min-width: 900px) { .shots { grid-template-columns: 0.75fr 1.25fr; } }
-  .shot { background: var(--card-solid); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-  .shot img { display: block; width: 100%; }
-  .shot figcaption { padding: 0.8rem 1rem 1rem; color: var(--muted); font-size: 0.9rem; }
-  .shot-popup img { max-width: 330px; margin: 0.9rem auto 0; border-radius: 12px; border: 1px solid var(--border); }
-
-  /* ===== Steps & lists ===== */
-  ol.steps, ul.plain { color: var(--muted); padding-inline-start: 1.4rem; margin: 0; }
-  ol.steps li, ul.plain li { margin-bottom: 0.55rem; }
-  ol.steps strong, ul.plain strong { color: var(--text); }
-
-  .pre {
-    direction: ltr;
-    text-align: left;
-    background: #060d0b;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.9rem 1rem;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 0.87rem;
-    color: #cde7dd;
-    margin: 0 0 1rem;
+  .plate-no {
+    flex: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--rust);
   }
-
-  .kv { display: grid; gap: 0.4rem 1rem; margin: 0; }
-  @media (min-width: 620px) { .kv { grid-template-columns: 15rem 1fr; } }
-  .kv dt { color: var(--text); font-weight: 700; font-size: 0.95rem; }
-  .kv dd { margin: 0 0 0.6rem; color: var(--muted); font-size: 0.95rem; }
-
-  details.faq {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.9rem 1.15rem;
+  .plates { display: grid; gap: 1.6rem; }
+  @media (min-width: 820px) { .plates { grid-template-columns: 1fr 1fr; } }
+  .plates figure.plate { margin: 0; }
+  .plates .tag {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: block;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid var(--rule-2);
     margin-bottom: 0.7rem;
   }
-  details.faq summary { cursor: pointer; font-weight: 700; }
-  details.faq p { color: var(--muted); margin: 0.7rem 0 0.2rem; }
+  .plates .before .tag { color: var(--rust); border-color: var(--rust); }
+  .plates .after .tag { color: var(--green); border-color: var(--green); }
 
-  footer.site-footer {
-    border-top: 1px solid var(--border);
-    padding-block: 2.25rem 2.75rem;
-    color: var(--muted);
-    font-size: 0.92rem;
+  /* ====== فهرس الخصائص ====== */
+  .index { list-style: none; margin: 0; padding: 0; }
+  .index > li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.4rem 1.2rem;
+    padding-block: 1.15rem;
+    border-top: 1px solid var(--rule);
   }
-  .footer-grid { display: grid; gap: 1.5rem; }
-  @media (min-width: 800px) { .footer-grid { grid-template-columns: 1.2fr 1fr; } }
-  .footer-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; padding: 0; margin: 0.75rem 0 0; list-style: none; }
-  .footer-links a { color: var(--muted); }
-  .footer-links a:hover { color: var(--primary-bright); }
+  .index > li:last-child { border-bottom: 1px solid var(--rule); }
+  .index .num {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.95rem;
+    color: var(--rust);
+    padding-top: 0.2rem;
+  }
+  .index h3 { margin: 0 0 0.2rem; font-size: 1.16rem; font-weight: 700; }
+  .index p { margin: 0; color: var(--ink-2); font-size: 1rem; line-height: 1.85; }
+  .index .tail {
+    grid-column: 2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    direction: ltr;
+    unicode-bidi: isolate;
+    text-align: right;
+  }
+  @media (max-width: 560px) {
+    .index > li { grid-template-columns: 2.1rem 1fr; gap: 0.2rem 0.6rem; }
+  }
 
-  .en-block { direction: ltr; text-align: left; }
-  .en-block p { color: var(--muted); }
+  /* ====== فهرس المواقع ====== */
+  .site-columns { display: grid; gap: 2.2rem; }
+  @media (min-width: 840px) { .site-columns { grid-template-columns: 1.15fr 1fr 1fr; } }
+  .site-columns h3 {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    margin: 0 0 0.7rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--rule-2);
+  }
+  ul.sites { list-style: none; margin: 0; padding: 0; }
+  ul.sites li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.55rem;
+    padding-block: 0.34rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.98rem;
+  }
+  ul.sites .host {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+  ul.sites .live {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--green);
+  }
+  ul.sites .live::before { content: "▪ "; color: var(--green); }
 
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .btn { transition: none; }
-    .btn:hover { transform: none; }
+  .note {
+    margin-top: 1.6rem;
+    padding: 1rem 1.15rem;
+    background: var(--paper-2);
+    border-inline-start: 3px solid var(--green);
+    font-size: 0.97rem;
+    color: var(--ink-2);
+  }
+  .note p { margin: 0 0 0.5rem; }
+  .note p:last-child { margin: 0; }
+
+  /* ====== إيصال التحقّق ====== */
+  .receipt {
+    background: var(--green-tint);
+    border: 1px dashed var(--rust);
+    padding: 1.1rem 1.25rem 1.25rem;
+    margin-top: 0.5rem;
+  }
+  .receipt-label {
+    margin: 0 0 0.7rem;
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--rust);
+  }
+  .receipt p { margin: 0.6rem 0 0; font-size: 0.95rem; color: var(--ink-2); }
+
+  pre, code, .mono { font-family: 'JetBrains Mono', monospace; }
+  pre {
+    direction: ltr;
+    text-align: left;
+    margin: 0;
+    padding: 0.85rem 1rem;
+    background: var(--paper-2);
+    border: 1px solid var(--rule-2);
+    font-size: 0.78rem;
+    line-height: 1.75;
+    color: var(--ink);
+    overflow-x: auto;
+  }
+  code {
+    font-size: 0.84em;
+    background: rgba(27, 42, 36, 0.07);
+    border: 0;
+    padding: 0 0.22rem;
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  /* ====== قوائم مرقّمة ووصفية ====== */
+  ol.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; }
+  ol.steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.2rem 1rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-2);
+  }
+  ol.steps li:last-child { border-bottom: 1px solid var(--rule); }
+  ol.steps li::before {
+    content: counter(step, arabic-indic);
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.95rem;
+    color: var(--rust);
+  }
+  ol.steps strong { color: var(--ink); }
+
+  dl.specimen { margin: 0; }
+  dl.specimen > div {
+    display: grid;
+    grid-template-columns: minmax(9rem, 14rem) 1fr;
+    gap: 0.3rem 1.4rem;
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--rule);
+  }
+  dl.specimen > div:last-child { border-bottom: 1px solid var(--rule); }
+  dl.specimen dt { font-weight: 700; font-size: 1.05rem; }
+  dl.specimen dd { margin: 0; color: var(--ink-2); font-size: 0.98rem; }
+  @media (max-width: 620px) { dl.specimen > div { grid-template-columns: 1fr; } }
+
+  .ledger { width: 100%; border-collapse: collapse; font-size: 0.98rem; }
+  .ledger caption {
+    text-align: start;
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding-bottom: 0.5rem;
+  }
+  .ledger th, .ledger td { text-align: start; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .ledger th { font-weight: 700; border-bottom: 2px solid var(--rule-2); }
+  .ledger td:first-child { white-space: nowrap; }
+
+  /* ====== الأسئلة ====== */
+  details {
+    border-top: 1px solid var(--rule);
+    padding-block: 0.9rem;
+  }
+  details:last-of-type { border-bottom: 1px solid var(--rule); }
+  details summary {
+    cursor: pointer;
+    font-size: 1.08rem;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    gap: 0.7rem;
+    align-items: baseline;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before {
+    content: "↑";
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--green);
+    transition: transform 0.15s ease;
+  }
+  details[open] summary::before { content: "↓"; }
+  details p { margin: 0.6rem 0 0; color: var(--ink-2); max-width: var(--measure); }
+
+  .english { direction: ltr; text-align: left; }
+  .english h2 { font-size: 1.5rem; }
+  .english p { color: var(--ink-2); max-width: 62ch; }
+
+  /* ====== الكولوفون ====== */
+  .colophon {
+    margin-top: clamp(3rem, 7vw, 5rem);
+    border-top: 3px double var(--rule-2);
+    padding-block: 1.6rem 3rem;
+    font-size: 0.95rem;
+    color: var(--ink-2);
+  }
+  .colophon-inner { display: grid; gap: 1.2rem; }
+  @media (min-width: 760px) { .colophon-inner { grid-template-columns: 1.3fr 1fr; } }
+  .colophon ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.1rem;
+    margin: 0.6rem 0 0;
+    padding: 0;
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 0.86rem;
+  }
+  .colophon .imprint { font-style: italic; color: var(--muted); font-size: 0.92rem; margin: 0; }
+
+  @media print {
+    body { background: #fff; font-size: 11pt; }
+    body::before, .masthead, .actions, .colophon ul { display: none; }
+    a { color: #000; text-decoration: none; }
+    section { padding-block: 1rem 0; }
   }
 </style>
 </head>
 <body>
-<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+<a class="skip" href="#main">تجاوز إلى المحتوى</a>
 
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="#top">
-      <img src="assets/icon-128.png" width="128" height="128" alt="">
-      <span class="brand-name">Fluent Arabic Web</span>
-      <span class="brand-tag">منسّق النصوص العربية · v4.3.0</span>
-    </a>
-    <nav class="nav" aria-label="التنقل الرئيسي">
-      <a href="#before-after">قبل وبعد</a>
-      <a href="#features">المميزات</a>
-      <a href="#sites">المواقع</a>
-      <a href="#install">التثبيت</a>
-      <a href="#faq">الأسئلة</a>
+<header class="masthead">
+  <div class="sheet">
+    <div class="masthead-top">
+      <a class="wordmark" href="#top">
+        <img src="assets/icon-128.png" width="128" height="128" alt="">
+        <span>Fluent Arabic Web</span>
+      </a>
+      <p class="edition">الإصدار 4.3.0 — إضافة متصفح لتصحيح اتجاه العربية على الويب</p>
+    </div>
+    <nav class="masthead-nav" aria-label="التنقل">
+      <a href="#before-after">قبل وبعد</a><span class="sep">·</span>
+      <a href="#features">الخصائص</a><span class="sep">·</span>
+      <a href="#sites">المواقع</a><span class="sep">·</span>
+      <a href="#install">التثبيت</a><span class="sep">·</span>
+      <a href="#privacy">الخصوصية</a><span class="sep">·</span>
+      <a href="#faq">الأسئلة</a><span class="sep">·</span>
       <a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">GitHub ↗</a>
-      <a class="nav-store" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">تثبيت الإضافة</a>
+      <a class="install" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">التثبيت من المتجر ↗</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
-  <!-- ===================== Hero ===================== -->
-  <section class="hero" id="top">
-    <div class="wrap hero-grid">
-      <div>
-        <span class="eyebrow">مفتوحة المصدر · رخصة MIT</span>
-        <h1>تجربة تصفح عربية مثالية<br><span class="grad">بدون كسر تخطيط الصفحة</span></h1>
-        <p class="hero-lead">
-          مواقع كثيرة تعرض العربية مقلوبة أو محاذاة لليسار: الكلمات تتفكك، الأرقام تقفز، والكود ينعكس مع النص.
-          الإضافات التي تقلب الصفحة كلها بـ <span class="ltr">direction: rtl</span> على <span class="ltr">body</span> تُصلح سطراً
-          وتكسر الشريط الجانبي وزر الإرسال وكتل الكود.
-          <strong>Fluent Arabic Web</strong> تكتشف النص العربي داخل الصفحة وتصحّح اتجاهه فقط — والتخطيط يبقى كما صمّمه الموقع.
+  <!-- ============================ صدر الصفحة ============================ -->
+  <section class="lede" id="top">
+    <div class="sheet">
+      <p class="kicker">عن الإضافة</p>
+      <h1>العربية على الويب تستحقّ طباعةً نظيفة، لا صفحةً مقلوبة.</h1>
+      <p class="standfirst">
+        مواقع كثيرة تعرض العربية مقلوبة أو محاذاة لليسار: الكلمات تتفكك، والأرقام تقفز، والكود ينعكس مع النص.
+        الإضافات التي تقلب الصفحة كلها بـ <code>direction: rtl</code> على <code>body</code> تُصلح سطراً وتكسر الشريط الجانبي وزرّ الإرسال وكتل الكود.
+        <em>ومهمّة هذه الإضافة أن تصحّح النص وحده، ويبقى التخطيط كما صمّمه الموقع.</em>
+      </p>
+
+      <div class="columns">
+        <p>
+          تُراقب الإضافة ما يُكتب ويُعرض في الصفحة، وتبني حكماً على نسبة العربية في كل عنصر نصّي، ثم تعزل اتجاهه
+          بـ <code>unicode-bidi</code> بدل فرض الاتجاه على الحاوية. لذلك يبقى الشريط الجانبي في مكانه، ويبقى زرّ
+          الإرسال في مكانه، ويبقى <code>pre</code> و<code>code</code> يساراً كما يجب أن يكونا.
         </p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">
-            تثبيت من متجر كروم
-          </a>
-          <a class="btn btn-ghost" href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">
-            استعراض الكود على GitHub
-          </a>
-        </div>
-        <ul class="chips">
-          <li><strong>Manifest V3</strong></li>
-          <li>Chrome · Edge</li>
-          <li><strong>22</strong> ملف موقع جاهز</li>
-          <li><strong>9</strong> خطوط عربية</li>
-          <li><strong>86</strong> اختباراً آلياً</li>
-          <li>بلا تتبّع</li>
-        </ul>
+        <p>
+          ولأن المواقع الحديثة تعيد رسم نفسها مئة مرة في الدقيقة — وتبثّ الردود كلمةً كلمة — بُنيت الإضافة على
+          ملفّات مواقع مكتوبة بعناية: اثنان وعشرون ملفّاً، عشرة منها تتعامل مع البثّ الحيّ، وجميعها تستثني
+          محرّرات الأكواد والمعادلات.
+        </p>
       </div>
-      <figure class="concept-card" style="margin: 0;">
+
+      <div class="actions">
+        <a class="btn btn-solid" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">التثبيت من متجر كروم</a>
+        <a class="btn" href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">قراءة الشيفرة على GitHub</a>
+        <a class="text-link" href="https://github.com/SMSMy/Fluent-Arabic-Web/releases/latest" rel="noopener">أو نزّل الحزمة (ZIP)</a>
+      </div>
+
+      <div class="dateline">
+        <span>MANIFEST V3</span>
+        <span>CHROME · EDGE</span>
+        <span>22 PROFILES</span>
+        <span>9 ARABIC FONTS</span>
+        <span>92 AUTOMATED TESTS</span>
+        <span>MIT LICENSE</span>
+        <span>NO TRACKING</span>
+      </div>
+
+      <figure class="plate">
         <img src="assets/concept.svg" width="680" height="400" alt="مقارنة: على اليسار نص عربي غير منسّق، وعلى اليمين النص نفسه بعد التصحيح مع بقاء تصميم الصفحة كما هو">
-        <figcaption>يساراً: عربي غير منسّق — يميناً: نفس الصفحة بعد التصحيح، دون المساس بالتصميم.</figcaption>
+        <figcaption>
+          <span class="plate-no">لوح ١</span>
+          <span>يساراً: عربي غير منسّق. يميناً: الصفحة ذاتها بعد التصحيح، دون المساس بالتصميم.</span>
+        </figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ===================== Before / after ===================== -->
+  <!-- ============================ قبل وبعد ============================ -->
   <section id="before-after">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">الفرق بالأمثلة</span>
-        <h2>علامات الترقيم والأقواس في مكانها الصحيح</h2>
-        <p class="lead">لاحظ موضع علامات التنصيص والأقواس في فقرة عربية تبدأ بمصطلح إنجليزي — وهي الحالة التي تنتج عنها أكثر الأخطاء شيوعاً في المحاذاة التلقائية.</p>
-      </div>
-      <div class="ba-grid">
-        <figure class="ba-card ba-before" style="margin: 0;">
-          <header><span>قبل التصحيح</span><span class="ba-badge">Bidi معطوب</span></header>
-          <img src="assets/bidi-before.png" width="797" height="150" alt="نص عربي تظهر فيه الأقواس وعلامات التنصيص في مواضع خاطئة، وبعض الأسطر تنتهي برموز مقلوبة" loading="lazy" decoding="async">
-          <p>الأقواس وعلامات التنصيص تتقدّم أو تتأخّر، فينكسر إيقاع الجملة ويصعب تتبّعها.</p>
+    <div class="sheet">
+      <p class="rubric"><span>٢</span><span>الفرق بالأمثلة</span><span class="of">PLATES</span></p>
+      <h2>علامات الترقيم والأقواس في موضعها</h2>
+      <p class="deck">
+        أكثر ما يكشف محاذاةً ركيكة هو موضع علامات التنصيص والأقواس في فقرة عربية تبدأ بمصطلح إنجليزي —
+        وهي الحالة نفسها في اللوحين أدناه.
+      </p>
+      <div class="plates">
+        <figure class="plate before">
+          <span class="tag">قبل التصحيح</span>
+          <img src="assets/bidi-before.png" width="797" height="150" alt="نص عربي تظهر فيه الأقواس وعلامات التنصيص في مواضع خاطئة" loading="lazy" decoding="async">
+          <figcaption><span class="plate-no">لوح ٢</span><span>الأقواس وعلامات التنصيص تتقدّم أو تتأخّر، فينكسر إيقاع الجملة.</span></figcaption>
         </figure>
-        <figure class="ba-card ba-after" style="margin: 0;">
-          <header><span>بعد التصحيح</span><span class="ba-badge">اتجاه مضبوط</span></header>
-          <img src="assets/bidi-after.png" width="804" height="157" alt="النص العربي نفسه وقد استقامت محاذاته ومواضع الأقواس وعلامات التنصيص" loading="lazy" decoding="async">
-          <p>النص نفسه بعد عزل الاتجاه: العربية يمين، والرموز والأرقام والكود في موضعها الطبيعي.</p>
+        <figure class="plate after">
+          <span class="tag">بعد التصحيح</span>
+          <img src="assets/bidi-after.png" width="804" height="157" alt="النص العربي نفسه وقد استقامت محاذاته ومواضع الأقواس" loading="lazy" decoding="async">
+          <figcaption><span class="plate-no">لوح ٣</span><span>النصّ ذاته بعد عزل الاتجاه: العربية يمين، والرموز والأرقام والكود في موضعها.</span></figcaption>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- ===================== Features ===================== -->
+  <!-- ============================ الخصائص ============================ -->
   <section id="features">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">لماذا هذه الإضافة؟</span>
-        <h2>تصحيح دقيق لا يلمس تصميم الموقع</h2>
-      </div>
-      <div class="grid grid-3">
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></span>
-          <h3>اكتشاف تلقائي</h3>
-          <p>تُفعَّل حين تبلغ نسبة العربية عتبة تضبطها أنت (افتراضي 15٪).</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M4 12h16M4 17h6"/><path d="M17 5v4"/></svg></span>
-          <h3>إصلاح Bidi</h3>
-          <p>العربية يمين، والإنجليزية والأرقام والكود تبقى على حالها داخل نفس الفقرة.</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M3 10h18"/></svg></span>
-          <h3>حماية التخطيط</h3>
-          <p>لا قلب لـ flex/grid ولا لشريط الأدوات.</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="17" r="3"/></svg></span>
-          <h3>ملفات مواقع جاهزة</h3>
-          <p>ChatGPT وClaude وGrok وAI Studio وHarness وغيرها — CSS يصمد أمام إعادة رسم React.</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10"/><path d="m8 9 4 4 4-4"/><path d="M5 18h14"/></svg></span>
-          <h3>التقاط عنصر</h3>
-          <p>اضغط على النص المعوج في الصفحة؛ الإضافة تحفظ محدداً مستقراً لهذا الموقع.</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/><circle cx="12" cy="12" r="4"/></svg></span>
-          <h3>طبيب الموقع</h3>
-          <p>يخبرك لماذا لم تُصحَّح الصفحة: عتبة، غياب profile، أو حجب السكربت.</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m12 12 8-4.5M12 12v9M12 12 4 7.5"/></svg></span>
-          <h3>Shadow DOM وiframe</h3>
-          <p>تعمل داخل المكوّنات الحديثة والإطارات المضمّنة.</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V6a2 2 0 0 1 2-2h9l3 3v12a2 2 0 0 1-2 2z"/><path d="M9 12h6"/></svg></span>
-          <h3>خطوط عربية</h3>
-          <p>تسعة خطوط، منها ثمانية تايبفيس وخطوط عام الشعر والجمل والحرف.</p>
-        </article>
-        <article class="card feature">
-          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg></span>
-          <h3>قوائم مرنة واختصار</h3>
-          <p>سماح أو تجاهل بنطاق مثل <span class="ltr">*.example.com</span>، و<span class="ltr">Alt</span> + <span class="ltr">Shift</span> + <span class="ltr">A</span> لتفعيل الصفحة الحالية أو إيقافها.</p>
-        </article>
-      </div>
+    <div class="sheet">
+      <p class="rubric"><span>٣</span><span>فهرس الخصائص</span><span class="of">NINE ITEMS</span></p>
+      <h2>ما تفعله الإضافة، بنداً بنداً</h2>
+      <ol class="index">
+        <li>
+          <span class="num">١</span>
+          <div>
+            <h3>اكتشاف تلقائي بعتبة تضبطها بنفسك</h3>
+            <p>تُفعَّل الإضافة حين تبلغ نسبة العربية في الصفحة العتبة التي تختارها (افتراضياً 15٪)، فلا تتدخّل في صفحة لا تعنيك.</p>
+            <p class="tail">THRESHOLD · DEFAULT 15%</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٢</span>
+          <div>
+            <h3>إصلاح Bidi لا يقلب شيئاً</h3>
+            <p>العربية إلى اليمين، والإنجليزية والأرقام والكود تبقى على حالها داخل الفقرة نفسها، بلا <code>direction: rtl</code> على الصفحة.</p>
+            <p class="tail">UNICODE-BIDI · ISOLATE</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٣</span>
+          <div>
+            <h3>حماية التخطيط</h3>
+            <p>لا قلب لـ <code>flex</code> أو <code>grid</code>، ولا لشريط الأدوات، ولا لأزرار النماذج. الهيكل يبقى كما صُمِّم.</p>
+            <p class="tail">LAYOUT UNTOUCHED</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٤</span>
+          <div>
+            <h3>ملفّات مواقع مكتوبة بعناية</h3>
+            <p>ChatGPT وClaude وGrok وAI Studio وDeepSeek وHarness وغيرها: قواعد تصمد أمام إعادة رسم React، وتستثني محرّرات الأكواد والمعادلات.</p>
+            <p class="tail">22 PROFILES · 10 STREAMING</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٥</span>
+          <div>
+            <h3>التقاط عنصر</h3>
+            <p>إن بقي سطر معوجّ في موقع ديناميكي: اضغط «التقاط عنصر» ثم انقر النص. تُحفظ محدِّداً مستقراً لهذا الموقع وحده.</p>
+            <p class="tail">STABLE SELECTOR PER SITE</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٦</span>
+          <div>
+            <h3>طبيب الموقع</h3>
+            <p>يخبرك لماذا لم تُصحَّح الصفحة: نسبة العربي تحت العتبة، أو غياب ملفّ للموقع، أو حجب للسكربت.</p>
+            <p class="tail">DIAGNOSTICS</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٧</span>
+          <div>
+            <h3>Shadow DOM والإطارات المضمّنة</h3>
+            <p>تعمل داخل المكوّنات الحديثة و<code>iframe</code>، مع رقعة تُزرع في عالم الصفحة لتلحق الجذور المغلقة.</p>
+            <p class="tail">ATTACHSHADOW PATCH</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٨</span>
+          <div>
+            <h3>تسعة خطوط عربية مدمجة</h3>
+            <p>ثمانية تايبفيس افتراضياً، وخطوط الهوية السعودية (المصمك، النسيب، الوتد، الأول، السعودي)، وخطوط الأعوام الثقافية.</p>
+            <p class="tail">BUNDLED · NO CDN</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">٩</span>
+          <div>
+            <h3>قوائم مرنة واختصار لوحة مفاتيح</h3>
+            <p>سماح أو تجاهل بنطاق مثل <code>*.example.com</code>، و<span class="mono">Alt</span> + <span class="mono">Shift</span> + <span class="mono">A</span> لتفعيل الصفحة الحالية أو إيقافها فوراً.</p>
+            <p class="tail">ALLOW · DENY · SHORTCUT</p>
+          </div>
+        </li>
+      </ol>
     </div>
   </section>
 
-  <!-- ===================== Sites ===================== -->
+  <!-- ============================ المواقع ============================ -->
   <section id="sites">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">تغطية جاهزة</span>
-        <h2>مواقع لها ملف جاهز</h2>
-        <p class="lead">هذه المواقع لا يكفي معها الكشف العام (تعيد رسم الصفحة أو تبثّ النص حياً). لها قواعد مخصّصة، مع إبقاء <span class="ltr">pre</span> و<span class="ltr">code</span> و<span class="ltr">KaTeX</span> باتجاه LTR.</p>
-      </div>
-      <div class="grid grid-3">
-        <div class="card site-group">
+    <div class="sheet">
+      <p class="rubric"><span>٤</span><span>فهرس المواقع</span><span class="of">22 PROFILES</span></p>
+      <h2>مواقع لها ملفّ جاهز</h2>
+      <p class="deck">
+        هذه المواقع لا يكفي معها الكشف العام: تعيد رسم الصفحة أو تبثّ النص حياً. لها قواعد مخصّصة،
+        مع إبقاء <code>pre</code> و<code>code</code> و<code>KaTeX</code> باتجاه LTR.
+      </p>
+      <div class="site-columns">
+        <div>
           <h3>محادثات ووكلاء</h3>
-          <ul class="site-list">
-            <li class="stream">Grok <span class="ltr">grok.com</span></li>
-            <li class="stream">ChatGPT <span class="ltr">chatgpt.com</span></li>
-            <li class="stream">Claude <span class="ltr">claude.ai</span></li>
-            <li class="stream">Gemini <span class="ltr">gemini.google.com</span></li>
-            <li class="stream">Google AI Studio <span class="ltr">aistudio.google.com</span></li>
-            <li class="stream">DeepSeek <span class="ltr">chat.deepseek.com</span></li>
-            <li class="stream">Perplexity <span class="ltr">perplexity.ai</span></li>
-            <li class="stream">Microsoft Copilot <span class="ltr">copilot.microsoft.com</span></li>
-            <li class="stream">DeepSeek Harness <span class="ltr">127.0.0.1</span> · <span class="ltr">localhost</span></li>
-            <li>NotebookLM <span class="ltr">notebooklm.google.com</span></li>
+          <ul class="sites">
+            <li>Grok <span class="host">grok.com</span> <span class="live">بثّ حيّ</span></li>
+            <li>ChatGPT <span class="host">chatgpt.com</span> <span class="live">بثّ حيّ</span></li>
+            <li>Claude <span class="host">claude.ai</span> <span class="live">بثّ حيّ</span></li>
+            <li>Gemini <span class="host">gemini.google.com</span> <span class="live">بثّ حيّ</span></li>
+            <li>Google AI Studio <span class="host">aistudio.google.com</span> <span class="live">بثّ حيّ</span></li>
+            <li>DeepSeek <span class="host">chat.deepseek.com</span> <span class="live">بثّ حيّ</span></li>
+            <li>Perplexity <span class="host">perplexity.ai</span> <span class="live">بثّ حيّ</span></li>
+            <li>Microsoft Copilot <span class="host">copilot.microsoft.com</span> <span class="live">بثّ حيّ</span></li>
+            <li>DeepSeek Harness <span class="host">127.0.0.1 · localhost</span> <span class="live">بثّ حيّ</span></li>
+            <li>NotebookLM <span class="host">notebooklm.google.com</span></li>
           </ul>
         </div>
-        <div class="card site-group">
+        <div>
           <h3>تواصل وعمل</h3>
-          <ul class="site-list">
-            <li class="stream">Discord <span class="ltr">discord.com</span></li>
-            <li>Slack <span class="ltr">app.slack.com</span></li>
-            <li>WhatsApp Web <span class="ltr">web.whatsapp.com</span></li>
-            <li>Notion <span class="ltr">notion.so</span></li>
+          <ul class="sites">
+            <li>Discord <span class="host">discord.com</span> <span class="live">بثّ حيّ</span></li>
+            <li>Slack <span class="host">app.slack.com</span></li>
+            <li>WhatsApp Web <span class="host">web.whatsapp.com</span></li>
+            <li>Notion <span class="host">notion.so</span></li>
           </ul>
-          <h3 style="margin-top: 1.35rem;">ويب عام</h3>
-          <ul class="site-list">
-            <li>GitHub <span class="ltr">github.com</span></li>
+        </div>
+        <div>
+          <h3>ويب عام</h3>
+          <ul class="sites">
+            <li>GitHub <span class="host">github.com</span></li>
             <li>YouTube</li>
             <li>X</li>
             <li>Facebook</li>
@@ -546,282 +760,257 @@
             <li>LinkedIn</li>
           </ul>
         </div>
-        <div class="card site-group">
-          <h3>أي موقع آخر</h3>
-          <p style="color: var(--muted); margin: 0 0 0.9rem;">يعمل بالكشف العام: تُقاس نسبة العربية في الصفحة، ويُصحَّح النص حين تتجاوز العتبة — بلا حاجة إلى ملف موقع.</p>
-          <ul class="plain">
-            <li>بطاقة الموقع الحالي: <strong>مسموح</strong> (دائماً) أو <strong>ممنوع</strong> (تجاهل هذا النطاق).</li>
-            <li>إن كسر تحديث الواجهة ملفاً جاهزاً: التقط العنصر أو راجع طبيب الموقع — لا حاجة لكتابة CSS يدوياً.</li>
-          </ul>
-          <div class="note">قواعد Harness مقيّدة بسمات مثل <span class="ltr">data-composer-card</span> حتى لا تُمسّ تطبيقات localhost الأخرى.</div>
-        </div>
+      </div>
+      <div class="note">
+        <p><strong>وأي موقع آخر</strong> يعمل بالكشف العام: تُقاس نسبة العربية، ويُصحَّح النص حين تتجاوز العتبة — بلا حاجة إلى ملفّ موقع.</p>
+        <p>من بطاقة الموقع الحالي تختار <strong>مسموح</strong> (دائماً) أو <strong>ممنوع</strong> (تجاهل هذا النطاق). وقواعد Harness مقيّدة بسمات مثل <code>data-composer-card</code> حتى لا تُمسّ تطبيقات localhost الأخرى.</p>
       </div>
     </div>
   </section>
 
-  <!-- ===================== Screenshots ===================== -->
+  <!-- ============================ اللقطات ============================ -->
   <section id="shots">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">لقطات</span>
-        <h2>النافذة المنبثقة وبطاقة المتجر</h2>
-      </div>
-      <div class="shots">
-        <figure class="shot shot-popup" style="margin: 0;">
-          <img src="assets/popup.png" width="430" height="1088" alt="نافذة الإضافة المنبثقة: زر تفعيل RTL، بطاقة الموقع الحالي، إعدادات التعرف والخط، قوائم المواقع المسموحة والممنوعة، وأدوات متقدمة" loading="lazy" decoding="async">
-          <figcaption>النافذة المنبثقة — تفعيل، خط، قوائم، التقاط عنصر، وطبيب الموقع.</figcaption>
+    <div class="sheet">
+      <p class="rubric"><span>٥</span><span>لوحات</span><span class="of">PLATES</span></p>
+      <h2>النافذة المنبثقة وبطاقة المتجر</h2>
+      <div class="plates">
+        <figure class="plate">
+          <img src="assets/popup.png" width="430" height="1088" alt="نافذة الإضافة المنبثقة: زر تفعيل RTL، بطاقة الموقع الحالي، إعدادات التعرف والخط، أدوات متقدمة" loading="lazy" decoding="async" style="max-width: 340px; margin-inline: auto;">
+          <figcaption><span class="plate-no">لوح ٤</span><span>النافذة المنبثقة: تفعيل، خط، قوائم، التقاط عنصر، وطبيب الموقع.</span></figcaption>
         </figure>
-        <figure class="shot" style="margin: 0;">
+        <figure class="plate">
           <img src="assets/store-banner.png" width="1280" height="800" alt="بطاقة تعريفية: أيقونة الإضافة الخضراء، اسم Fluent Arabic Web - RTL، وأربع نقاط تميّز إلى جانب صورة النافذة المنبثقة" loading="lazy" decoding="async">
-          <figcaption>بطاقة العرض: تصحيح تلقائي لاتجاه النصوص العربية، حماية تصميم المواقع وShadow DOM، خطوط عربية مدمجة، وتغطية لمنصات المحادثة والتطبيقات المتدفقة.</figcaption>
+          <figcaption><span class="plate-no">لوح ٥</span><span>بطاقة العرض في المتجر: تصحيح تلقائي، حماية التصميم وShadow DOM، خطوط مدمجة، وتغطية للمنصات المتدفقة.</span></figcaption>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- ===================== Usage ===================== -->
+  <!-- ============================ الاستخدام ============================ -->
   <section id="usage">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">الاستخدام</span>
-        <h2>ست خطوات تكفي</h2>
-      </div>
-      <div class="card">
-        <ol class="steps">
-          <li>ثبّت الإضافة وافتح أي صفحة فيها عربي.</li>
-          <li>إن كان التعرف التلقائي مفعّلاً تُصحَّح الصفحة وحدها. وإلا اضغط أيقونة الإضافة ثم <strong>تفعيل RTL</strong>، أو <span class="ltr">Alt</span> + <span class="ltr">Shift</span> + <span class="ltr">A</span>.</li>
-          <li>من بطاقة الموقع الحالي: <strong>مسموح</strong> (دائماً) أو <strong>ممنوع</strong> (تجاهل هذا النطاق).</li>
-          <li>اختر الخط وحساسية التعرف إن لزم.</li>
-          <li>إذا بقي سطر معوجاً في موقع ديناميكي: <strong>التقاط عنصر</strong> ثم انقر النص. يُحفظ الإعداد لهذا الموقع فقط.</li>
-          <li>إذا لم يحدث شيء: <strong>طبيب الموقع</strong> يعرض السبب (نسبة العربي، وجود ملف موقع، عدد العناصر، وحالة الرقعة الداخلية).</li>
-        </ol>
-        <div class="note">ثلاثة أوضاع للمحدد المخصّص: <strong>تلقائي</strong> (حسب المحتوى) · <strong>فرض RTL</strong> · <strong>استثناء LTR</strong> (للكود والمعادلات).</div>
+    <div class="sheet">
+      <p class="rubric"><span>٦</span><span>الاستخدام</span><span class="of">SIX STEPS</span></p>
+      <h2>ستّ خطوات تكفي</h2>
+      <ol class="steps">
+        <li>ثبّت الإضافة وافتح أي صفحة فيها عربي.</li>
+        <li>إن كان التعرف التلقائي مفعّلاً تُصحَّح الصفحة وحدها. وإلا اضغط أيقونة الإضافة ثم <strong>تفعيل RTL</strong>، أو <span class="mono">Alt</span> + <span class="mono">Shift</span> + <span class="mono">A</span>.</li>
+        <li>من بطاقة الموقع الحالي: <strong>مسموح</strong> (دائماً) أو <strong>ممنوع</strong> (تجاهل هذا النطاق).</li>
+        <li>اختر الخط وحساسية التعرف إن لزم.</li>
+        <li>إذا بقي سطر معوجّ في موقع ديناميكي: <strong>التقاط عنصر</strong> ثم انقر النص. يُحفظ الإعداد لهذا الموقع فقط.</li>
+        <li>إذا لم يحدث شيء: <strong>طبيب الموقع</strong> يعرض السبب (نسبة العربي، وجود ملفّ موقع، عدد العناصر، وحالة الرقعة الداخلية).</li>
+      </ol>
+      <div class="note">
+        <p>ثلاثة أوضاع للمحدِّد المخصّص: <strong>تلقائي</strong> (حسب المحتوى) · <strong>فرض RTL</strong> · <strong>استثناء LTR</strong> (للكود والمعادلات).</p>
       </div>
     </div>
   </section>
 
-  <!-- ===================== Fonts ===================== -->
+  <!-- ============================ الخطوط ============================ -->
   <section id="fonts">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">الخطوط</span>
-        <h2>تسعة خطوط عربية، تُحقن اختيارياً</h2>
-        <p class="lead">تُطبَّق على النصوص العربية فقط، لا على واجهة الموقع.</p>
-      </div>
-      <div class="card">
-        <dl class="kv">
-          <dt>ثمانية تايبفيس</dt><dd>الخط الافتراضي.</dd>
-          <dt>المصمك · النسيب · الوتد · الأول · السعودي</dt><dd>خطوط الهوية السعودية.</dd>
-          <dt>عام الشعر · عام الجمل · الحرف اليدوية</dt><dd>خطوط الأعوام الثقافية.</dd>
-          <dt>افتراضي النظام</dt><dd>بدون حقن أي خط.</dd>
-        </dl>
-      </div>
+    <div class="sheet">
+      <p class="rubric"><span>٧</span><span>الخطوط</span><span class="of">NINE FACES</span></p>
+      <h2>تسعة خطوط عربية، تُحقن اختيارياً</h2>
+      <p class="deck">تُطبَّق على النصوص العربية فقط، لا على واجهة الموقع. وملفّات الخطوط مدمجة في الحزمة، فلا يُطلب أي خط من خادم خارجي.</p>
+      <dl class="specimen">
+        <div>
+          <dt>ثمانية تايبفيس</dt>
+          <dd>الخط الافتراضي، مصمَّم للشاشات وللنصوص الطويلة.</dd>
+        </div>
+        <div>
+          <dt>المصمك · النسيب · الوتد · الأول · السعودي</dt>
+          <dd>خطوط الهوية السعودية.</dd>
+        </div>
+        <div>
+          <dt>عام الشعر · عام الجمل · الحرف اليدوية</dt>
+          <dd>خطوط الأعوام الثقافية.</dd>
+        </div>
+        <div>
+          <dt>افتراضي النظام</dt>
+          <dd>بلا حقن أي خط، إن أردت أن تبقى الصفحة على خطّها.</dd>
+        </div>
+      </dl>
     </div>
   </section>
 
-  <!-- ===================== Privacy ===================== -->
+  <!-- ============================ الخصوصية ============================ -->
   <section id="privacy">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">الخصوصية</span>
-        <h2>لا حسابات، لا تتبّع، لا خادم خارجي</h2>
+    <div class="sheet">
+      <p class="rubric"><span>٨</span><span>الخصوصية</span><span class="of">ATTESTATION</span></p>
+      <h2>لا نداء شبكة واحد في الشيفرة</h2>
+      <div class="columns">
+        <p>
+          الإضافة لا تجمع شيئاً ولا ترسله: لا حسابات، ولا تحليلات، ولا تتبّع، ولا إعلانات، ولا خادم خارجي.
+          وكل ما تحفظه هو إعداداتك في تخزين المتصفح <code>chrome.storage</code>: حالة التفعيل، والعتبة، والخط،
+          وقوائم المواقع، والمحدِّدات التي تلتقطها بنفسك.
+        </p>
+        <p>
+          وإن كنت مفعّلاً لمزامنة المتصفح فقد يُزامن المتصفح هذه الإعدادات بين أجهزتك عبر حسابك أنت — وهذا نقل
+          يديره المتصفح ولا يمرّ بنا. وتصدير الإعدادات ملفّ JSON محلي أنت من يحفظه. وإلغاء التثبيت يحذفها.
+        </p>
       </div>
-      <div class="grid grid-2">
-        <div class="card">
-          <ul class="plain">
-            <li>الإعدادات تُحفظ في <span class="ltr">chrome.storage</span> على جهازك (مع مزامنة المتصفح إن فعّلتها).</li>
-            <li>الإضافة تحتاج صلاحية الصفحات لتصحيح النص داخلها، ولا ترسل محتوى الصفحات إلى أي جهة.</li>
-            <li>تصدير/استيراد الإعدادات ملف JSON محلي أنت من يحفظه.</li>
-            <li>لا أدوات تحليل ولا تتبّع ولا جمع بيانات.</li>
-          </ul>
-          <p style="margin: 1rem 0 0;">
-            <a href="privacy.html">سياسة الخصوصية الكاملة</a> — تفصيل ما يُحفظ على جهازك، وسبب كل صلاحية، وما لا تفعله الإضافة.
-          </p>
-        </div>
-        <div class="card">
-          <h3>تحقّق من الشيفرة بنفسك</h3>
-          <p style="color: var(--muted); margin: 0 0 0.9rem;">
-            لا يوجد في ملفات الإضافة (<span class="ltr">content.js</span> و<span class="ltr">background.js</span> و<span class="ltr">lib/</span>)
-            أي نداء شبكة إطلاقاً: لا <span class="ltr">fetch</span> ولا <span class="ltr">XMLHttpRequest</span> ولا <span class="ltr">WebSocket</span>.
-          </p>
-          <div class="pre">grep -rn "fetch(\|XMLHttpRequest\|WebSocket" \
-  content.js background.js lib/ shadow-patch.js</div>
-          <p style="color: var(--muted); margin: 0;">الأمر أعلاه لا يُخرج شيئاً — ويمكنك تشغيله على نسخة المستودع.</p>
-        </div>
+      <div class="receipt">
+        <p class="receipt-label">إيصال التحقّق — شغّله على نسخة المستودع</p>
+        <pre>grep -rn "fetch(\|XMLHttpRequest\|WebSocket\|sendBeacon" content.js background.js lib/ shadow-patch.js</pre>
+        <p>لا يُخرج هذا الأمر شيئاً. السياسة الكاملة — وما يُحفظ على جهازك وسبب كل صلاحية — في <a href="privacy.html">صفحة الخصوصية</a>.</p>
       </div>
     </div>
   </section>
 
-  <!-- ===================== Install ===================== -->
+  <!-- ============================ التثبيت ============================ -->
   <section id="install">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">التثبيت</span>
-        <h2>من المتجر أو من المصدر</h2>
+    <div class="sheet">
+      <p class="rubric"><span>٩</span><span>التثبيت</span><span class="of">TWO WAYS</span></p>
+      <h2>من المتجر أو من المصدر</h2>
+      <div class="columns">
+        <p>
+          <strong>من المتجر (الموصى به).</strong> تعمل الإضافة على Chrome وEdge وأي متصفح مبني على Chromium
+          يدعم إضافات Chrome. تُحدَّث تلقائياً من المتجر.
+        </p>
+        <p>
+          <strong>من المصدر.</strong> استنسخ المستودع ثم افتح <code>chrome://extensions/</code>، فعّل
+          <strong>وضع المطوّر</strong>، واختر <strong>تحميل إضافة فُكّ ضغطها</strong> موجَّهاً إلى مجلد المستودع.
+        </p>
       </div>
-      <div class="grid grid-2">
-        <div class="card">
-          <h3>من المتجر (موصى به)</h3>
-          <p style="color: var(--muted);">تعمل على <strong>Chrome</strong> و<strong>Edge</strong> (وأي متصفح مبني على Chromium يدعم إضافات Chrome).</p>
-          <div class="cta-row" style="margin-bottom: 0;">
-            <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">فتح صفحة المتجر</a>
-            <a class="btn btn-ghost" href="https://github.com/SMSMy/Fluent-Arabic-Web/releases/latest" rel="noopener">تحميل الحزمة (ZIP)</a>
-          </div>
-        </div>
-        <div class="card">
-          <h3>من المصدر</h3>
-          <div class="pre">git clone https://github.com/SMSMy/Fluent-Arabic-Web.git</div>
-          <ol class="steps">
-            <li>افتح <span class="ltr">chrome://extensions/</span> أو <span class="ltr">edge://extensions/</span></li>
-            <li>فعّل <strong>وضع المطوّر</strong></li>
-            <li><strong>تحميل إضافة فُكّ ضغطها</strong> ← مجلد المستودع</li>
-          </ol>
-        </div>
+      <div class="actions">
+        <a class="btn btn-solid" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">فتح صفحة المتجر</a>
+        <a class="btn" href="https://github.com/SMSMy/Fluent-Arabic-Web/releases/latest" rel="noopener">تنزيل الحزمة (ZIP)</a>
       </div>
+      <pre>git clone https://github.com/SMSMy/Fluent-Arabic-Web.git</pre>
     </div>
   </section>
 
-  <!-- ===================== FAQ ===================== -->
+  <!-- ============================ الأسئلة ============================ -->
   <section id="faq">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">الأسئلة الشائعة</span>
-        <h2>أشياء يسأل عنها الجميع</h2>
-      </div>
-
-      <details class="faq">
+    <div class="sheet">
+      <p class="rubric"><span>١٠</span><span>الأسئلة</span><span class="of">SIX ANSWERS</span></p>
+      <h2>أشياء يسأل عنها الجميع</h2>
+      <details>
         <summary>الصفحة لم تتغيّر.</summary>
         <p>افتح طبيب الموقع. إن كانت نسبة العربي تحت العتبة خفّف الحساسية، أو أضف النطاق للمسموح، أو التقط العنصر.</p>
       </details>
-      <details class="faq">
+      <details>
         <summary>الكود انعكس.</summary>
-        <p>أضف المحدد في وضع <strong>استثناء LTR</strong>، أو تأكد أن الملف الجاهز يستثني <span class="ltr">pre</span>/<span class="ltr">code</span>. لا تستخدم فرض RTL على الصفحة كلها.</p>
+        <p>أضف المحدِّد في وضع <strong>استثناء LTR</strong>، أو تأكد أن ملفّ الموقع يستثني <code>pre</code> و<code>code</code>. لا تستخدم فرض RTL على الصفحة كلها.</p>
       </details>
-      <details class="faq">
+      <details>
         <summary>هل تكسر تصميم المواقع؟</summary>
-        <p>لا. التصحيح يقع على النص نفسه عبر عزل الاتجاه، ولا يُفرض <span class="ltr">direction: rtl</span> على حاويات الصفحة أو <span class="ltr">body</span>؛ فالقوائم الجانبية وأزرار الإرسال وكتل الكود تبقى كما صمّمها الموقع.</p>
+        <p>لا. التصحيح يقع على النص نفسه عبر عزل الاتجاه، ولا يُفرض <code>direction: rtl</code> على حاويات الصفحة أو <code>body</code>؛ فالقوائم الجانبية وأزرار الإرسال وكتل الكود تبقى كما صمّمها الموقع.</p>
       </details>
-      <details class="faq">
-        <summary>Grok / AI Studio / Harness.</summary>
-        <p>لها ملفات جاهزة في 4.3. إن كسر تحديث الواجهة شيئاً: التقاط عنصر على الصندوق أو فقرة الرد.</p>
+      <details>
+        <summary>Grok وAI Studio وHarness.</summary>
+        <p>لها ملفّات جاهزة في 4.3. وإن كسر تحديث الواجهة شيئاً: التقط العنصر على الصندوق أو فقرة الرد.</p>
       </details>
-      <details class="faq">
+      <details>
         <summary>localhost.</summary>
-        <p>Harness يُطابق <span class="ltr">127.0.0.1</span> و<span class="ltr">localhost</span>. القواعد لا تُطبَّق إلا بوجود سمات الواجهة الخاصة به.</p>
+        <p>Harness يُطابق <code>127.0.0.1</code> و<code>localhost</code>. والقواعد لا تُطبَّق إلا بوجود سمات الواجهة الخاصة به.</p>
       </details>
-      <details class="faq">
+      <details>
         <summary>هل ترسل بياناتي إلى أي مكان؟</summary>
         <p>لا. لا يوجد أي نداء شبكة في شيفرة الإضافة، وكل المعالجة تجري داخل المتصفح، والإعدادات تبقى في تخزين المتصفح على جهازك.</p>
       </details>
     </div>
   </section>
 
-  <!-- ===================== Developers ===================== -->
+  <!-- ============================ للمطوّرين ============================ -->
   <section id="developers">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">للمطوّرين</span>
-        <h2>مشروع صغير، اختبارات تحرسه</h2>
-        <p class="lead">جافاسكربت خالص بلا مكتبات تشغيل، مع اختبارات آلية تعمل على ويندوز ولينكس وماك بـ Node 22 و24.</p>
-      </div>
-      <div class="grid grid-2">
-        <div class="card">
-          <h3>البناء والاختبار</h3>
-          <div class="pre">npm test            # 86 اختباراً آلياً
+    <div class="sheet">
+      <p class="rubric"><span>١١</span><span>للمطوّرين</span><span class="of">COLOPHON OF CODE</span></p>
+      <h2>مشروع صغير، واختبارات تحرسه</h2>
+      <p class="deck">
+        جافاسكربت خالص بلا مكتبات تشغيل. الاختبارات تُشغَّل بـ <code>node --test</code> على ثلاثة أنظمة
+        (ويندوز ولينكس وماك) وبإصداري Node 22 و24 — ست وظائف في كل دفعة، وخطوة تغليف بعدها.
+      </p>
+      <div class="columns">
+        <pre>npm test            # 92 اختباراً آلياً
 npm run build:popup # بناء واجهة النافذة
-npm run pack        # حزمة ZIP جاهزة للنشر</div>
-          <p style="color: var(--muted); margin: 0;">يتطلب Node <span class="ltr">&gt;= 22.22.2</span> (شرط مكتبة jsdom المستخدمة في الاختبارات).</p>
-        </div>
-        <div class="card">
-          <h3>خريطة الملفات</h3>
-          <dl class="kv">
-            <dt><span class="ltr">content.js</span></dt><dd>التفعيل، المراقب، الإعدادات.</dd>
-            <dt><span class="ltr">lib/detector.js</span></dt><dd>نسبة العربية.</dd>
-            <dt><span class="ltr">lib/bidi-fix.js</span></dt><dd>اتجاه الفقرة دون قلب التخطيط.</dd>
-            <dt><span class="ltr">lib/site-profiles.js</span></dt><dd>قواعد المواقع الجاهزة.</dd>
-            <dt><span class="ltr">lib/shadow-dom-traverser.js</span></dt><dd>Shadow DOM.</dd>
-            <dt><span class="ltr">shadow-patch.js</span></dt><dd>رقعة <span class="ltr">attachShadow</span> في عالم الصفحة.</dd>
-            <dt><span class="ltr">popup/</span></dt><dd>الواجهة (Tailwind محلي).</dd>
-          </dl>
-        </div>
+npm run build:privacy # توليد صفحة الخصوصية
+npm run pack        # حزمة ZIP جاهزة للنشر</pre>
+        <table class="ledger">
+          <caption>خريطة الملفات</caption>
+          <tbody>
+            <tr><td><code>content.js</code></td><td>التفعيل، المراقب، الإعدادات</td></tr>
+            <tr><td><code>lib/detector.js</code></td><td>نسبة العربية</td></tr>
+            <tr><td><code>lib/bidi-fix.js</code></td><td>اتجاه الفقرة دون قلب التخطيط</td></tr>
+            <tr><td><code>lib/site-profiles.js</code></td><td>قواعد المواقع الجاهزة</td></tr>
+            <tr><td><code>lib/shadow-dom-traverser.js</code></td><td>Shadow DOM</td></tr>
+            <tr><td><code>shadow-patch.js</code></td><td>رقعة <code>attachShadow</code> في عالم الصفحة</td></tr>
+            <tr><td><code>popup/</code></td><td>الواجهة (Tailwind محلي)</td></tr>
+          </tbody>
+        </table>
       </div>
       <div class="note">
-        لا تقلب <span class="ltr">body</span> بـ <span class="ltr">direction: rtl</span> في ملف موقع. لا تعتمد على <span class="ltr">loadDelay</span> وحده للبث الحي.
-        فضّل <span class="ltr">data-testid</span> و<span class="ltr">aria-label</span> على كلاسات Tailwind.
+        <p>لا تقلب <code>body</code> بـ <code>direction: rtl</code> في ملفّ موقع. لا تعتمد على <code>loadDelay</code> وحده للبثّ الحيّ. وفضّل <code>data-testid</code> و<code>aria-label</code> على كلاسات Tailwind.</p>
       </div>
     </div>
   </section>
 
-  <!-- ===================== What's new ===================== -->
-  <section id="whats-new">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">ما الجديد</span>
-        <h2>الإصدار 4.3.0</h2>
+  <!-- ============================ ما الجديد ============================ -->
+  <section id="changelog">
+    <div class="sheet">
+      <p class="rubric"><span>١٢</span><span>ملحق</span><span class="of">v4.3.0</span></p>
+      <h2>ما الجديد في 4.3.0</h2>
+      <div class="columns">
+        <p>
+          <strong>دقّة أعلى في النصوص الهجينة:</strong> تصحيح الجمل العربية التي تبدأ بمصطلح إنجليزي أو رقم
+          في صناديق الإدخال وردود النماذج ومحرّرات <code>ProseMirror</code> و<code>Tiptap</code>.
+        </p>
+        <p>
+          <strong>قوائم Grok:</strong> حلّ انقلاب القوائم النقطية وتعارض كلاسات Tailwind مع استثناء محرّرات الأكواد.
+        </p>
+        <p>
+          <strong>ملفّ DeepSeek:</strong> إضافة <code>chat.deepseek.com</code> وتفعيل تلقائي عند ترجمة الصفحة
+          بواسطة Google Translate أو Edge على GitHub والصفحات أحادية الصفحة.
+        </p>
+        <p>
+          <strong>تحصين:</strong> فحص <code>chrome.runtime.lastError</code> لمنع شارة الخطأ الحمراء، واستيراد
+          وتصدير المحدِّدات والمحدِّدات المخصّصة من النافذة المنبثقة.
+        </p>
       </div>
-      <div class="grid grid-2">
-        <div class="card">
-          <h3>ذكاء اصطناعي ودقة Bidi</h3>
-          <ul class="plain">
-            <li>دعم النصوص الهجينة التي تبدأ بكلمات إنجليزية في صناديق الإدخال وردود النماذج ومحررات <span class="ltr">ProseMirror</span>/<span class="ltr">Tiptap</span>.</li>
-            <li>إصلاح قوائم Grok النقطية وتعارض كلاسات Tailwind مع استثناء محررات الأكواد.</li>
-            <li>ملف تعريف مخصص لـ <span class="ltr">chat.deepseek.com</span>.</li>
-            <li>عزل الأقواس والأرقام لمنع تسرّبها أو انعكاسها في سياق الردود العربية.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>توافق الترجمة والاستقرار</h3>
-          <ul class="plain">
-            <li>تفعيل تلقائي عند ترجمة الصفحة بواسطة Google Translate أو Edge على GitHub والصفحات أحادية الصفحة.</li>
-            <li>إدراج ملفات الأنماط في <span class="ltr">web_accessible_resources</span> لتحميل سلس.</li>
-            <li>حصانة رسائل المتصفح بفحص <span class="ltr">chrome.runtime.lastError</span> لمنع شارة الخطأ الحمراء.</li>
-            <li>استيراد وتصدير المحددات المخصصة ومحددات المواقع من النافذة المنبثقة.</li>
-          </ul>
-        </div>
-      </div>
-      <p style="margin: 1.25rem 0 0;">
-        <a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener">سجل التغييرات الكامل</a>
+      <p style="margin-top: 1.2rem;">
+        <a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener">سجلّ التغييرات الكامل</a>
         &nbsp;·&nbsp;
         <a href="https://github.com/SMSMy/Fluent-Arabic-Web/releases" rel="noopener">كل الإصدارات</a>
       </p>
     </div>
   </section>
 
-  <!-- ===================== English ===================== -->
+  <!-- ============================ إنجليزي ============================ -->
   <section id="english">
-    <div class="wrap">
-      <div class="card en-block" lang="en">
-        <h2 style="font-size: 1.35rem;">Fluent Arabic Web (English)</h2>
-        <p>
-          A Manifest V3 extension that detects Arabic on a page and fixes its direction <strong>without flipping the layout</strong>.
-          Sidebars, composers, and code blocks stay intact; English, numbers, and <code>pre</code>/<code>code</code>/KaTeX remain LTR inside mixed paragraphs.
-        </p>
-        <p style="margin-bottom: 0;">
-          Install from the <a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">Chrome Web Store</a>,
-          or read the source on <a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">GitHub</a>. MIT licensed, no accounts, no telemetry, no network calls.
-        </p>
-      </div>
+    <div class="sheet english" lang="en">
+      <p class="rubric"><span>13</span><span>In English</span><span class="of">SUMMARY</span></p>
+      <h2>Fluent Arabic Web</h2>
+      <p>
+        A Manifest V3 extension that detects Arabic on a page and fixes its direction <strong>without flipping the layout</strong>.
+        Sidebars, composers and code blocks stay intact; English, numbers and <code>pre</code>/<code>code</code>/KaTeX remain LTR inside mixed paragraphs.
+      </p>
+      <p>
+        Install from the <a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">Chrome Web Store</a>,
+        read the source on <a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">GitHub</a>, or read the
+        <a href="privacy.html">privacy policy</a>. MIT licensed, no accounts, no telemetry, no network calls.
+      </p>
     </div>
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap footer-grid">
+<footer class="colophon">
+  <div class="sheet colophon-inner">
     <div>
-      <strong style="color: var(--text);">Fluent Arabic Web</strong> — منسّق النصوص العربية على أي موقع ويب.
-      <ul class="footer-links">
+      <strong>Fluent Arabic Web</strong> — منسّق النصوص العربية على أي موقع ويب.
+      <ul>
         <li><a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">متجر كروم</a></li>
         <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">المستودع</a></li>
         <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/releases" rel="noopener">الإصدارات</a></li>
-        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener">سجل التغييرات</a></li>
-        <li><a href="privacy.html">سياسة الخصوصية</a></li>
-        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/issues" rel="noopener">المشكلات</a></li>
+        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener">سجلّ التغييرات</a></li>
+        <li><a href="privacy.html">الخصوصية</a></li>
+        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/issues" rel="noopener">المشاكل</a></li>
         <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/LICENSE" rel="noopener">رخصة MIT</a></li>
       </ul>
     </div>
     <div>
-      <p style="margin: 0;">دعم وتطوير لمشكلات النصوص العربية والمختلطة (BiDi) على الويب.</p>
-      <p style="margin: 0.35rem 0 0;">© 2026 — مستضاف على GitHub Pages.</p>
+      <p class="imprint">
+        طُبعت هذه الصفحة بـ Amiri وReem Kufi، ولا ظلّ فيها ولا زاوية مدوّرة.
+        <br>© 2026 — مستضافة على GitHub Pages.
+      </p>
     </div>
   </div>
 </footer>
