@@ -3,13 +3,10 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import path from 'node:path';
-
-const ROOT = process.cwd();
+import { readSource } from './read-source.mjs';
 
 test('background.js: updateBadge يحصن دوال chrome.action بفحص lastError', () => {
-  const bg = fs.readFileSync(path.join(ROOT, 'background.js'), 'utf8');
+  const bg = readSource('background.js');
   assert.ok(bg.includes('chrome.action.setBadgeText'), 'must contain setBadgeText');
   assert.ok(
     bg.includes('function () {\n        if (chrome.runtime.lastError)') ||
@@ -19,7 +16,7 @@ test('background.js: updateBadge يحصن دوال chrome.action بفحص lastEr
 });
 
 test('content.js: رسائل fluent-rtl-status تتضمن callbacks لفحص lastError', () => {
-  const content = fs.readFileSync(path.join(ROOT, 'content.js'), 'utf8');
+  const content = readSource('content.js');
   const occurrences = (content.match(/chrome\.runtime\.sendMessage\(\{\s*type:\s*'fluent-rtl-status'/g) || []).length;
   assert.ok(occurrences >= 2, 'must have at least 2 status messages');
   assert.ok(
@@ -29,7 +26,7 @@ test('content.js: رسائل fluent-rtl-status تتضمن callbacks لفحص las
 });
 
 test('popup.js: sendMessage تفحص chrome.runtime.lastError بأمان', () => {
-  const popup = fs.readFileSync(path.join(ROOT, 'popup/popup.js'), 'utf8');
+  const popup = readSource('popup/popup.js');
   assert.ok(
     popup.includes('chrome.runtime.lastError') && popup.includes('function sendMessage'),
     'popup.js sendMessage must check chrome.runtime.lastError'

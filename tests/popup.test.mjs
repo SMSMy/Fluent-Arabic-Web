@@ -5,12 +5,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { waitFor } from './helpers.mjs';
-
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+import { readSource } from './read-source.mjs';
 
 const DEFAULT_SETTINGS = {
   enabled: true,
@@ -24,7 +20,7 @@ const DEFAULT_SETTINGS = {
 };
 
 function loadPopup(tabHostname = '') {
-  const html = fs.readFileSync(path.join(ROOT, 'popup', 'popup.html'), 'utf8');
+  const html = readSource('popup/popup.html');
   const dom = new JSDOM(html, {
     url: 'chrome-extension://test/popup/popup.html',
     runScripts: 'dangerously',
@@ -78,7 +74,7 @@ function loadPopup(tabHostname = '') {
     }
   };
 
-  const code = fs.readFileSync(path.join(ROOT, 'popup', 'popup.js'), 'utf8');
+  const code = readSource('popup/popup.js');
   window.eval(code);
   return { dom, window };
 }

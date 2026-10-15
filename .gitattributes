@@ -1,0 +1,15 @@
+# توحيد نهايات الأسطر: LF في المستودع وفي مجلد العمل على كل الأنظمة.
+# يمنع سقوط الفحوص النصّية على ويندوز حيث كان git يفحص الملفات بـ CRLF.
+* text=auto eol=lf
+
+# ملفات ثنائية تُترك كما هي بلا أي تحويل
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.zip  binary
+*.crx  binary

@@ -3,12 +3,9 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import path from 'node:path';
 import { JSDOM } from 'jsdom';
 import { waitFor } from './helpers.mjs';
-
-const ROOT = process.cwd();
+import { readSource } from './read-source.mjs';
 
 const DEFAULT_SETTINGS = {
   enabled: true,
@@ -22,7 +19,7 @@ const DEFAULT_SETTINGS = {
 };
 
 async function createReadyPopupEnv(initialSettings = DEFAULT_SETTINGS, tabHostname = 'example.com') {
-  const html = fs.readFileSync(path.join(ROOT, 'popup/popup.html'), 'utf8');
+  const html = readSource('popup/popup.html');
   const dom = new JSDOM(html, {
     url: 'chrome-extension://test/popup/popup.html',
     runScripts: 'dangerously',
@@ -146,7 +143,7 @@ async function createReadyPopupEnv(initialSettings = DEFAULT_SETTINGS, tabHostna
     }
   };
 
-  const code = fs.readFileSync(path.join(ROOT, 'popup/popup.js'), 'utf8');
+  const code = readSource('popup/popup.js');
   window.eval(code);
 
   // انتظار انتهاء init() وربط الأحداث بالكامل
@@ -166,7 +163,7 @@ async function createReadyPopupEnv(initialSettings = DEFAULT_SETTINGS, tabHostna
 }
 
 test('عناصر الاستيراد والتصدير موجودة في الواجهة', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'popup/popup.html'), 'utf8');
+  const html = readSource('popup/popup.html');
   assert.ok(html.includes('id="exportBtn"'), 'exportBtn must exist');
   assert.ok(html.includes('id="importBtn"'), 'importBtn must exist');
   assert.ok(html.includes('id="importFile"'), 'importFile must exist');

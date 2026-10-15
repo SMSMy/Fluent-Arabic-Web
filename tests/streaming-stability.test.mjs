@@ -3,11 +3,9 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import path from 'node:path';
 import { createDom, loadLibs } from './helpers.mjs';
+import { readSource } from './read-source.mjs';
 
-const ROOT = process.cwd();
 const { window } = createDom('<html><body></body></html>');
 const FluentRTL = loadLibs(window);
 const siteProfiles = FluentRTL.siteProfiles;
@@ -37,7 +35,7 @@ test('Perplexity profile CSS: يتضمن plaintext للفقرات الحية', (
 });
 
 test('content.js: حماية دالة selfHealInjectedStyles من throw عند انعدام getElementById', () => {
-  const code = fs.readFileSync(path.join(ROOT, 'content.js'), 'utf8');
+  const code = readSource('content.js');
   assert.ok(
     code.includes('if (!document || !document.getElementById) return;') ||
     code.includes('if (typeof document === \'undefined\' || !document || !document.getElementById) return;'),
@@ -46,7 +44,7 @@ test('content.js: حماية دالة selfHealInjectedStyles من throw عند �
 });
 
 test('content.js: معالجة characterData تسمح بإعادة تقييم عناصر streaming دون إيقافها بـ MARKER_ATTR مبكر', () => {
-  const code = fs.readFileSync(path.join(ROOT, 'content.js'), 'utf8');
+  const code = readSource('content.js');
   assert.ok(
     code.includes('prof.streaming') || code.includes('profile.streaming') || code.includes('isStreamingSite'),
     'يجب فحص streaming في characterData mutation handler'

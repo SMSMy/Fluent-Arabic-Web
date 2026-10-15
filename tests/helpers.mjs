@@ -3,11 +3,7 @@
  * تحمّل ملفات lib داخل jsdom مع stub كامل لواجهات chrome.*
  */
 import { JSDOM } from 'jsdom';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+import { readSource } from './read-source.mjs';
 
 const LIB_FILES = [
   'lib/detector.js',
@@ -84,7 +80,7 @@ export function createDom(html, opts = {}) {
 /** تحميل ملفات lib فقط */
 export function loadLibs(window) {
   for (const rel of LIB_FILES) {
-    const code = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    const code = readSource(rel);
     window.eval(code);
   }
   return window.FluentRTL;
@@ -92,7 +88,7 @@ export function loadLibs(window) {
 
 /** تحميل content.js كاملاً (بعد libs) */
 export function loadContentScript(window) {
-  const code = fs.readFileSync(path.join(ROOT, 'content.js'), 'utf8');
+  const code = readSource('content.js');
   window.eval(code);
 }
 
