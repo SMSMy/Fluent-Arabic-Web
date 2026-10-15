@@ -1,0 +1,113 @@
+/**
+ * docs/site.input.css — مدخل Tailwind لموقع المشروع
+ * يُترجَم إلى docs/site.css عبر: npm run build:site
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: #07100d;
+  }
+  body {
+    background-color: #07100d;
+    color: #f0f7f4;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* =========================================================================
+   الخطوط المدمجة في الحزمة — نفس ملفات WOFF2، منسوخة إلى docs/fonts
+   ليتمكّن الموقع المنشور من معاينتها فعلياً (الصفحات تُنشر من docs/ وحدها).
+   ونطاق اليونيكود مقصور على العربية كما في الإضافة: اللاتيني يبقى لخطّه.
+   ========================================================================= */
+@font-face { font-family: 'FluentThmanyah'; src: url('fonts/thmanyah-display-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentThmanyah'; src: url('fonts/thmanyah-display-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentAlMasmak'; src: url('fonts/al-masmak.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentAlNaseeb'; src: url('fonts/al-naseeb.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentAlWatad'; src: url('fonts/al-watad.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentAlAwwal'; src: url('fonts/al-awwal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentSaudi'; src: url('fonts/saudi.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentYearOfPoetry'; src: url('fonts/year-of-poetry.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentYearOfCamel'; src: url('fonts/year-of-camel.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'FluentYearOfHandicrafts'; src: url('fonts/handicrafts.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF; }
+
+/* خطوط معايرة الطباعة وشبكة القياس */
+.bg-grid-technical {
+  background-size: 32px 32px;
+  background-image:
+    linear-gradient(to right, rgba(78, 222, 163, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(78, 222, 163, 0.04) 1px, transparent 1px);
+}
+
+.ruler-tape-x {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(78, 222, 163, 0.25) 0px,
+    rgba(78, 222, 163, 0.25) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+}
+
+.scanline-overlay {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 0, 255, 0.01));
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+/* عزل المقاطع اللاتينية داخل الجمل العربية */
+.isolate-bidi {
+  unicode-bidi: isolate;
+  direction: ltr;
+  display: inline-block;
+}
+
+/* =========================================================================
+   نصّ السياسة المُولَّد من docs/PRIVACY.md — يُلبَّس نظام التصميم نفسه
+   ========================================================================= */
+@layer components {
+  .policy { @apply text-body-md text-text-secondary; }
+  .policy h1 { @apply text-headline-lg text-text-primary font-bold mt-10 mb-3 pb-2 border-b border-border-strong; }
+  .policy h2 { @apply text-headline-md text-text-primary font-bold mt-8 mb-2 pb-1 border-b border-border-subtle; }
+  .policy h3 { @apply text-headline-sm text-text-primary mt-6 mb-1; }
+  .policy p { @apply mb-4; }
+  .policy strong { @apply text-text-primary font-bold; }
+  .policy ul { @apply list-disc pr-6 mb-4 space-y-1; }
+  .policy ol { @apply list-decimal pr-6 mb-4 space-y-1; }
+  .policy li { @apply leading-relaxed; }
+  .policy hr { @apply border-0 border-t border-border-subtle my-8; }
+  .policy a { @apply text-primary underline hover:text-accent-mint; }
+  .policy code {
+    @apply font-mono text-code-inline text-accent-mint bg-surface-container border border-border-subtle rounded px-1.5 py-0.5;
+    unicode-bidi: isolate;
+    direction: ltr;
+    display: inline-block;
+  }
+  .policy pre { @apply bg-surface-code border border-border-strong rounded-xl p-4 mb-5 overflow-x-auto; direction: ltr; text-align: left; }
+  .policy pre code { @apply bg-transparent border-0 rounded-none p-0 text-text-secondary block; }
+  .policy table { @apply w-full border-collapse mb-5 text-body-sm; }
+  .policy th { @apply text-text-primary font-bold text-right p-3 border-b border-border-strong; }
+  .policy td { @apply p-3 border-b border-border-subtle align-top; }
+  .policy .ltr-block { @apply mt-10 pt-8 border-t border-border-strong; direction: ltr; text-align: left; }
+  .policy .ltr-block h1 { @apply mt-0 border-0 pt-0; }
+}
+
+/* أشرطة تمرير رقيقة */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #07100d;
+}
+::-webkit-scrollbar-thumb {
+  background: #182823;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4edea3;
+}

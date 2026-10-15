@@ -1,1037 +1,832 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Fluent Arabic Web — منسّق النصوص العربية على أي موقع</title>
-<meta name="description" content="إضافة متصفح (Manifest V3) تكتشف النص العربي في الصفحة وتصحّح اتجاهه دون قلب التخطيط: قوائم جانبية وأزرار وكتل كود سليمة، مع 22 ملف موقع جاهز لنماذج الذكاء الاصطناعي ومنصات العمل.">
-<meta name="theme-color" content="#f7f2e8">
-<link rel="canonical" href="https://smsmy.github.io/Fluent-Arabic-Web/">
-<link rel="icon" type="image/png" href="assets/icon-128.png">
-<link rel="apple-touch-icon" href="assets/icon-128.png">
-
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Fluent Arabic Web">
-<meta property="og:locale" content="ar_AR">
-<meta property="og:title" content="Fluent Arabic Web — منسّق النصوص العربية على أي موقع">
-<meta property="og:description" content="تصحيح اتجاه العربية داخل الصفحة دون قلب التخطيط. 22 ملف موقع جاهز، 9 خطوط عربية، بلا تتبّع ولا خادم خارجي.">
-<meta property="og:url" content="https://smsmy.github.io/Fluent-Arabic-Web/">
-<meta property="og:image" content="https://smsmy.github.io/Fluent-Arabic-Web/assets/store-banner.png">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="800">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Fluent Arabic Web — منسّق النصوص العربية على أي موقع">
-<meta name="twitter:description" content="تصحيح اتجاه العربية داخل الصفحة دون قلب التخطيط. مفتوحة المصدر برخصة MIT.">
-<meta name="twitter:image" content="https://smsmy.github.io/Fluent-Arabic-Web/assets/store-banner.png">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Reem+Kufi:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<style>
-  /* =========================================================================
-     مطبعة عربية: ورق، حبر أخضر، مساطر شعرية، ولا ظلّ ولا زاوية مدوّرة.
-     ========================================================================= */
-  *, *::before, *::after { box-sizing: border-box; }
-
-  :root {
-    --paper: #f7f2e8;
-    --paper-2: #efe7d7;
-    --paper-3: #e6dcc6;
-    --ink: #1b2a24;
-    --ink-2: #3f5249;
-    --muted: #6d7c74;
-    --green: #0f5132;
-    --green-2: #14603c;
-    --green-tint: #e3ece5;
-    --rust: #9a3b1f;
-    --rule: rgba(27, 42, 36, 0.18);
-    --rule-2: rgba(27, 42, 36, 0.45);
-    --measure: 68ch;
-    --pad: clamp(1.1rem, 4vw, 2.5rem);
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    margin: 0;
-    background-color: var(--paper);
-    color: var(--ink);
-    font-family: 'Amiri', 'Times New Roman', Times, serif;
-    font-size: 19px;
-    line-height: 1.9;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  /* حبيبات الورق: طبقة ثابتة غير تفاعلية */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
-    opacity: 0.16;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
-  }
-
-  img { max-width: 100%; height: auto; }
-
-  a {
-    color: var(--green);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.22em;
-    transition: color 0.15s ease, text-decoration-thickness 0.15s ease;
-  }
-  a:hover { color: var(--ink); text-decoration-thickness: 2px; }
-
-  :focus-visible { outline: 2px dashed var(--rust); outline-offset: 3px; }
-
-  .skip {
-    position: absolute;
-    inset-inline-start: -9999px;
-    top: 0;
-    background: var(--green);
-    color: var(--paper);
-    padding: 0.5rem 1rem;
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.9rem;
-    z-index: 20;
-  }
-  .skip:focus { inset-inline-start: 0; }
-
-  .sheet {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    max-width: 1080px;
-    margin-inline: auto;
-    padding-inline: var(--pad);
-  }
-
-  /* ====== الترويسة ====== */
-  .masthead {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--paper);
-    border-bottom: 3px double var(--rule-2);
-  }
-  .masthead-top {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem 1.5rem;
-    padding-block: 0.85rem 0.5rem;
-  }
-  .wordmark {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-family: 'Amiri', serif;
-    font-weight: 700;
-    font-size: 1.35rem;
-    line-height: 1;
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .wordmark img { width: 30px; height: 30px; border-radius: 2px; }
-  .wordmark:hover { color: var(--green); }
-  .edition {
-    margin: 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-  }
-  .masthead-nav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.25rem 1.1rem;
-    padding-block: 0.35rem 0.6rem;
-    border-top: 1px solid var(--rule);
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.88rem;
-  }
-  .masthead-nav a { color: var(--ink-2); text-decoration: none; }
-  .masthead-nav a:hover { color: var(--green); text-decoration: underline; text-decoration-thickness: 2px; }
-  .masthead-nav a.install {
-    color: var(--green);
-    font-weight: 600;
-    border-inline-start: 1px solid var(--rule);
-    padding-inline-start: 1.1rem;
-  }
-  .masthead-nav .sep { color: var(--rule-2); }
-
-  @media (max-width: 700px) {
-    /* ترويسة أخفّ على الجوال: بلا سطر الإصدار، وشريط تنقّل واحد يُمرَّر جانبياً */
-    .masthead { position: static; }
-    .masthead-top { padding-block: 0.7rem 0.45rem; }
-    .edition { display: none; }
-    .masthead-nav {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 0.9rem;
-      font-size: 0.85rem;
-      scrollbar-width: none;
-    }
-    .masthead-nav::-webkit-scrollbar { display: none; }
-    .masthead-nav a, .masthead-nav .sep { white-space: nowrap; }
-    .masthead-nav .install { order: -1; border-inline-start: 0; padding-inline-start: 0; font-weight: 600; }
-  }
-
-  /* ====== ترويسة الأقسام ====== */
-  section { padding-block: clamp(2.4rem, 6vw, 4rem) 0; }
-  .rubric {
-    display: flex;
-    align-items: baseline;
-    gap: 0.7rem;
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.86rem;
-    font-weight: 500;
-    color: var(--rust);
-    margin: 0 0 0.9rem;
-    padding-top: 0.55rem;
-    border-top: 2px solid var(--rust);
-  }
-  .rubric .of { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; }
-  h2 {
-    font-size: clamp(1.6rem, 4vw, 2.3rem);
-    line-height: 1.35;
-    font-weight: 700;
-    margin: 0 0 1rem;
-    text-wrap: balance;
-  }
-  .deck { color: var(--ink-2); max-width: var(--measure); margin: 0 0 1.6rem; }
-  .rule { border: 0; border-top: 1px solid var(--rule); margin: 2.4rem 0 0; }
-
-  /* ====== صدر الصفحة ====== */
-  .lede { padding-top: clamp(1.8rem, 5vw, 3rem); }
-  .kicker {
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--rust);
-    margin: 0 0 0.75rem;
-  }
-  h1 {
-    font-size: clamp(2.1rem, 6.4vw, 3.9rem);
-    line-height: 1.25;
-    font-weight: 700;
-    margin: 0 0 1.1rem;
-    max-width: 30ch;
-    text-wrap: balance;
-  }
-  .standfirst {
-    font-size: clamp(1.12rem, 2.2vw, 1.32rem);
-    line-height: 1.8;
-    color: var(--ink-2);
-    max-width: 56ch;
-    margin: 0 0 1.6rem;
-  }
-  .standfirst em { font-style: italic; }
-
-  .columns { columns: 2; column-gap: 2.6rem; column-rule: 1px solid var(--rule); margin-bottom: 1.4rem; }
-  .columns p { margin: 0 0 1rem; break-inside: avoid; }
-  @media (max-width: 780px) { .columns { columns: 1; } }
-
-  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem 1.4rem; margin-bottom: 1.4rem; }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.62rem 1.25rem;
-    border: 1px solid var(--green);
-    background: transparent;
-    color: var(--green);
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.92rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background 0.16s ease, color 0.16s ease;
-  }
-  .btn:hover { background: var(--green); color: var(--paper); text-decoration: none; }
-  .btn-solid { background: var(--green); color: #f4efe4; }
-  .btn-solid:hover { background: var(--ink); color: #f4efe4; }
-  .text-link { font-family: 'Reem Kufi', sans-serif; font-size: 0.92rem; }
-
-  .dateline {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem 1.2rem;
-    padding-block: 0.7rem;
-    border-block: 1px solid var(--rule);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-    margin-bottom: 2.2rem;
-  }
-  .dateline span { direction: ltr; unicode-bidi: isolate; }
-
-  /* ====== اللوحات ====== */
-  figure.plate { margin: 0 0 1.6rem; }
-  figure.plate img { display: block; width: 100%; border: 1px solid var(--rule-2); background: #fff; }
-  figure.plate figcaption {
-    display: flex;
-    gap: 0.7rem;
-    align-items: baseline;
-    margin-top: 0.55rem;
-    font-size: 0.88rem;
-    color: var(--muted);
-  }
-  .plate-no {
-    flex: none;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    color: var(--rust);
-  }
-  .plates { display: grid; gap: 1.6rem; }
-  @media (min-width: 820px) { .plates { grid-template-columns: 1fr 1fr; } }
-  .plates figure.plate { margin: 0; }
-  .plates .tag {
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 600;
-    display: block;
-    padding-bottom: 0.35rem;
-    border-bottom: 2px solid var(--rule-2);
-    margin-bottom: 0.7rem;
-  }
-  .plates .before .tag { color: var(--rust); border-color: var(--rust); }
-  .plates .after .tag { color: var(--green); border-color: var(--green); }
-
-  /* ====== فهرس الخصائص ====== */
-  .index { list-style: none; margin: 0; padding: 0; }
-  .index > li {
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    gap: 0.4rem 1.2rem;
-    padding-block: 1.15rem;
-    border-top: 1px solid var(--rule);
-  }
-  .index > li:last-child { border-bottom: 1px solid var(--rule); }
-  .index .num {
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.95rem;
-    color: var(--rust);
-    padding-top: 0.2rem;
-  }
-  .index h3 { margin: 0 0 0.2rem; font-size: 1.16rem; font-weight: 700; }
-  .index p { margin: 0; color: var(--ink-2); font-size: 1rem; line-height: 1.85; }
-  .index .tail {
-    grid-column: 2;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    margin-top: 0.3rem;
-    direction: ltr;
-    unicode-bidi: isolate;
-    text-align: right;
-  }
-  @media (max-width: 560px) {
-    .index > li { grid-template-columns: 2.1rem 1fr; gap: 0.2rem 0.6rem; }
-  }
-
-  /* ====== فهرس المواقع ====== */
-  .site-columns { display: grid; gap: 2.2rem; }
-  @media (min-width: 840px) { .site-columns { grid-template-columns: 1.15fr 1fr 1fr; } }
-  .site-columns h3 {
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.86rem;
-    font-weight: 500;
-    color: var(--ink-2);
-    margin: 0 0 0.7rem;
-    padding-bottom: 0.35rem;
-    border-bottom: 1px solid var(--rule-2);
-  }
-  ul.sites { list-style: none; margin: 0; padding: 0; }
-  ul.sites li {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.25rem 0.55rem;
-    padding-block: 0.34rem;
-    border-bottom: 1px solid var(--rule);
-    font-size: 0.98rem;
-  }
-  ul.sites .host {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
-    color: var(--muted);
-    direction: ltr;
-    unicode-bidi: isolate;
-  }
-  ul.sites .live {
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--green);
-  }
-  ul.sites .live::before { content: "▪ "; color: var(--green); }
-
-  .note {
-    margin-top: 1.6rem;
-    padding: 1rem 1.15rem;
-    background: var(--paper-2);
-    border-inline-start: 3px solid var(--green);
-    font-size: 0.97rem;
-    color: var(--ink-2);
-  }
-  .note p { margin: 0 0 0.5rem; }
-  .note p:last-child { margin: 0; }
-
-  /* ====== إيصال التحقّق ====== */
-  .receipt {
-    background: var(--green-tint);
-    border: 1px dashed var(--rust);
-    padding: 1.1rem 1.25rem 1.25rem;
-    margin-top: 0.5rem;
-  }
-  .receipt-label {
-    margin: 0 0 0.7rem;
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--rust);
-  }
-  .receipt p { margin: 0.6rem 0 0; font-size: 0.95rem; color: var(--ink-2); }
-
-  pre, code, .mono { font-family: 'JetBrains Mono', monospace; }
-  pre {
-    direction: ltr;
-    text-align: left;
-    margin: 0;
-    padding: 0.85rem 1rem;
-    background: var(--paper-2);
-    border: 1px solid var(--rule-2);
-    font-size: 0.78rem;
-    line-height: 1.75;
-    color: var(--ink);
-    overflow-x: auto;
-  }
-  code {
-    font-size: 0.84em;
-    background: rgba(27, 42, 36, 0.07);
-    border: 0;
-    padding: 0 0.22rem;
-    direction: ltr;
-    unicode-bidi: isolate;
-  }
-
-  /* ====== قوائم مرقّمة ووصفية ====== */
-  ol.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; }
-  ol.steps li {
-    counter-increment: step;
-    display: grid;
-    grid-template-columns: 2.4rem 1fr;
-    gap: 0.2rem 1rem;
-    padding-block: 0.75rem;
-    border-top: 1px solid var(--rule);
-    color: var(--ink-2);
-  }
-  ol.steps li:last-child { border-bottom: 1px solid var(--rule); }
-  ol.steps li::before {
-    content: counter(step, arabic-indic);
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.95rem;
-    color: var(--rust);
-  }
-  ol.steps strong { color: var(--ink); }
-
-  dl.specimen { margin: 0; }
-  dl.specimen > div {
-    display: grid;
-    grid-template-columns: minmax(9rem, 14rem) 1fr;
-    gap: 0.3rem 1.4rem;
-    padding-block: 0.7rem;
-    border-top: 1px solid var(--rule);
-  }
-  dl.specimen > div:last-child { border-bottom: 1px solid var(--rule); }
-  dl.specimen dt { font-weight: 700; font-size: 1.05rem; }
-  dl.specimen dd { margin: 0; color: var(--ink-2); font-size: 0.98rem; }
-  @media (max-width: 620px) { dl.specimen > div { grid-template-columns: 1fr; } }
-
-  .ledger { width: 100%; border-collapse: collapse; font-size: 0.98rem; }
-  .ledger caption {
-    text-align: start;
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.8rem;
-    color: var(--muted);
-    padding-bottom: 0.5rem;
-  }
-  .ledger th, .ledger td { text-align: start; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  .ledger th { font-weight: 700; border-bottom: 2px solid var(--rule-2); }
-  .ledger td:first-child { white-space: nowrap; }
-
-  /* ====== الأسئلة ====== */
-  details {
-    border-top: 1px solid var(--rule);
-    padding-block: 0.9rem;
-  }
-  details:last-of-type { border-bottom: 1px solid var(--rule); }
-  details summary {
-    cursor: pointer;
-    font-size: 1.08rem;
-    font-weight: 700;
-    list-style: none;
-    display: flex;
-    gap: 0.7rem;
-    align-items: baseline;
-  }
-  details summary::-webkit-details-marker { display: none; }
-  details summary::before {
-    content: "↑";
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--green);
-    transition: transform 0.15s ease;
-  }
-  details[open] summary::before { content: "↓"; }
-  details p { margin: 0.6rem 0 0; color: var(--ink-2); max-width: var(--measure); }
-
-  .english { direction: ltr; text-align: left; }
-  .english h2 { font-size: 1.5rem; }
-  .english p { color: var(--ink-2); max-width: 62ch; }
-
-  /* ====== الكولوفون ====== */
-  .colophon {
-    margin-top: clamp(3rem, 7vw, 5rem);
-    border-top: 3px double var(--rule-2);
-    padding-block: 1.6rem 3rem;
-    font-size: 0.95rem;
-    color: var(--ink-2);
-  }
-  .colophon-inner { display: grid; gap: 1.2rem; }
-  @media (min-width: 760px) { .colophon-inner { grid-template-columns: 1.3fr 1fr; } }
-  .colophon ul {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem 1.1rem;
-    margin: 0.6rem 0 0;
-    padding: 0;
-    font-family: 'Reem Kufi', sans-serif;
-    font-size: 0.86rem;
-  }
-  .colophon .imprint { font-style: italic; color: var(--muted); font-size: 0.92rem; margin: 0; }
-
-  @media print {
-    body { background: #fff; font-size: 11pt; }
-    body::before, .masthead, .actions, .colophon ul { display: none; }
-    a { color: #000; text-decoration: none; }
-    section { padding-block: 1rem 0; }
-  }
-</style>
+<meta name="description" content="إضافة متصفح (Manifest V3) تعزل اتجاه النص العربي داخل الصفحة عبر unicode-bidi: isolate، دون قلب التخطيط أو كسر أعمدة الكود. 22 ملفّ موقع جاهز، 9 خطوط عربية مدمجة، وبلا أي نداء شبكة."/>
+<meta name="theme-color" content="#07100d"/>
+<link rel="canonical" href="https://smsmy.github.io/Fluent-Arabic-Web/"/>
+<link rel="icon" type="image/png" href="assets/icon-128.png"/>
+<link rel="apple-touch-icon" href="assets/icon-128.png"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Fluent Arabic Web"/>
+<meta property="og:locale" content="ar_AR"/>
+<meta property="og:title" content="Fluent Arabic Web — منسّق النصوص العربية على أي موقع"/>
+<meta property="og:description" content="عزل اتجاه العربية عبر unicode-bidi: isolate دون قلب التخطيط. 22 ملفّ موقع، 9 خطوط عربية، وصفر نداءات شبكة."/>
+<meta property="og:url" content="https://smsmy.github.io/Fluent-Arabic-Web/"/>
+<meta property="og:image" content="https://smsmy.github.io/Fluent-Arabic-Web/assets/store-banner.png"/>
+<meta property="og:image:width" content="1280"/>
+<meta property="og:image:height" content="800"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Fluent Arabic Web — منسّق النصوص العربية على أي موقع"/>
+<meta name="twitter:description" content="عزل اتجاه العربية دون قلب التخطيط. مفتوحة المصدر برخصة MIT."/>
+<meta name="twitter:image" content="https://smsmy.github.io/Fluent-Arabic-Web/assets/store-banner.png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&amp;family=Tajawal:wght@300;400;500;700;800;900&amp;family=Amiri:ital,wght@0,400;0,700;1,400&amp;family=Cairo:wght@400;600;700;800&amp;family=Noto+Naskh+Arabic:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="site.css"/>
 </head>
-<body>
-<a class="skip" href="#main">تجاوز إلى المحتوى</a>
+<body class="font-sans antialiased bg-[#07100d] text-text-primary min-h-screen selection:bg-primary selection:text-on-primary relative overflow-x-hidden">
+<!-- رموز الأيقونات: SVG مضمّن بدل خطّ أيقونات خارجي (لا طلبات شبكة ولا نصّ دخيل عند الحجب) -->
+<svg width="0" height="0" class="hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-puzzle" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3a2 2 0 0 1 4 0v1h3a1 1 0 0 1 1 1v3h1a2 2 0 0 1 0 4h-1v3a1 1 0 0 1-1 1h-3v1a2 2 0 0 1-4 0v-1H6a1 1 0 0 1-1-1v-3H4a2 2 0 0 1 0-4h1V5a1 1 0 0 1 1-1h4z"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></g>
+    <g id="i-check-circle" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></g>
+    <g id="i-cross" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></g>
+    <g id="i-warning" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4.3 2.6 17.4A2 2 0 0 0 4.3 20.4h15.4a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></g>
+    <g id="i-verified" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/><path d="m9 12 2 2 4-4"/></g>
+    <g id="i-shield-lock" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/><rect x="9" y="11" width="6" height="5" rx="1"/><path d="M10 11V9.5a2 2 0 0 1 4 0V11"/></g>
+    <g id="i-lock" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></g>
+    <g id="i-cloud-off" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.4-8A5.5 5.5 0 0 1 17 8.2 4 4 0 0 1 17.5 18"/><path d="M3 3l18 18"/></g>
+    <g id="i-database" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g>
+    <g id="i-eye-off" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.5"/><path d="M4 4l16 16"/></g>
+    <g id="i-terminal" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/></g>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="m8 11 4 4 4-4"/><path d="M5 20h14"/></g>
+    <g id="i-code" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 8-5 4 5 4M15 8l5 4-5 4"/></g>
+    <g id="i-bug" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="7" width="8" height="12" rx="4"/><path d="M8 11H4M20 11h-4M8 16H5M19 16h-3M9 7 7.5 5M15 7l1.5-2"/></g>
+    <g id="i-picker" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></g>
+    <g id="i-tune" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></g>
+    <g id="i-rule" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="17" cy="16" r="3"/></g>
+    <g id="i-save" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 2-2h9l3 3v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"/><path d="M9 3v6h6V3M9 21v-6h6v6"/></g>
+    <g id="i-font" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18 11 6l6 12M7.5 14h7"/><path d="M17 18h4"/></g>
+    <g id="i-chevron-down" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></g>
+    <g id="i-tool" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 1 0 5 5L21 12l-9 9-3-3 9-9z"/><path d="m6 18 3-3"/></g>
+    <g id="i-laptop" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="10" rx="1.5"/><path d="M2 19h20"/></g>
+  </defs>
+</svg>
+<a class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:px-4 focus:py-2 focus:rounded focus:bg-primary focus:text-on-primary focus:font-bold" href="#inspector">تجاوز إلى المحتوى</a>
 
-<header class="masthead">
-  <div class="sheet">
-    <div class="masthead-top">
-      <a class="wordmark" href="#top">
-        <img src="assets/icon-128.png" width="128" height="128" alt="">
-        <span>Fluent Arabic Web</span>
-      </a>
-      <p class="edition">الإصدار 4.3.0 — إضافة متصفح لتصحيح اتجاه العربية على الويب</p>
-    </div>
-    <nav class="masthead-nav" aria-label="التنقل">
-      <a href="#before-after">قبل وبعد</a><span class="sep">·</span>
-      <a href="#features">الخصائص</a><span class="sep">·</span>
-      <a href="#sites">المواقع</a><span class="sep">·</span>
-      <a href="#install">التثبيت</a><span class="sep">·</span>
-      <a href="#privacy">الخصوصية</a><span class="sep">·</span>
-      <a href="#faq">الأسئلة</a><span class="sep">·</span>
-      <a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">GitHub ↗</a>
-      <a class="install" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">التثبيت من المتجر ↗</a>
+<!-- الخلفية التقنية: شبكة قياس + هالة + خطوط مسح -->
+<div class="fixed inset-0 pointer-events-none -z-10 bg-grid-technical opacity-80"></div>
+<div class="fixed inset-0 pointer-events-none -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(16,185,129,0.14),transparent_80%)]"></div>
+<div class="fixed inset-0 pointer-events-none -z-10 scanline-overlay opacity-30"></div>
+
+<!-- شريط القياس العلوي -->
+<aside class="w-full border-b border-border-subtle bg-surface-dim/95 text-[11px] font-mono text-text-muted py-1 px-4 tracking-wider flex items-center justify-between z-50 relative select-none">
+  <div class="flex items-center gap-4">
+    <span class="flex items-center gap-1.5 text-accent-mint font-semibold">
+      <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+      FAW ENGINE · CLIENT-SIDE ONLY
+    </span>
+    <span class="hidden md:inline text-text-muted/60">│</span>
+    <span class="hidden md:inline">PARSER: UNICODE_BIDI · ISOLATE</span>
+    <span class="hidden lg:inline text-text-muted/60">│</span>
+    <span class="hidden lg:inline">MANIFEST V3 · CHROME / EDGE</span>
+  </div>
+  <div class="flex items-center gap-4 text-text-muted">
+    <span class="font-mono text-accent-mint/80 bg-surface-container px-2 py-0.5 rounded border border-border-subtle">92 TESTS · 6 CI JOBS</span>
+    <span class="hidden sm:inline">ZERO-TELEMETRY</span>
+  </div>
+</aside>
+
+<!-- الترويسة -->
+<header class="sticky top-0 inset-x-0 z-40 backdrop-blur-xl bg-surface-dim/85 border-b border-border-subtle">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <a class="flex items-center gap-3.5 group" href="#inspector">
+      <span class="w-9 h-9 rounded-lg bg-surface-container-high border border-border-strong flex items-center justify-center group-hover:border-primary transition-colors">
+        <img src="assets/icon-128.png" width="128" height="128" alt="" class="w-6 h-6 rounded"/>
+      </span>
+      <span class="flex flex-col">
+        <span class="flex items-center gap-2">
+          <span class="font-bold text-base tracking-tight text-text-primary">Fluent Arabic Web</span>
+          <span class="font-mono text-[10px] text-accent-mint px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded">v4.3.0</span>
+        </span>
+        <span class="font-mono text-[10px] text-text-muted tracking-tight">BiDi Isolation &amp; Arabic Typographic Engine</span>
+      </span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-1 font-mono text-xs">
+      <a class="px-3.5 py-1.5 rounded-md text-text-secondary hover:text-white hover:bg-surface-container transition-all" href="#inspector">مختبر الفحص</a>
+      <a class="px-3.5 py-1.5 rounded-md text-text-secondary hover:text-white hover:bg-surface-container transition-all" href="#glitch-to-flow">تشريح الخلل</a>
+      <a class="px-3.5 py-1.5 rounded-md text-text-secondary hover:text-white hover:bg-surface-container transition-all" href="#architecture">المعمارية</a>
+      <a class="px-3.5 py-1.5 rounded-md text-text-secondary hover:text-white hover:bg-surface-container transition-all" href="#specimen">عيّنة الخطوط</a>
+      <a class="px-3.5 py-1.5 rounded-md text-text-secondary hover:text-white hover:bg-surface-container transition-all" href="#matrix">مصفوفة المواقع (22)</a>
+      <a class="px-3.5 py-1.5 rounded-md text-text-secondary hover:text-white hover:bg-surface-container transition-all" href="#audit">تدقيق الخصوصية</a>
     </nav>
+    <div class="flex items-center gap-2.5">
+      <a class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md font-mono text-xs text-text-muted hover:text-white bg-surface-container border border-border-subtle hover:border-primary/40 transition-colors" href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener noreferrer" target="_blank">
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        <span>v4.3.0 · MIT</span>
+      </a>
+      <a class="inline-flex items-center gap-2 px-4 py-2 rounded-md font-mono text-xs font-semibold bg-primary text-on-primary hover:bg-accent-mint transition-all shadow-[0_0_20px_-3px_rgba(78,222,163,0.4)]" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener noreferrer" target="_blank">
+        <svg class="text-[16px] w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-puzzle"/></svg>
+        <span>تثبيت في المتصفح</span>
+      </a>
+    </div>
   </div>
 </header>
 
-<main id="main">
-  <!-- ============================ صدر الصفحة ============================ -->
-  <section class="lede" id="top">
-    <div class="sheet">
-      <p class="kicker">عن الإضافة</p>
-      <h1>العربية على الويب تستحقّ طباعةً نظيفة، لا صفحةً مقلوبة.</h1>
-      <p class="standfirst">
-        مواقع كثيرة تعرض العربية مقلوبة أو محاذاة لليسار: الكلمات تتفكك، والأرقام تقفز، والكود ينعكس مع النص.
-        الإضافات التي تقلب الصفحة كلها بـ <code>direction: rtl</code> على <code>body</code> تُصلح سطراً وتكسر الشريط الجانبي وزرّ الإرسال وكتل الكود.
-        <em>ومهمّة هذه الإضافة أن تصحّح النص وحده، ويبقى التخطيط كما صمّمه الموقع.</em>
-      </p>
+<main class="w-full relative z-10 flex flex-col">
 
-      <div class="columns">
-        <p>
-          تُراقب الإضافة ما يُكتب ويُعرض في الصفحة، وتبني حكماً على نسبة العربية في كل عنصر نصّي، ثم تعزل اتجاهه
-          بـ <code>unicode-bidi</code> بدل فرض الاتجاه على الحاوية. لذلك يبقى الشريط الجانبي في مكانه، ويبقى زرّ
-          الإرسال في مكانه، ويبقى <code>pre</code> و<code>code</code> يساراً كما يجب أن يكونا.
-        </p>
-        <p>
-          ولأن المواقع الحديثة تعيد رسم نفسها مئة مرة في الدقيقة — وتبثّ الردود كلمةً كلمة — بُنيت الإضافة على
-          ملفّات مواقع مكتوبة بعناية: اثنان وعشرون ملفّاً، عشرة منها تتعامل مع البثّ الحيّ، وجميعها تستثني
-          محرّرات الأكواد والمعادلات.
-        </p>
+  <!-- ١ · الصدر ومختبر الفحص -->
+  <section class="relative pt-12 pb-16 lg:pt-20 lg:pb-24 border-b border-border-subtle" id="inspector">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+        <div class="lg:col-span-8 flex flex-col gap-4">
+          <div class="inline-flex flex-wrap items-center gap-3 font-mono text-xs text-text-muted">
+            <span class="px-2 py-0.5 rounded bg-surface-container border border-border-subtle text-accent-mint font-semibold uppercase tracking-wider">
+              W3C BiDi · UNICODE ANNEX #9
+            </span>
+            <span>— الهندسة المعمارية للنص العربي الرقمي</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-text-primary tracking-tight leading-[1.2]">
+            نظام جراحي لعزل اتجاه النصوص،<br/>
+            <span class="text-transparent bg-clip-text bg-gradient-to-l from-primary via-accent-mint to-text-primary">بلا تخريب لأعمدة الكود أو واجهات المواقع.</span>
+          </h1>
+          <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl font-normal">
+            الإضافات الساذجة تفرض <code class="font-mono text-xs text-accent-mint bg-surface-container px-1.5 py-0.5 rounded border border-border-subtle isolate-bidi">&lt;body dir="rtl"&gt;</code> على الصفحة كلها، فتنهار شبكات Flexbox وتنعكس أشرطة الأدوات وتتشوّه محاذاة الأكواد. تُعيد <strong class="text-primary font-bold">Fluent Arabic Web</strong> بناء اتجاه العنصر النصّي وحده عبر <code class="font-mono text-xs text-accent-mint bg-surface-container px-1.5 py-0.5 rounded border border-border-subtle isolate-bidi">unicode-bidi: isolate</code>، ويبقى التخطيط كما صمّمه الموقع.
+          </p>
+        </div>
+        <div class="lg:col-span-4 bg-surface-solid border border-border-subtle rounded-lg p-5 font-mono text-xs flex flex-col justify-between space-y-4">
+          <div class="flex items-center justify-between border-b border-border-subtle pb-3">
+            <span class="text-text-muted">SPEC_SPECIFICATION</span>
+            <span class="text-accent-mint font-semibold">AR-BIDI-4.3</span>
+          </div>
+          <div class="space-y-2.5 text-text-secondary">
+            <div class="flex justify-between gap-3"><span class="text-text-muted">DOM Injection:</span><span class="text-text-primary">Scoped Traversal</span></div>
+            <div class="flex justify-between gap-3"><span class="text-text-muted">Global CSS Mutated:</span><span class="text-accent-mint font-bold">0%</span></div>
+            <div class="flex justify-between gap-3"><span class="text-text-muted">Detection:</span><span class="text-text-primary">Arabic ratio &gt; 15%</span></div>
+            <div class="flex justify-between gap-3"><span class="text-text-muted">Shadow DOM:</span><span class="text-accent-mint">ComposedPath</span></div>
+            <div class="flex justify-between gap-3"><span class="text-text-muted">Network Calls:</span><span class="text-accent-mint font-bold">0</span></div>
+            <div class="flex justify-between gap-3"><span class="text-text-muted">Artefacts:</span><span class="text-text-primary">MV3 · MIT</span></div>
+          </div>
+          <div class="pt-3 border-t border-border-subtle flex items-center justify-between text-[11px] text-text-muted">
+            <span>100% Client-Side</span>
+            <a class="text-primary hover:underline" href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener noreferrer" target="_blank">Source Code →</a>
+          </div>
+        </div>
       </div>
 
-      <div class="actions">
-        <a class="btn btn-solid" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">التثبيت من متجر كروم</a>
-        <a class="btn" href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">قراءة الشيفرة على GitHub</a>
-        <a class="text-link" href="https://github.com/SMSMy/Fluent-Arabic-Web/releases/latest" rel="noopener">أو نزّل الحزمة (ZIP)</a>
-      </div>
+      <!-- مختبر BiDi الحيّ -->
+      <div class="w-full rounded-xl bg-surface-solid border border-border-strong overflow-hidden shadow-2xl relative">
+        <div class="bg-surface-container-high px-4 py-3 border-b border-border-subtle flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+            </div>
+            <span class="text-text-muted hidden sm:inline">│</span>
+            <span class="text-text-primary font-bold">fa-inspector://token-breakdown</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-text-muted hidden md:inline">وضع المحاكاة:</span>
+            <div class="inline-flex p-0.5 rounded bg-surface-code border border-border-subtle text-[11px]">
+              <button class="px-2.5 py-1 rounded transition-colors text-text-muted hover:text-white" id="btn-mode-broken" onclick="setInspectorMode('broken')">معطوب [المتصفح وحده]</button>
+              <button class="px-2.5 py-1 rounded bg-primary text-on-primary font-bold transition-all" id="btn-mode-fluent" onclick="setInspectorMode('fluent')">معزول [Fluent Arabic]</button>
+            </div>
+          </div>
+        </div>
+        <div class="h-4 w-full ruler-tape-x border-b border-border-subtle opacity-40"></div>
+        <div class="p-6 lg:p-8 space-y-6">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+            <div class="p-3 bg-surface-code rounded border border-border-subtle">
+              <span class="text-text-muted block text-[10px]">CURRENT DIRECTION</span>
+              <span class="text-accent-mint font-bold text-sm" id="hud-direction">rtl (auto-detected)</span>
+            </div>
+            <div class="p-3 bg-surface-code rounded border border-border-subtle">
+              <span class="text-text-muted block text-[10px]">UNICODE-BIDI RULE</span>
+              <span class="text-accent-mint font-bold text-sm" id="hud-bidi">isolate</span>
+            </div>
+            <div class="p-3 bg-surface-code rounded border border-border-subtle">
+              <span class="text-text-muted block text-[10px]">SITE PROFILES</span>
+              <span class="text-primary font-bold text-sm">22 · 10 live</span>
+            </div>
+            <div class="p-3 bg-surface-code rounded border border-border-subtle">
+              <span class="text-text-muted block text-[10px]">LAYOUT DEVIATION</span>
+              <span class="text-emerald-400 font-bold text-sm">0.000px</span>
+            </div>
+          </div>
 
-      <div class="dateline">
-        <span>MANIFEST V3</span>
-        <span>CHROME · EDGE</span>
-        <span>22 PROFILES</span>
-        <span>9 ARABIC FONTS</span>
-        <span>92 AUTOMATED TESTS</span>
-        <span>MIT LICENSE</span>
-        <span>NO TRACKING</span>
-      </div>
+          <div class="block transition-all" id="inspector-display-fluent">
+            <div class="p-6 bg-surface-code rounded-lg border border-border-strong text-right space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono border-b border-border-subtle pb-2">
+                <span class="text-accent-mint flex items-center gap-1.5">
+                  <svg class="text-sm w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-tool"/></svg>
+                  معاينة تشريحية حيّة مع توضيح الوسوم المعزولة
+                </span>
+                <span class="text-text-muted isolate-bidi">&lt;div class="chat-message" dir="rtl"&gt;</span>
+              </div>
+              <p class="text-lg lg:text-xl text-text-primary leading-[2.2] font-normal">
+                لحلّ الاستثناء
+                <span class="inline-flex flex-col items-center mx-1 align-middle">
+                  <span class="text-[9px] font-mono text-primary bg-primary/10 px-1 rounded-t border-t border-x border-primary/30">ERROR CONST</span>
+                  <span class="font-mono text-sm text-accent-mint bg-surface-container-highest px-2 py-0.5 rounded border border-primary/40 isolate-bidi">[ERR_MODULE_NOT_FOUND]</span>
+                </span>
+                ثبّت الحزمة
+                <span class="inline-flex flex-col items-center mx-1 align-middle">
+                  <span class="text-[9px] font-mono text-primary bg-primary/10 px-1 rounded-t border-t border-x border-primary/30">PATH</span>
+                  <span class="font-mono text-sm text-accent-mint bg-surface-container-highest px-2 py-0.5 rounded border border-primary/40 isolate-bidi">src/main.ts</span>
+                </span>
+                ثم استدعِ الدالة
+                <span class="inline-flex flex-col items-center mx-1 align-middle">
+                  <span class="text-[9px] font-mono text-primary bg-primary/10 px-1 rounded-t border-t border-x border-primary/30">FUNCTION</span>
+                  <span class="font-mono text-sm text-accent-mint bg-surface-container-highest px-2 py-0.5 rounded border border-primary/40 isolate-bidi">createApp()</span>
+                </span>
+                كما في السطر الأخير.
+              </p>
+              <div class="mt-4 p-4 rounded bg-surface-dim border border-border-subtle font-mono text-xs text-left" dir="ltr">
+                <div class="flex flex-wrap justify-between gap-2 text-text-muted pb-2 mb-2 border-b border-border-subtle text-[11px]">
+                  <span>UNTOUCHED NATIVE CODE BLOCK</span>
+                  <span class="text-accent-mint">direction: ltr (preserved)</span>
+                </div>
+                <pre class="text-text-secondary leading-relaxed overflow-x-auto"><code><span class="text-primary font-bold">// lib/bidi-fix.js</span>
+el.style.unicodeBidi = <span class="text-emerald-300">'isolate'</span>;
+el.style.direction   = <span class="text-emerald-300">'rtl'</span>;
+<span class="text-text-muted">// الحاوية الأم تُترك كما هي — لا dir على body</span></code></pre>
+              </div>
+            </div>
+          </div>
 
-      <figure class="plate">
-        <img src="assets/concept.svg" width="680" height="400" alt="مقارنة: على اليسار نص عربي غير منسّق، وعلى اليمين النص نفسه بعد التصحيح مع بقاء تصميم الصفحة كما هو">
-        <figcaption>
-          <span class="plate-no">لوح ١</span>
-          <span>يساراً: عربي غير منسّق. يميناً: الصفحة ذاتها بعد التصحيح، دون المساس بالتصميم.</span>
-        </figcaption>
-      </figure>
+          <div class="hidden transition-all" id="inspector-display-broken">
+            <div class="p-6 bg-surface-code rounded-lg border border-danger-border text-left space-y-4" dir="ltr">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono border-b border-danger-border pb-2">
+                <span class="text-danger-text flex items-center gap-1.5">
+                  <svg class="text-sm w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-warning"/></svg>
+                  النتيجة في المتصفح وحده: أقواس مقلوبة وترقيم مبعثر
+                </span>
+                <span class="text-danger-text isolate-bidi">&lt;div dir="ltr"&gt; [uncorrected]</span>
+              </div>
+              <p class="font-mono text-base lg:text-lg text-text-muted leading-loose">
+                ثبّت الحزمة )v3.4( @vue/compiler-sfc ثم استدعِ الدالة )(createApp داخل الملف src/main.ts لحل الاستثناء ! [ERR_MODULE_NOT_FOUND]
+              </p>
+              <div class="p-3 rounded bg-danger-surface border border-danger-border text-xs font-mono text-danger-text space-y-1">
+                <div class="font-bold">تشخيص الخلل البصري</div>
+                <div>- القوس <code class="text-white isolate-bidi">)v3.4(</code> انقلب مكانه، وقفزت علامة التعجّب إلى أقصى اليمين.</div>
+                <div>- المقطع البرمجي قطع سياق الجملة العربية فصارت القراءة متعثّرة.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-surface-container px-4 py-2.5 border-t border-border-subtle flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-text-muted">
+          <span class="flex items-center gap-1 text-accent-mint">
+            <svg class="text-sm w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+            <span>TOKEN ISOLATOR · COMPLIANT WITH UNICODE ANNEX #9</span>
+          </span>
+          <span>NO GLOBAL CSS · NO LAYOUT MUTATION</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ============================ قبل وبعد ============================ -->
-  <section id="before-after">
-    <div class="sheet">
-      <p class="rubric"><span>٢</span><span>الفرق بالأمثلة</span><span class="of">PLATES</span></p>
-      <h2>علامات الترقيم والأقواس في موضعها</h2>
-      <p class="deck">
-        أكثر ما يكشف محاذاةً ركيكة هو موضع علامات التنصيص والأقواس في فقرة عربية تبدأ بمصطلح إنجليزي —
-        وهي الحالة نفسها في اللوحين أدناه.
-      </p>
-      <div class="plates">
-        <figure class="plate before">
-          <span class="tag">قبل التصحيح</span>
-          <img src="assets/bidi-before.png" width="797" height="150" alt="نص عربي تظهر فيه الأقواس وعلامات التنصيص في مواضع خاطئة" loading="lazy" decoding="async">
-          <figcaption><span class="plate-no">لوح ٢</span><span>الأقواس وعلامات التنصيص تتقدّم أو تتأخّر، فينكسر إيقاع الجملة.</span></figcaption>
+  <!-- ٢ · تشريح الخلل -->
+  <section class="py-20 border-b border-border-subtle relative bg-surface-dim" id="glitch-to-flow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <div class="font-mono text-xs text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+            <span class="w-2 h-0.5 bg-primary"></span>
+            مقارنة هندسية عملية
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-text-primary tracking-tight">أزمة خلط اللغات في النص العربي المعاصر</h2>
+        </div>
+        <p class="text-text-secondary text-sm max-w-md font-mono">
+          الجملة نفسها كما تظهر في ردّ نموذج ذكاء اصطناعي: مصطلحات إنجليزية، أقواس، وأرقام داخل سياق عربي.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="rounded-lg bg-surface-solid border border-danger-border p-6 font-mono text-xs space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-danger-border text-danger-text">
+            <span class="flex items-center gap-2 font-bold text-sm">
+              <svg class="text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-cross"/></svg>
+              المتصفح بدون الإضافة
+            </span>
+            <span class="px-2 py-0.5 bg-danger-surface border border-danger-border rounded text-[10px]">LAYOUT_OK · BIDI BROKEN</span>
+          </div>
+          <div class="p-4 bg-surface-code rounded border border-border-subtle text-left space-y-3" dir="ltr">
+            <div class="text-text-muted text-[11px] font-sans"># ردّ نموذج قبل المعالجة:</div>
+            <p class="text-text-muted leading-relaxed font-sans text-sm">
+              الوضع: منشور علني، والعنوان الحالي «Fluent Arabic Web» (مشتق من المانيفست)، والوصف قوي أصلاً. خطتنا: (1) تسمية <span class="text-danger-text">RTL</span> في المانيفست، (2) رفع الإصدار، (4) حزمة ZIP، (5) رفع GitHub.
+            </p>
+            <div class="p-2.5 rounded bg-surface-container text-text-muted text-[11px]">
+              <span class="text-danger-text font-bold">المشكلة:</span> الأقواس انتقلت إلى الجهة المقابلة، وعلامات التنصيص «» انقلبت في نهاية السطر، وتسلسل الأرقام (1) (2) (4) (5) صار غير متّسق.
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-muted pt-2 border-t border-border-subtle">
+            <span class="text-danger-text">إجهاد القراءة: مرتفع</span>
+            <span class="isolate-bidi">direction: ltr (default)</span>
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-surface-solid border border-border-strong p-6 font-mono text-xs space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border-strong text-accent-mint">
+            <span class="flex items-center gap-2 font-bold text-sm">
+              <svg class="text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-verified"/></svg>
+              محرّك Fluent Arabic Web
+            </span>
+            <span class="px-2 py-0.5 bg-success-surface border border-primary/30 rounded text-[10px]">FLOW_RESTORED</span>
+          </div>
+          <div class="p-4 bg-surface-code rounded border border-border-strong text-right space-y-3" dir="rtl">
+            <div class="text-text-muted text-[11px] font-sans"># الجملة ذاتها بعد المعالجة:</div>
+            <p class="text-text-primary leading-relaxed font-sans text-sm sm:text-base">
+              الوضع: منشور علني، والعنوان الحالي <span class="isolate-bidi font-mono text-xs text-accent-mint bg-surface-container px-2 py-0.5 rounded border border-border-subtle">«Fluent Arabic Web»</span> (مشتق من المانيفست)، والوصف قوي أصلاً. خطتنا: (1) تسمية <span class="isolate-bidi font-mono text-xs text-accent-mint bg-surface-container px-2 py-0.5 rounded border border-border-subtle">RTL</span> في المانيفست، (2) رفع الإصدار، (4) حزمة ZIP، (5) رفع GitHub.
+            </p>
+            <div class="p-2.5 rounded bg-surface-container text-text-secondary text-[11px] font-sans">
+              <span class="text-accent-mint font-bold">الحل:</span> الجملة تتدفّق من اليمين، والمصطلحات البرمجية تستقيم LTR داخل عزل مستقل، والأقواس تستقرّ في موضعها.
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-muted pt-2 border-t border-border-subtle">
+            <span class="text-accent-mint font-bold">قراءة منسّقة: 100%</span>
+            <span class="isolate-bidi">unicode-bidi: isolate</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
+        <figure class="rounded-lg overflow-hidden bg-surface-solid border border-border-subtle">
+          <img src="assets/bidi-before.png" width="797" height="150" alt="نص عربي تظهر فيه الأقواس وعلامات التنصيص في مواضع خاطئة" loading="lazy" decoding="async" class="w-full block"/>
+          <figcaption class="px-4 py-3 border-t border-border-subtle font-mono text-[11px] text-text-muted">
+            <span class="text-danger-text font-bold">BEFORE</span> · لقطة حقيقية من واجهة محادثة
+          </figcaption>
         </figure>
-        <figure class="plate after">
-          <span class="tag">بعد التصحيح</span>
-          <img src="assets/bidi-after.png" width="804" height="157" alt="النص العربي نفسه وقد استقامت محاذاته ومواضع الأقواس" loading="lazy" decoding="async">
-          <figcaption><span class="plate-no">لوح ٣</span><span>النصّ ذاته بعد عزل الاتجاه: العربية يمين، والرموز والأرقام والكود في موضعها.</span></figcaption>
+        <figure class="rounded-lg overflow-hidden bg-surface-solid border border-border-strong">
+          <img src="assets/bidi-after.png" width="804" height="157" alt="النص العربي نفسه وقد استقامت محاذاته ومواضع الأقواس" loading="lazy" decoding="async" class="w-full block"/>
+          <figcaption class="px-4 py-3 border-t border-border-subtle font-mono text-[11px] text-text-muted">
+            <span class="text-accent-mint font-bold">AFTER</span> · الجملة ذاتها بعد العزل
+          </figcaption>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- ============================ الخصائص ============================ -->
-  <section id="features">
-    <div class="sheet">
-      <p class="rubric"><span>٣</span><span>فهرس الخصائص</span><span class="of">NINE ITEMS</span></p>
-      <h2>ما تفعله الإضافة، بنداً بنداً</h2>
-      <ol class="index">
-        <li>
-          <span class="num">١</span>
-          <div>
-            <h3>اكتشاف تلقائي بعتبة تضبطها بنفسك</h3>
-            <p>تُفعَّل الإضافة حين تبلغ نسبة العربية في الصفحة العتبة التي تختارها (افتراضياً 15٪)، فلا تتدخّل في صفحة لا تعنيك.</p>
-            <p class="tail">THRESHOLD · DEFAULT 15%</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٢</span>
-          <div>
-            <h3>إصلاح Bidi لا يقلب شيئاً</h3>
-            <p>العربية إلى اليمين، والإنجليزية والأرقام والكود تبقى على حالها داخل الفقرة نفسها، بلا <code>direction: rtl</code> على الصفحة.</p>
-            <p class="tail">UNICODE-BIDI · ISOLATE</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٣</span>
-          <div>
-            <h3>حماية التخطيط</h3>
-            <p>لا قلب لـ <code>flex</code> أو <code>grid</code>، ولا لشريط الأدوات، ولا لأزرار النماذج. الهيكل يبقى كما صُمِّم.</p>
-            <p class="tail">LAYOUT UNTOUCHED</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٤</span>
-          <div>
-            <h3>ملفّات مواقع مكتوبة بعناية</h3>
-            <p>ChatGPT وClaude وGrok وAI Studio وDeepSeek وHarness وغيرها: قواعد تصمد أمام إعادة رسم React، وتستثني محرّرات الأكواد والمعادلات.</p>
-            <p class="tail">22 PROFILES · 10 STREAMING</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٥</span>
-          <div>
-            <h3>التقاط عنصر</h3>
-            <p>إن بقي سطر معوجّ في موقع ديناميكي: اضغط «التقاط عنصر» ثم انقر النص. تُحفظ محدِّداً مستقراً لهذا الموقع وحده.</p>
-            <p class="tail">STABLE SELECTOR PER SITE</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٦</span>
-          <div>
-            <h3>طبيب الموقع</h3>
-            <p>يخبرك لماذا لم تُصحَّح الصفحة: نسبة العربي تحت العتبة، أو غياب ملفّ للموقع، أو حجب للسكربت.</p>
-            <p class="tail">DIAGNOSTICS</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٧</span>
-          <div>
-            <h3>Shadow DOM والإطارات المضمّنة</h3>
-            <p>تعمل داخل المكوّنات الحديثة و<code>iframe</code>، مع رقعة تُزرع في عالم الصفحة لتلحق الجذور المغلقة.</p>
-            <p class="tail">ATTACHSHADOW PATCH</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٨</span>
-          <div>
-            <h3>تسعة خطوط عربية مدمجة</h3>
-            <p>ثمانية تايبفيس افتراضياً، وخطوط الهوية السعودية (المصمك، النسيب، الوتد، الأول، السعودي)، وخطوط الأعوام الثقافية.</p>
-            <p class="tail">BUNDLED · NO CDN</p>
-          </div>
-        </li>
-        <li>
-          <span class="num">٩</span>
-          <div>
-            <h3>قوائم مرنة واختصار لوحة مفاتيح</h3>
-            <p>سماح أو تجاهل بنطاق مثل <code>*.example.com</code>، و<span class="mono">Alt</span> + <span class="mono">Shift</span> + <span class="mono">A</span> لتفعيل الصفحة الحالية أو إيقافها فوراً.</p>
-            <p class="tail">ALLOW · DENY · SHORTCUT</p>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ============================ المواقع ============================ -->
-  <section id="sites">
-    <div class="sheet">
-      <p class="rubric"><span>٤</span><span>فهرس المواقع</span><span class="of">22 PROFILES</span></p>
-      <h2>مواقع لها ملفّ جاهز</h2>
-      <p class="deck">
-        هذه المواقع لا يكفي معها الكشف العام: تعيد رسم الصفحة أو تبثّ النص حياً. لها قواعد مخصّصة،
-        مع إبقاء <code>pre</code> و<code>code</code> و<code>KaTeX</code> باتجاه LTR.
-      </p>
-      <div class="site-columns">
-        <div>
-          <h3>محادثات ووكلاء</h3>
-          <ul class="sites">
-            <li>Grok <span class="host">grok.com</span> <span class="live">بثّ حيّ</span></li>
-            <li>ChatGPT <span class="host">chatgpt.com</span> <span class="live">بثّ حيّ</span></li>
-            <li>Claude <span class="host">claude.ai</span> <span class="live">بثّ حيّ</span></li>
-            <li>Gemini <span class="host">gemini.google.com</span> <span class="live">بثّ حيّ</span></li>
-            <li>Google AI Studio <span class="host">aistudio.google.com</span> <span class="live">بثّ حيّ</span></li>
-            <li>DeepSeek <span class="host">chat.deepseek.com</span> <span class="live">بثّ حيّ</span></li>
-            <li>Perplexity <span class="host">perplexity.ai</span> <span class="live">بثّ حيّ</span></li>
-            <li>Microsoft Copilot <span class="host">copilot.microsoft.com</span> <span class="live">بثّ حيّ</span></li>
-            <li>DeepSeek Harness <span class="host">127.0.0.1 · localhost</span> <span class="live">بثّ حيّ</span></li>
-            <li>NotebookLM <span class="host">notebooklm.google.com</span></li>
-          </ul>
+  <!-- ٣ · المعمارية -->
+  <section class="py-24 border-b border-border-subtle relative" id="architecture">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mb-16">
+        <div class="font-mono text-xs text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+          <span class="w-2 h-0.5 bg-primary"></span>
+          معمارية النظام الداخلي
         </div>
-        <div>
-          <h3>تواصل وعمل</h3>
-          <ul class="sites">
-            <li>Discord <span class="host">discord.com</span> <span class="live">بثّ حيّ</span></li>
-            <li>Slack <span class="host">app.slack.com</span></li>
-            <li>WhatsApp Web <span class="host">web.whatsapp.com</span></li>
-            <li>Notion <span class="host">notion.so</span></li>
-          </ul>
-        </div>
-        <div>
-          <h3>ويب عام</h3>
-          <ul class="sites">
-            <li>GitHub <span class="host">github.com</span></li>
-            <li>YouTube</li>
-            <li>X</li>
-            <li>Facebook</li>
-            <li>Google</li>
-            <li>Gmail</li>
-            <li>Reddit</li>
-            <li>LinkedIn</li>
-          </ul>
-        </div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-text-primary tracking-tight leading-tight">بُنيت لمواجهة الفوضى في أعقد تطبيقات الويب</h2>
+        <p class="text-text-secondary text-base sm:text-lg mt-4 font-normal">
+          لا استبدال شامل لأنماط CSS، بل مصفاة جراحية داخل شجرة الـ DOM: يُمشى العنصر بعنصر، ويُعزل ما يحمل عربية حقيقية، وتبقى حاويات التخطيط (Flexbox وGrid) على حالها.
+        </p>
       </div>
-      <div class="note">
-        <p><strong>وأي موقع آخر</strong> يعمل بالكشف العام: تُقاس نسبة العربية، ويُصحَّح النص حين تتجاوز العتبة — بلا حاجة إلى ملفّ موقع.</p>
-        <p>من بطاقة الموقع الحالي تختار <strong>مسموح</strong> (دائماً) أو <strong>ممنوع</strong> (تجاهل هذا النطاق). وقواعد Harness مقيّدة بسمات مثل <code>data-composer-card</code> حتى لا تُمسّ تطبيقات localhost الأخرى.</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div class="lg:col-span-7 bg-surface-solid border border-border-subtle rounded-xl p-6 font-mono text-xs flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-4 border-b border-border-subtle">
+            <span class="text-text-muted">DOM_MUTATION_TREE · ISOLATION_FLOW</span>
+            <span class="text-accent-mint">SHADOW-DOM SAFE</span>
+          </div>
+          <div class="py-6 space-y-3">
+            <div class="p-3 rounded bg-surface-container border border-border-subtle flex flex-wrap items-center justify-between gap-2">
+              <span class="flex items-center gap-2">
+                <svg class="text-primary text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-check-circle"/></svg>
+                <span class="font-bold text-text-primary isolate-bidi">&lt;body&gt;</span>
+                <span class="text-text-muted text-[10px] isolate-bidi">untouched · LTR preserved</span>
+              </span>
+              <span class="text-emerald-400 text-[10px]">القوائم وأزرار التنقّل سليمة</span>
+            </div>
+            <div class="pr-6 text-text-muted/60 text-xs">│  ├── Flex Container / Sidebar (untouched)</div>
+            <div class="mr-6 p-3 rounded bg-surface-container-high border border-border-strong flex flex-wrap items-center justify-between gap-2">
+              <span class="flex items-center gap-2">
+                <svg class="text-accent-mint text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-tune"/></svg>
+                <span class="font-bold text-accent-mint isolate-bidi">&lt;div class="chat-message" dir="rtl"&gt;</span>
+              </span>
+              <span class="text-[10px] text-accent-mint font-semibold">نسبة عربية &gt; 15%</span>
+            </div>
+            <div class="pr-12 text-text-muted/60 text-xs">│  │  ├── Arabic Text (flows RTL)</div>
+            <div class="pr-12 text-text-muted/60 text-xs isolate-bidi">│  │  ├── &lt;span class="faw-isolate" unicode-bidi="isolate" dir="ltr"&gt;</div>
+            <div class="mr-12 p-3 rounded bg-surface-code border border-border-subtle flex flex-wrap items-center justify-between gap-2 text-left" dir="ltr">
+              <span class="flex items-center gap-2">
+                <svg class="text-emerald-400 text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg>
+                <span class="text-text-secondary font-bold">&lt;pre&gt; &amp; &lt;code&gt; · KaTeX</span>
+              </span>
+              <span class="text-[10px] text-text-muted">direction: ltr</span>
+            </div>
+          </div>
+          <div class="pt-4 border-t border-border-subtle flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-muted">
+            <span>MutationObserver · per-node decision · no full re-render</span>
+            <span class="text-accent-mint font-bold">code editors excluded</span>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col justify-between gap-4 font-mono">
+          <div class="p-5 rounded-xl bg-surface-solid border border-border-subtle">
+            <div class="flex items-center justify-between text-xs text-accent-mint mb-2">
+              <span class="font-bold">01 // STREAMING OBSERVER</span>
+              <span class="text-[10px] text-text-muted">MUTATION_BURST</span>
+            </div>
+            <h3 class="text-base font-bold text-text-primary font-sans mb-1">دعم البثّ المباشر للأحرف الحيّة</h3>
+            <p class="text-xs text-text-secondary font-sans leading-relaxed">
+              نماذج مثل ChatGPT وClaude تطبع الحروف كلمةً كلمة. المحرّك يراقب التغييرات ويعيد التقييم عند استقرار الدفعة، فلا وميض ولا اهتزاز في الاتجاه أثناء الكتابة.
+            </p>
+          </div>
+          <div class="p-5 rounded-xl bg-surface-solid border border-border-subtle">
+            <div class="flex items-center justify-between text-xs text-accent-mint mb-2">
+              <span class="font-bold">02 // SHADOW DOM</span>
+              <span class="text-[10px] text-text-muted">WEB_COMPONENTS</span>
+            </div>
+            <h3 class="text-base font-bold text-text-primary font-sans mb-1">النفاذ إلى Shadow Root وiframe</h3>
+            <p class="text-xs text-text-secondary font-sans leading-relaxed">
+              رقعة تُزرع في عالم الصفحة لتلحق الجذور المغلقة، فيعمل العزل داخل مكوّنات الويب والإطارات المضمّنة دون تجاوز سياق الأمان.
+            </p>
+          </div>
+          <div class="p-5 rounded-xl bg-surface-solid border border-border-subtle">
+            <div class="flex items-center justify-between text-xs text-accent-mint mb-2">
+              <span class="font-bold">03 // DYNAMIC THRESHOLD</span>
+              <span class="text-[10px] text-text-muted">PERCENTAGE_SCAN</span>
+            </div>
+            <h3 class="text-base font-bold text-text-primary font-sans mb-1">عتبة عربية قابلة للضبط</h3>
+            <p class="text-xs text-text-secondary font-sans leading-relaxed">
+              لن تُقلب فقرة إنجليزية فيها كلمة عربية يتيمة. الحساب بنسبة محكمة (افتراضياً 15%) تُعدّلها من النافذة المنبثقة متى شئت.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================ اللقطات ============================ -->
-  <section id="shots">
-    <div class="sheet">
-      <p class="rubric"><span>٥</span><span>لوحات</span><span class="of">PLATES</span></p>
-      <h2>النافذة المنبثقة وبطاقة المتجر</h2>
-      <div class="plates">
-        <figure class="plate">
-          <img src="assets/popup.png" width="430" height="1088" alt="نافذة الإضافة المنبثقة: زر تفعيل RTL، بطاقة الموقع الحالي، إعدادات التعرف والخط، أدوات متقدمة" loading="lazy" decoding="async" style="max-width: 340px; margin-inline: auto;">
-          <figcaption><span class="plate-no">لوح ٤</span><span>النافذة المنبثقة: تفعيل، خط، قوائم، التقاط عنصر، وطبيب الموقع.</span></figcaption>
+  <!-- ٤ · عيّنة الخطوط -->
+  <section class="py-24 border-b border-border-subtle bg-surface-dim relative" id="specimen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
+        <div>
+          <div class="font-mono text-xs text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+            <span class="w-2 h-0.5 bg-primary"></span>
+            المطبعة الرقمية المدمجة
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-text-primary tracking-tight">عينات الخطوط العربية</h2>
+        </div>
+        <p class="text-text-secondary text-sm max-w-md font-mono">
+          تسعة خطوط مدمجة في الحزمة، وهذه المعاينة تعرضها من ملفاتها نفسها (WOFF2) — تُحقن على النطاق العربي فقط، واللاتيني يبقى لخطّه.
+        </p>
+      </div>
+
+      <div class="rounded-xl bg-surface-solid border border-border-strong overflow-hidden shadow-2xl">
+        <div class="p-4 bg-surface-container-high border-b border-border-subtle flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+          <div class="flex flex-wrap items-center gap-1.5" id="font-family-buttons">
+            <button class="font-btn px-3 py-1.5 rounded bg-primary text-on-primary font-bold" onclick="setFontSpecimen('FluentThmanyah', 'ثمانية تايبفيس — مدمج في الحزمة')">ثمانية تايبفيس</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentAlMasmak', 'المصمك — خط الهوية السعودية')">المصمك</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentAlNaseeb', 'النسيب — خط الهوية السعودية')">النسيب</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentAlWatad', 'الوتد — خط الهوية السعودية')">الوتد</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentAlAwwal', 'الأول — خط الهوية السعودية')">الأول</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentSaudi', 'السعودي — خط الهوية السعودية')">السعودي</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentYearOfPoetry', 'عام الشعر العربي — خط ثقافي')">عام الشعر</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentYearOfCamel', 'عام الجمل — خط ثقافي')">عام الجمل</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('FluentYearOfHandicrafts', 'الحرف اليدوية — خط ثقافي')">الحرف اليدوية</button>
+            <button class="font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle" onclick="setFontSpecimen('system-ui', 'خطّ الموقع الأصلي (بلا حقن)')">خطّ الموقع</button>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-text-muted">حجم الخط:</span>
+            <input class="accent-primary cursor-pointer w-28" id="font-size-slider" max="48" min="16" oninput="updateFontSize(this.value)" type="range" value="28"/>
+            <span class="text-accent-mint font-bold w-10" id="font-size-label">28px</span>
+          </div>
+        </div>
+        <div class="p-8 lg:p-14 bg-surface-code min-h-[260px] flex flex-col justify-center border-b border-border-subtle transition-all">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-text-muted mb-4 border-b border-border-subtle pb-2">
+            <span class="text-accent-mint font-bold" id="active-font-indicator">ثمانية تايبفيس — مدمج في الحزمة</span>
+            <span>قابل للتحرير المباشر [Editable Preview]</span>
+          </div>
+          <p class="text-text-primary leading-relaxed outline-none focus:ring-1 focus:ring-primary/40 rounded p-2 transition-all" contenteditable="true" id="specimen-render" style="font-family: 'FluentThmanyah', sans-serif; font-size: 28px;">
+            الهندسة المتقنة تصنع الفارق بين الفوضى والوضوح؛ قراءة عربية أصيلة مع احتفاظ الرموز <span class="isolate-bidi font-mono text-sm text-accent-mint bg-surface-container px-2 py-0.5 rounded border border-border-subtle">Token_ID #4096</span> بموضعها ودقّتها.
+          </p>
+        </div>
+        <div class="p-4 bg-surface-container flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-text-muted">
+          <span class="flex items-center gap-2">
+            <svg class="text-primary text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-font"/></svg>
+            <span>الملفات: <code class="text-accent-mint isolate-bidi">fonts/*.woff2</code> مدمجة في الحزمة · ومنسوخة إلى <code class="text-accent-mint isolate-bidi">docs/fonts/</code> للمعاينة</span>
+          </span>
+          <span class="text-text-secondary">تُحقن على النصوص العربية فقط · 0ms على كود المطوّرين</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ٥ · طبيب الموقع -->
+  <section class="py-24 border-b border-border-subtle relative" id="doctor">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-5 space-y-4">
+          <div class="font-mono text-xs text-primary uppercase tracking-widest flex items-center gap-2">
+            <span class="w-2 h-0.5 bg-primary"></span>
+            أدوات الفحص المدمجة
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-text-primary tracking-tight">طبيب الموقع &amp; ملتقط العناصر</h2>
+          <p class="text-text-secondary text-sm sm:text-base leading-relaxed">
+            صفحة عنيدة أو حاوية نصوص غير قياسية؟ افتح «طبيب الموقع» لفحص نسبة الحروف العربية، واستخرج محدِّد CSS بنقرة، واحفظ الاستثناء على جهازك.
+          </p>
+          <div class="space-y-2 pt-2 font-mono text-xs text-text-muted">
+            <div class="flex items-center gap-2">
+              <svg class="text-primary text-sm w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-picker"/></svg>
+              <span>التقاط أي عنصر معقّد مثل <span class="isolate-bidi">&lt;div role="textbox"&gt;</span></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="text-primary text-sm w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-rule"/></svg>
+              <span>تعديل عتبة التفعيل لهذا النطاق وحده</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="text-primary text-sm w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-save"/></svg>
+              <span>تصدير واستيراد الإعدادات بملف JSON محلي</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-6">
+          <div class="bg-surface-solid border border-border-strong rounded-xl p-5 font-mono text-xs shadow-2xl space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border-subtle">
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span class="font-bold text-text-primary">FAW Site Doctor — v4.3.0</span>
+              </span>
+              <span class="text-text-muted isolate-bidi">chrome-extension://faw/popup.html</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="p-3 bg-surface-code rounded border border-border-subtle">
+                <span class="text-text-muted block text-[10px]">نسبة العربية</span>
+                <span class="text-accent-mint font-bold text-base isolate-bidi">42.8%</span>
+              </div>
+              <div class="p-3 bg-surface-code rounded border border-border-subtle">
+                <span class="text-text-muted block text-[10px]">عتبة التفعيل</span>
+                <span class="text-text-primary font-bold text-base isolate-bidi">15.0%</span>
+              </div>
+              <div class="p-3 bg-surface-code rounded border border-border-subtle">
+                <span class="text-text-muted block text-[10px]">حالة الصفحة</span>
+                <span class="text-emerald-400 font-bold text-base">ACTIVE</span>
+              </div>
+            </div>
+            <div class="p-3 bg-surface-code rounded border border-border-subtle space-y-1">
+              <div class="flex flex-wrap justify-between gap-2 text-[11px] text-text-muted">
+                <span>DETECTED TARGET CONTAINER</span>
+                <span class="text-primary">selector saved</span>
+              </div>
+              <code class="text-accent-mint text-[11px] block overflow-x-auto isolate-bidi">div.comment-body &gt; p:not(.code-block), .markdown-body &gt; blockquote</code>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+              <span class="px-3 py-1.5 rounded bg-surface-container-high border border-border-subtle text-text-secondary flex items-center gap-1.5">
+                <svg class="text-sm w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-picker"/></svg>
+                <span>التقاط عنصر يدوي</span>
+              </span>
+              <span class="px-3 py-1.5 rounded bg-primary/20 text-accent-mint border border-primary/30 font-bold">حفظ لهذا النطاق</span>
+            </div>
+          </div>
+          <figure class="rounded-xl overflow-hidden bg-surface-solid border border-border-subtle">
+            <img src="assets/popup.png" width="430" height="1088" alt="نافذة الإضافة المنبثقة: تفعيل RTL، بطاقة الموقع، إعدادات التعرف والخط، وأدوات متقدمة" loading="lazy" decoding="async" class="block mx-auto w-full max-w-[300px]"/>
+            <figcaption class="px-4 py-3 border-t border-border-subtle font-mono text-[11px] text-text-muted">النافذة المنبثقة الفعلية — تفعيل، خط، قوائم، والتقاط عنصر</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ٦ · مصفوفة المواقع -->
+  <section class="py-24 border-b border-border-subtle relative bg-surface-dim" id="matrix">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <div class="font-mono text-xs text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+            <span class="w-2 h-0.5 bg-primary"></span>
+            مصفوفة التوافق
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-text-primary tracking-tight">٢٢ ملفّ موقع جاهز</h2>
+        </div>
+        <p class="text-text-secondary text-sm max-w-md font-mono">
+          ملفّات تفهم خصائص كل منصة وحاويات إخراجها، عشرة منها تتعامل مع البثّ الحيّ — بلا ضبط يدوي.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 font-mono text-xs">
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">Grok</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">ChatGPT</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">Claude</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">Gemini</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">Google AI Studio</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">DeepSeek</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">Perplexity</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">Microsoft Copilot</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">Discord</span></span><span class="text-[10px] text-text-muted">بثّ حيّ</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-text-primary font-bold">DeepSeek Harness</span></span><span class="text-[10px] text-text-muted">localhost</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">NotebookLM</span></span><span class="text-[10px] text-text-muted">Google</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">Slack</span></span><span class="text-[10px] text-text-muted">rich text</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">WhatsApp Web</span></span><span class="text-[10px] text-text-muted">محادثات</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">Notion</span></span><span class="text-[10px] text-text-muted">Shadow DOM</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">GitHub</span></span><span class="text-[10px] text-text-muted">README · Issues</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">YouTube</span></span><span class="text-[10px] text-text-muted">اقتراحات البحث</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">X</span></span><span class="text-[10px] text-text-muted">منشورات</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">Facebook</span></span><span class="text-[10px] text-text-muted">منشورات</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">Google</span></span><span class="text-[10px] text-text-muted">نتائج</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">Gmail</span></span><span class="text-[10px] text-text-muted">رسائل</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">Reddit</span></span><span class="text-[10px] text-text-muted">تعليقات</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-border-subtle hover:border-primary/50 transition-all flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-surface-container-highest"></span><span class="text-text-primary font-bold">LinkedIn</span></span><span class="text-[10px] text-text-muted">منشورات</span></div>
+        <div class="p-3.5 rounded-lg bg-surface-solid border border-primary/40 flex items-center justify-between gap-2"><span class="flex items-center gap-2.5"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="text-primary font-bold">أي موقع آخر</span></span><span class="text-[10px] text-accent-mint">اكتشاف تلقائي</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ٧ · تدقيق الخصوصية -->
+  <section class="py-24 border-b border-border-subtle relative" id="audit">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-6 space-y-4">
+          <div class="font-mono text-xs text-primary uppercase tracking-widest flex items-center gap-2">
+            <span class="w-2 h-0.5 bg-primary"></span>
+            التدقيق والخصوصية
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-text-primary tracking-tight leading-tight">
+            صفر نداءات شبكية.<br/>
+            صفر تتبّع.<br/>
+            بلا خوادم وسيطة.
+          </h2>
+          <p class="text-text-secondary text-base leading-relaxed font-normal">
+            كل معالجة تجري على جهازك داخل المتصفح: لا نملك خادماً يستقبل نصوصك، ولا نسجّل زيارتك. والشيفرة كلها مفتوحة برخصة MIT — يمكنك تشغيل أمر التدقيق بنفسك.
+          </p>
+          <div class="pt-2 flex flex-wrap gap-3 font-mono text-xs">
+            <span class="px-2.5 py-1 rounded bg-surface-solid border border-border-subtle text-accent-mint">✓ بلا تحليلات</span>
+            <span class="px-2.5 py-1 rounded bg-surface-solid border border-border-subtle text-accent-mint">✓ بلا fetch / XHR</span>
+            <span class="px-2.5 py-1 rounded bg-surface-solid border border-border-subtle text-accent-mint">✓ تخزين محلي فقط</span>
+          </div>
+          <p class="text-text-secondary text-sm font-mono pt-2">
+            الصلاحيات: <span class="isolate-bidi text-accent-mint">storage</span> · <span class="isolate-bidi text-accent-mint">activeTab</span> · وصول للمواقع لأن الإضافة تعمل على أي صفحة تزورها.
+            اقرأ <a class="text-primary hover:underline" href="privacy.html">سياسة الخصوصية كاملة</a>.
+          </p>
+        </div>
+        <div class="lg:col-span-6 bg-surface-code rounded-xl border border-border-strong p-5 font-mono text-xs text-left shadow-2xl" dir="ltr">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-border-subtle text-text-muted">
+            <span class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+              <span class="ml-2 text-text-secondary font-bold">audit.sh</span>
+            </span>
+            <span class="text-accent-mint font-semibold">PASS: 0 LEAKS</span>
+          </div>
+          <div class="space-y-2 text-text-muted overflow-x-auto">
+            <div><span class="text-primary font-bold">❯</span> git clone https://github.com/SMSMy/Fluent-Arabic-Web.git</div>
+            <div class="whitespace-pre"><span class="text-primary font-bold">❯</span> grep -rnE "fetch\(|XMLHttpRequest|WebSocket|sendBeacon" content.js background.js lib/ shadow-patch.js</div>
+            <div class="p-2.5 rounded bg-surface-container border border-border-subtle text-accent-mint space-y-1">
+              <div class="font-bold"># لا مخرجات — لا نداء شبكة واحد</div>
+              <div class="text-emerald-300">==&gt; matches: 0 (offline execution confirmed)</div>
+            </div>
+            <div><span class="text-primary font-bold">❯</span> npm test</div>
+            <div class="text-[11px] text-text-muted/80">92 tests · pass 92 · fail 0 — على Node 22 و24 في ثلاثة أنظمة</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ٨ · الأسئلة -->
+  <section class="py-24 border-b border-border-subtle relative bg-surface-dim" id="faq">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-16">
+        <div class="font-mono text-xs text-primary uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
+          <span class="w-2 h-0.5 bg-primary"></span>
+          استفسارات هندسية
+          <span class="w-2 h-0.5 bg-primary"></span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-text-primary tracking-tight">الأسئلة الشائعة حول آلية العمل</h2>
+      </div>
+      <div class="space-y-3 font-mono text-sm">
+        <details class="group rounded-lg bg-surface-solid border border-border-subtle p-4 open:border-primary/50 transition-colors">
+          <summary class="flex items-center justify-between gap-3 cursor-pointer font-bold text-text-primary list-none font-sans text-base">
+            <span>لماذا لا تعتمد الإضافة على <span class="isolate-bidi">body dir="rtl"</span> البسيط؟</span>
+            <svg class="text-primary transition-transform duration-200 group-open:rotate-180 w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </summary>
+          <div class="mt-3 pt-3 border-t border-border-subtle text-text-secondary font-sans text-sm leading-relaxed">
+            لأن فرض الاتجاه على الصفحة كاملة يهدم شبكات Flexbox وقوائم التنقّل ومربّعات الحوار ويعكس أزرار الواجهة. نحن نعزل الحاويات النصية التي تحمل عربية حقيقية فقط، ويبقى الهيكل سليماً.
+          </div>
+        </details>
+        <details class="group rounded-lg bg-surface-solid border border-border-subtle p-4 open:border-primary/50 transition-colors">
+          <summary class="flex items-center justify-between gap-3 cursor-pointer font-bold text-text-primary list-none font-sans text-base">
+            <span>هل تنعكس الأكواد والمعادلات؟</span>
+            <svg class="text-primary transition-transform duration-200 group-open:rotate-180 w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </summary>
+          <div class="mt-3 pt-3 border-t border-border-subtle text-text-secondary font-sans text-sm leading-relaxed">
+            لا. يوجد استثناء صريح لكل من <code class="font-mono text-xs text-accent-mint bg-surface-code px-1 rounded isolate-bidi">&lt;pre&gt;</code> و<code class="font-mono text-xs text-accent-mint bg-surface-code px-1 rounded isolate-bidi">&lt;code&gt;</code> وصيغ KaTeX ومحرّرات الأكواد، مع قاعدة LTR صارمة تحفظ المسافات البادئة.
+          </div>
+        </details>
+        <details class="group rounded-lg bg-surface-solid border border-border-subtle p-4 open:border-primary/50 transition-colors">
+          <summary class="flex items-center justify-between gap-3 cursor-pointer font-bold text-text-primary list-none font-sans text-base">
+            <span>هل تؤثّر على سرعة المتصفح؟</span>
+            <svg class="text-primary transition-transform duration-200 group-open:rotate-180 w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </summary>
+          <div class="mt-3 pt-3 border-t border-border-subtle text-text-secondary font-sans text-sm leading-relaxed">
+            لا. المراقبة تجري عبر <span class="isolate-bidi">MutationObserver</span> مع تقييم لكل عنصر متغيّر فقط، دون إعادة رسم الشجرة كاملة، والمعالجة تتوقف عند استقرار الدفعة.
+          </div>
+        </details>
+        <details class="group rounded-lg bg-surface-solid border border-border-subtle p-4 open:border-primary/50 transition-colors">
+          <summary class="flex items-center justify-between gap-3 cursor-pointer font-bold text-text-primary list-none font-sans text-base">
+            <span>بقيت فقرة معوجّة في موقع ما — ماذا أفعل؟</span>
+            <svg class="text-primary transition-transform duration-200 group-open:rotate-180 w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </summary>
+          <div class="mt-3 pt-3 border-t border-border-subtle text-text-secondary font-sans text-sm leading-relaxed">
+            افتح «طبيب الموقع» لتعرف السبب (نسبة العربي تحت العتبة، أو غياب ملفّ للموقع). ثم خفّف الحساسية، أو استخدم «التقاط عنصر» لتُحفظ قاعدة لهذا النطاق وحده.
+          </div>
+        </details>
+        <details class="group rounded-lg bg-surface-solid border border-border-subtle p-4 open:border-primary/50 transition-colors">
+          <summary class="flex items-center justify-between gap-3 cursor-pointer font-bold text-text-primary list-none font-sans text-base">
+            <span>هل ترسل بياناتي إلى أي جهة؟</span>
+            <svg class="text-primary transition-transform duration-200 group-open:rotate-180 w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </summary>
+          <div class="mt-3 pt-3 border-t border-border-subtle text-text-secondary font-sans text-sm leading-relaxed">
+            لا. لا نداء شبكة واحد في شيفرة الإضافة، والإعدادات تبقى في تخزين المتصفح على جهازك. وتصدير الإعدادات ملفّ JSON محلي أنت من يحفظه.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ٩ · الخاتمة -->
+  <section class="py-24 relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <div class="rounded-2xl bg-surface-solid border border-border-strong p-8 sm:p-14 text-center relative shadow-2xl">
+        <div class="inline-flex items-center gap-2 font-mono text-xs text-accent-mint px-3 py-1 rounded bg-surface-code border border-border-subtle mb-6">
+          <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+          MANIFEST V3 · READY TO INSTALL
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-black text-text-primary tracking-tight mb-4">اقرأ واكتب العربية على الويب كما تستحقّ</h2>
+        <p class="text-text-secondary text-base sm:text-lg max-w-2xl mx-auto mb-8 font-normal leading-relaxed">
+          إضافة واحدة بحجم صغير، تعمل على Chrome وEdge، بلا حساب وبلا تتبّع — ومعها ٢٢ ملفّ موقع وتسعة خطوط عربية.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs">
+          <a class="w-full sm:w-auto px-6 py-3.5 rounded bg-primary text-on-primary font-bold hover:bg-accent-mint transition-all flex items-center justify-center gap-2 text-sm shadow-[0_0_25px_-5px_rgba(78,222,163,0.5)]" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener noreferrer" target="_blank">
+            <svg class="text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-puzzle"/></svg>
+            <span>تثبيت الإضافة مجاناً من متجر كروم</span>
+          </a>
+          <a class="w-full sm:w-auto px-6 py-3.5 rounded bg-surface-code hover:bg-surface-container border border-border-subtle text-text-primary font-semibold transition-all flex items-center justify-center gap-2 text-sm" href="https://github.com/SMSMy/Fluent-Arabic-Web/releases/latest" rel="noopener noreferrer" target="_blank">
+            <svg class="text-base w-[1em] h-[1em] shrink-0 inline-block align-[-0.125em]" aria-hidden="true" focusable="false"><use href="#i-download"/></svg>
+            <span>تنزيل الحزمة (ZIP)</span>
+          </a>
+        </div>
+        <figure class="mt-10 rounded-xl overflow-hidden border border-border-subtle">
+          <img src="assets/store-banner.png" width="1280" height="800" alt="بطاقة العرض في المتجر: أيقونة الإضافة، الاسم، وأربع نقاط تميّز إلى جانب صورة النافذة المنبثقة" loading="lazy" decoding="async" class="w-full block"/>
         </figure>
-        <figure class="plate">
-          <img src="assets/store-banner.png" width="1280" height="800" alt="بطاقة تعريفية: أيقونة الإضافة الخضراء، اسم Fluent Arabic Web - RTL، وأربع نقاط تميّز إلى جانب صورة النافذة المنبثقة" loading="lazy" decoding="async">
-          <figcaption><span class="plate-no">لوح ٥</span><span>بطاقة العرض في المتجر: تصحيح تلقائي، حماية التصميم وShadow DOM، خطوط مدمجة، وتغطية للمنصات المتدفقة.</span></figcaption>
-        </figure>
       </div>
-    </div>
-  </section>
-
-  <!-- ============================ الاستخدام ============================ -->
-  <section id="usage">
-    <div class="sheet">
-      <p class="rubric"><span>٦</span><span>الاستخدام</span><span class="of">SIX STEPS</span></p>
-      <h2>ستّ خطوات تكفي</h2>
-      <ol class="steps">
-        <li>ثبّت الإضافة وافتح أي صفحة فيها عربي.</li>
-        <li>إن كان التعرف التلقائي مفعّلاً تُصحَّح الصفحة وحدها. وإلا اضغط أيقونة الإضافة ثم <strong>تفعيل RTL</strong>، أو <span class="mono">Alt</span> + <span class="mono">Shift</span> + <span class="mono">A</span>.</li>
-        <li>من بطاقة الموقع الحالي: <strong>مسموح</strong> (دائماً) أو <strong>ممنوع</strong> (تجاهل هذا النطاق).</li>
-        <li>اختر الخط وحساسية التعرف إن لزم.</li>
-        <li>إذا بقي سطر معوجّ في موقع ديناميكي: <strong>التقاط عنصر</strong> ثم انقر النص. يُحفظ الإعداد لهذا الموقع فقط.</li>
-        <li>إذا لم يحدث شيء: <strong>طبيب الموقع</strong> يعرض السبب (نسبة العربي، وجود ملفّ موقع، عدد العناصر، وحالة الرقعة الداخلية).</li>
-      </ol>
-      <div class="note">
-        <p>ثلاثة أوضاع للمحدِّد المخصّص: <strong>تلقائي</strong> (حسب المحتوى) · <strong>فرض RTL</strong> · <strong>استثناء LTR</strong> (للكود والمعادلات).</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================ الخطوط ============================ -->
-  <section id="fonts">
-    <div class="sheet">
-      <p class="rubric"><span>٧</span><span>الخطوط</span><span class="of">NINE FACES</span></p>
-      <h2>تسعة خطوط عربية، تُحقن اختيارياً</h2>
-      <p class="deck">تُطبَّق على النصوص العربية فقط، لا على واجهة الموقع. وملفّات الخطوط مدمجة في الحزمة، فلا يُطلب أي خط من خادم خارجي.</p>
-      <dl class="specimen">
-        <div>
-          <dt>ثمانية تايبفيس</dt>
-          <dd>الخط الافتراضي، مصمَّم للشاشات وللنصوص الطويلة.</dd>
-        </div>
-        <div>
-          <dt>المصمك · النسيب · الوتد · الأول · السعودي</dt>
-          <dd>خطوط الهوية السعودية.</dd>
-        </div>
-        <div>
-          <dt>عام الشعر · عام الجمل · الحرف اليدوية</dt>
-          <dd>خطوط الأعوام الثقافية.</dd>
-        </div>
-        <div>
-          <dt>افتراضي النظام</dt>
-          <dd>بلا حقن أي خط، إن أردت أن تبقى الصفحة على خطّها.</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <!-- ============================ الخصوصية ============================ -->
-  <section id="privacy">
-    <div class="sheet">
-      <p class="rubric"><span>٨</span><span>الخصوصية</span><span class="of">ATTESTATION</span></p>
-      <h2>لا نداء شبكة واحد في الشيفرة</h2>
-      <div class="columns">
-        <p>
-          الإضافة لا تجمع شيئاً ولا ترسله: لا حسابات، ولا تحليلات، ولا تتبّع، ولا إعلانات، ولا خادم خارجي.
-          وكل ما تحفظه هو إعداداتك في تخزين المتصفح <code>chrome.storage</code>: حالة التفعيل، والعتبة، والخط،
-          وقوائم المواقع، والمحدِّدات التي تلتقطها بنفسك.
-        </p>
-        <p>
-          وإن كنت مفعّلاً لمزامنة المتصفح فقد يُزامن المتصفح هذه الإعدادات بين أجهزتك عبر حسابك أنت — وهذا نقل
-          يديره المتصفح ولا يمرّ بنا. وتصدير الإعدادات ملفّ JSON محلي أنت من يحفظه. وإلغاء التثبيت يحذفها.
-        </p>
-      </div>
-      <div class="receipt">
-        <p class="receipt-label">إيصال التحقّق — شغّله على نسخة المستودع</p>
-        <pre>grep -rn "fetch(\|XMLHttpRequest\|WebSocket\|sendBeacon" content.js background.js lib/ shadow-patch.js</pre>
-        <p>لا يُخرج هذا الأمر شيئاً. السياسة الكاملة — وما يُحفظ على جهازك وسبب كل صلاحية — في <a href="privacy.html">صفحة الخصوصية</a>.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================ التثبيت ============================ -->
-  <section id="install">
-    <div class="sheet">
-      <p class="rubric"><span>٩</span><span>التثبيت</span><span class="of">TWO WAYS</span></p>
-      <h2>من المتجر أو من المصدر</h2>
-      <div class="columns">
-        <p>
-          <strong>من المتجر (الموصى به).</strong> تعمل الإضافة على Chrome وEdge وأي متصفح مبني على Chromium
-          يدعم إضافات Chrome. تُحدَّث تلقائياً من المتجر.
-        </p>
-        <p>
-          <strong>من المصدر.</strong> استنسخ المستودع ثم افتح <code>chrome://extensions/</code>، فعّل
-          <strong>وضع المطوّر</strong>، واختر <strong>تحميل إضافة فُكّ ضغطها</strong> موجَّهاً إلى مجلد المستودع.
-        </p>
-      </div>
-      <div class="actions">
-        <a class="btn btn-solid" href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">فتح صفحة المتجر</a>
-        <a class="btn" href="https://github.com/SMSMy/Fluent-Arabic-Web/releases/latest" rel="noopener">تنزيل الحزمة (ZIP)</a>
-      </div>
-      <pre>git clone https://github.com/SMSMy/Fluent-Arabic-Web.git</pre>
-    </div>
-  </section>
-
-  <!-- ============================ الأسئلة ============================ -->
-  <section id="faq">
-    <div class="sheet">
-      <p class="rubric"><span>١٠</span><span>الأسئلة</span><span class="of">SIX ANSWERS</span></p>
-      <h2>أشياء يسأل عنها الجميع</h2>
-      <details>
-        <summary>الصفحة لم تتغيّر.</summary>
-        <p>افتح طبيب الموقع. إن كانت نسبة العربي تحت العتبة خفّف الحساسية، أو أضف النطاق للمسموح، أو التقط العنصر.</p>
-      </details>
-      <details>
-        <summary>الكود انعكس.</summary>
-        <p>أضف المحدِّد في وضع <strong>استثناء LTR</strong>، أو تأكد أن ملفّ الموقع يستثني <code>pre</code> و<code>code</code>. لا تستخدم فرض RTL على الصفحة كلها.</p>
-      </details>
-      <details>
-        <summary>هل تكسر تصميم المواقع؟</summary>
-        <p>لا. التصحيح يقع على النص نفسه عبر عزل الاتجاه، ولا يُفرض <code>direction: rtl</code> على حاويات الصفحة أو <code>body</code>؛ فالقوائم الجانبية وأزرار الإرسال وكتل الكود تبقى كما صمّمها الموقع.</p>
-      </details>
-      <details>
-        <summary>Grok وAI Studio وHarness.</summary>
-        <p>لها ملفّات جاهزة في 4.3. وإن كسر تحديث الواجهة شيئاً: التقط العنصر على الصندوق أو فقرة الرد.</p>
-      </details>
-      <details>
-        <summary>localhost.</summary>
-        <p>Harness يُطابق <code>127.0.0.1</code> و<code>localhost</code>. والقواعد لا تُطبَّق إلا بوجود سمات الواجهة الخاصة به.</p>
-      </details>
-      <details>
-        <summary>هل ترسل بياناتي إلى أي مكان؟</summary>
-        <p>لا. لا يوجد أي نداء شبكة في شيفرة الإضافة، وكل المعالجة تجري داخل المتصفح، والإعدادات تبقى في تخزين المتصفح على جهازك.</p>
-      </details>
-    </div>
-  </section>
-
-  <!-- ============================ للمطوّرين ============================ -->
-  <section id="developers">
-    <div class="sheet">
-      <p class="rubric"><span>١١</span><span>للمطوّرين</span><span class="of">COLOPHON OF CODE</span></p>
-      <h2>مشروع صغير، واختبارات تحرسه</h2>
-      <p class="deck">
-        جافاسكربت خالص بلا مكتبات تشغيل. الاختبارات تُشغَّل بـ <code>node --test</code> على ثلاثة أنظمة
-        (ويندوز ولينكس وماك) وبإصداري Node 22 و24 — ست وظائف في كل دفعة، وخطوة تغليف بعدها.
-      </p>
-      <div class="columns">
-        <pre>npm test            # 92 اختباراً آلياً
-npm run build:popup # بناء واجهة النافذة
-npm run build:privacy # توليد صفحة الخصوصية
-npm run pack        # حزمة ZIP جاهزة للنشر</pre>
-        <table class="ledger">
-          <caption>خريطة الملفات</caption>
-          <tbody>
-            <tr><td><code>content.js</code></td><td>التفعيل، المراقب، الإعدادات</td></tr>
-            <tr><td><code>lib/detector.js</code></td><td>نسبة العربية</td></tr>
-            <tr><td><code>lib/bidi-fix.js</code></td><td>اتجاه الفقرة دون قلب التخطيط</td></tr>
-            <tr><td><code>lib/site-profiles.js</code></td><td>قواعد المواقع الجاهزة</td></tr>
-            <tr><td><code>lib/shadow-dom-traverser.js</code></td><td>Shadow DOM</td></tr>
-            <tr><td><code>shadow-patch.js</code></td><td>رقعة <code>attachShadow</code> في عالم الصفحة</td></tr>
-            <tr><td><code>popup/</code></td><td>الواجهة (Tailwind محلي)</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="note">
-        <p>لا تقلب <code>body</code> بـ <code>direction: rtl</code> في ملفّ موقع. لا تعتمد على <code>loadDelay</code> وحده للبثّ الحيّ. وفضّل <code>data-testid</code> و<code>aria-label</code> على كلاسات Tailwind.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================ ما الجديد ============================ -->
-  <section id="changelog">
-    <div class="sheet">
-      <p class="rubric"><span>١٢</span><span>ملحق</span><span class="of">v4.3.0</span></p>
-      <h2>ما الجديد في 4.3.0</h2>
-      <div class="columns">
-        <p>
-          <strong>دقّة أعلى في النصوص الهجينة:</strong> تصحيح الجمل العربية التي تبدأ بمصطلح إنجليزي أو رقم
-          في صناديق الإدخال وردود النماذج ومحرّرات <code>ProseMirror</code> و<code>Tiptap</code>.
-        </p>
-        <p>
-          <strong>قوائم Grok:</strong> حلّ انقلاب القوائم النقطية وتعارض كلاسات Tailwind مع استثناء محرّرات الأكواد.
-        </p>
-        <p>
-          <strong>ملفّ DeepSeek:</strong> إضافة <code>chat.deepseek.com</code> وتفعيل تلقائي عند ترجمة الصفحة
-          بواسطة Google Translate أو Edge على GitHub والصفحات أحادية الصفحة.
-        </p>
-        <p>
-          <strong>تحصين:</strong> فحص <code>chrome.runtime.lastError</code> لمنع شارة الخطأ الحمراء، واستيراد
-          وتصدير المحدِّدات والمحدِّدات المخصّصة من النافذة المنبثقة.
-        </p>
-      </div>
-      <p style="margin-top: 1.2rem;">
-        <a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener">سجلّ التغييرات الكامل</a>
-        &nbsp;·&nbsp;
-        <a href="https://github.com/SMSMy/Fluent-Arabic-Web/releases" rel="noopener">كل الإصدارات</a>
-      </p>
-    </div>
-  </section>
-
-  <!-- ============================ إنجليزي ============================ -->
-  <section id="english">
-    <div class="sheet english" lang="en">
-      <p class="rubric"><span>13</span><span>In English</span><span class="of">SUMMARY</span></p>
-      <h2>Fluent Arabic Web</h2>
-      <p>
-        A Manifest V3 extension that detects Arabic on a page and fixes its direction <strong>without flipping the layout</strong>.
-        Sidebars, composers and code blocks stay intact; English, numbers and <code>pre</code>/<code>code</code>/KaTeX remain LTR inside mixed paragraphs.
-      </p>
-      <p>
-        Install from the <a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">Chrome Web Store</a>,
-        read the source on <a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">GitHub</a>, or read the
-        <a href="privacy.html">privacy policy</a>. MIT licensed, no accounts, no telemetry, no network calls.
-      </p>
     </div>
   </section>
 </main>
 
-<footer class="colophon">
-  <div class="sheet colophon-inner">
-    <div>
-      <strong>Fluent Arabic Web</strong> — منسّق النصوص العربية على أي موقع ويب.
-      <ul>
-        <li><a href="https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag" rel="noopener">متجر كروم</a></li>
-        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener">المستودع</a></li>
-        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/releases" rel="noopener">الإصدارات</a></li>
-        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener">سجلّ التغييرات</a></li>
-        <li><a href="privacy.html">الخصوصية</a></li>
-        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/issues" rel="noopener">المشاكل</a></li>
-        <li><a href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/LICENSE" rel="noopener">رخصة MIT</a></li>
-      </ul>
+<footer class="w-full bg-surface-dim border-t border-border-subtle py-8 text-xs font-mono text-text-muted">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-text-primary font-bold">Fluent Arabic Web</span>
+      <span>—</span>
+      <span>MIT Open Source · v4.3.0</span>
     </div>
-    <div>
-      <p class="imprint">
-        طُبعت هذه الصفحة بـ Amiri وReem Kufi، ولا ظلّ فيها ولا زاوية مدوّرة.
-        <br>© 2026 — مستضافة على GitHub Pages.
-      </p>
+    <div class="flex flex-wrap items-center gap-6">
+      <a class="hover:text-primary transition-colors" href="https://github.com/SMSMy/Fluent-Arabic-Web" rel="noopener noreferrer" target="_blank">GitHub Repo</a>
+      <a class="hover:text-primary transition-colors" href="https://github.com/SMSMy/Fluent-Arabic-Web/releases" rel="noopener noreferrer" target="_blank">Releases</a>
+      <a class="hover:text-primary transition-colors" href="https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/CHANGELOG.md" rel="noopener noreferrer" target="_blank">Changelog</a>
+      <a class="hover:text-primary transition-colors" href="privacy.html">Privacy</a>
+      <a class="hover:text-primary transition-colors" href="https://github.com/SMSMy/Fluent-Arabic-Web/issues" rel="noopener noreferrer" target="_blank">Issues</a>
+      <span class="text-text-muted/60">© 2026</span>
     </div>
   </div>
 </footer>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Fluent Arabic Web",
-  "alternateName": "Fluent Arabic Web - RTL",
-  "applicationCategory": "BrowserApplication",
-  "operatingSystem": "Chrome, Edge, Chromium",
-  "softwareVersion": "4.3.0",
-  "description": "إضافة متصفح تكتشف النص العربي في الصفحة وتصحّح اتجاهه دون قلب التخطيط.",
-  "url": "https://smsmy.github.io/Fluent-Arabic-Web/",
-  "downloadUrl": "https://chromewebstore.google.com/detail/fluent-arabic-web/gofhnecgeianjadhjmlkpmfjmflmolag",
-  "codeRepository": "https://github.com/SMSMy/Fluent-Arabic-Web",
-  "license": "https://github.com/SMSMy/Fluent-Arabic-Web/blob/main/LICENSE",
-  "inLanguage": "ar",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-}
+<script>
+  // مبدّل وضع مختبر BiDi
+  function setInspectorMode(mode) {
+    const fluentDisp = document.getElementById('inspector-display-fluent');
+    const brokenDisp = document.getElementById('inspector-display-broken');
+    const btnFluent = document.getElementById('btn-mode-fluent');
+    const btnBroken = document.getElementById('btn-mode-broken');
+    const hudDir = document.getElementById('hud-direction');
+    const hudBidi = document.getElementById('hud-bidi');
+
+    if (mode === 'fluent') {
+      fluentDisp.classList.remove('hidden');
+      brokenDisp.classList.add('hidden');
+      btnFluent.className = 'px-2.5 py-1 rounded bg-primary text-on-primary font-bold transition-all';
+      btnBroken.className = 'px-2.5 py-1 rounded transition-colors text-text-muted hover:text-white';
+      hudDir.innerText = 'rtl (auto-detected)';
+      hudDir.className = 'text-accent-mint font-bold text-sm';
+      hudBidi.innerText = 'isolate';
+      hudBidi.className = 'text-accent-mint font-bold text-sm';
+    } else {
+      fluentDisp.classList.add('hidden');
+      brokenDisp.classList.remove('hidden');
+      btnBroken.className = 'px-2.5 py-1 rounded bg-red-500 text-white font-bold transition-all';
+      btnFluent.className = 'px-2.5 py-1 rounded transition-colors text-text-muted hover:text-white';
+      hudDir.innerText = 'ltr (unmanaged)';
+      hudDir.className = 'text-danger-text font-bold text-sm';
+      hudBidi.innerText = 'normal (broken)';
+      hudBidi.className = 'text-danger-text font-bold text-sm';
+    }
+  }
+
+  // مولّد عيّنات الخطوط
+  function setFontSpecimen(fontFamily, label) {
+    const render = document.getElementById('specimen-render');
+    const indicator = document.getElementById('active-font-indicator');
+    render.style.fontFamily = fontFamily + ', sans-serif';
+    indicator.innerText = label;
+
+    document.querySelectorAll('.font-btn').forEach((btn) => {
+      const isActive = btn.getAttribute('onclick').includes("'" + fontFamily + "'");
+      btn.className = isActive
+        ? 'font-btn px-3 py-1.5 rounded bg-primary text-on-primary font-bold'
+        : 'font-btn px-3 py-1.5 rounded bg-surface-code text-text-muted hover:text-white border border-border-subtle';
+    });
+  }
+
+  function updateFontSize(val) {
+    const render = document.getElementById('specimen-render');
+    const label = document.getElementById('font-size-label');
+    render.style.fontSize = val + 'px';
+    label.innerText = val + 'px';
+  }
 </script>
 </body>
 </html>
