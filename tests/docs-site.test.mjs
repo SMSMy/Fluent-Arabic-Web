@@ -44,3 +44,13 @@ test('manifest.json: الصفحة الرئيسية للإضافة تشير إل�
   const manifest = JSON.parse(readSource('manifest.json'));
   assert.equal(manifest.homepage_url, SITE_URL);
 });
+
+test('docs/PRIVACY.md: سياسة الخصوصية منشورة ومربوطة من الصفحة', () => {
+  const policyPath = path.join(SITE_DIR, 'PRIVACY.md');
+  assert.ok(fs.existsSync(policyPath), 'docs/PRIVACY.md مفقود — رابط سياسة الخصوصية في متجر كروم يعتمد عليه');
+  const policy = readSource('docs/PRIVACY.md');
+  assert.ok(policy.length > 800, 'ملف السياسة أقصر من أن يكون سياسة كاملة');
+  assert.match(policy, /سياسة الخصوصية/, 'النسخة العربية مفقودة');
+  assert.match(policy, /Privacy Policy/, 'النسخة الإنجليزية مفقودة');
+  assert.match(PAGE, /href="PRIVACY\.md"/, 'الصفحة الرئيسية يجب أن تربط سياسة الخصوصية');
+});
